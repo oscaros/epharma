@@ -28,3 +28,16 @@ ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 COMMIT;
 ```   
+
+# Installation
+## Laravel
+  - php artisan migrate 
+  - php artisan db:seed
+  - php artisan serve
+
+
+## Tailwind
+  - npm install
+  - npm run dev
+
+
