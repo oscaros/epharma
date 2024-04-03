@@ -10,8 +10,6 @@ epharma sales project
   - php artisan serve
 
 
-## Tailwind
-  - npm install
-  - npm run dev
+
 
 
