@@ -1,12 +1,7 @@
 # epharma
 epharma sales project
 
-# Database Changes
-## Expense tabe
-  -Add  description var(255) nullable
 
-## Balancing
-   -Make milling optional at db level
 
 ## Password Reset Table
 ```sql
