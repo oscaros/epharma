@@ -23,8 +23,10 @@ class ListEntities extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Entity::query())
-            ->where('entity_id', auth()->user()->entity_id)
+            ->query(Entity::query()
+            ->where('id', auth()->user()->entity_id)
+            )
+            
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
