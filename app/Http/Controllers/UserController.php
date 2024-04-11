@@ -25,18 +25,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    // public function index(UsersDataTable $dataTable)
-    // {
-    //     try {
-    //         $pageTitle = "Manage Users";
-    //         // $auth_user = AuthHelper::authSession();
-    //         $assets = ['data-table'];
-    //         $headerAction = '<a href="' . route('users.create') . '" class="btn btn-sm btn-primary" role="button">Add New User</a>';
-    //         return $dataTable->render('global.datatable', compact('pageTitle',  'assets', 'headerAction'));
-    //     } catch (\Throwable $th) {
-    //         return redirect()->back()->with('error', 'An error occurred while trying to view users');
-    //     }
-    // }
+
 
     public function index() {
         $users = User::all();
@@ -78,8 +67,7 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'phone_number' => 'required',
                 'role_id' => 'required',
-                // 'branch_id' => 'required',
-                // 'entity_id' => 'required',
+          
 
             ]);
 
@@ -94,8 +82,7 @@ class UserController extends Controller
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($password),
                 'role_id' => $request->role_id,
-                // 'branch_id' => auth()->user()->branch_id,
-                // 'business_id' => auth()->user()->business_id,
+             
                 'entity_id' => auth()->user()->entity_id,
             ];
 
@@ -139,11 +126,10 @@ class UserController extends Controller
     public function edit($id)
     {
         try {
-            // Return the view for editing a user
+
             //pass role
             $roles = Role::all();
-            // $branches = Branch::all();
-            // $businesses = Business::all();
+       
             $entities = Entity::all();
             $user = User::find($id);
             return view('users.edit', compact('user', 'roles', 'entities'));
@@ -158,51 +144,46 @@ class UserController extends Controller
             // Validate the request data
             $validatedData = $request->validate([
                 'name' => 'required',
-                
-                'email' => 'required|email|unique:users',
+ 
                 'phone_number' => 'required',
                 'role_id' => 'required',
-                // 'branch_id' => 'required',
-                // 'business_id' => 'required',
-                'entity_id' => 'required',
+       
 
-                // 'password' => 'required|min:6',
-                // Add other validation rules for role_id, branch_id, business_id if needed
+         
+    
             ]);
 
-            // Create a new user instance
+         
             $user = User::find($id);
             $user->name = $request->name;
-            // $user->last_name = $request->last_name;
-            $user->email = $request->email;
+       
+         
             $user->phone_number = $request->phone_number;
 
 
             $data = [
                 'name' => $request->name,
-                // 'last_name' => $request->last_name,
-                'email' => $request->email,
+          
+         
                 'phone_number' => $request->phone_number,
-                'password' => Hash::make($request->password),
+                // 'password' => Hash::make($request->password),
                 'role_id' => $request->role_id,
-                'entity_id' => $request->entity_id,
-                // 'business_id' => $request->business_id,
+          
             ];
 
             // $user->fill($data);
 
             //save user
 
-            $user = User::create($data);
-            $user->assignRole($request->role_id);
-            $user->assignEntity($request->entity_id);
-            // $user->assignBusiness($request->business_id);
-            // $user->password = Hash::make($request->password);
+            $user->update($data);
+            // $user->assignRole($request->role_id);
+            // $user->assignEntity($request->entity_id);
+          
 
             // Set other attributes like role_id, branch_id, business_id if needed
-            $user->save();
+            // $user->save();
 
-            $this->createAudit($request,  'Updated User', 'Update', $user->id, $user->first_name);
+            $this->createAudit($request,  'Updated User '. $user->name, 'Update');
 
             // Redirect to the index page with success message
             return redirect()->route('users.index')->with('success', 'User updated successfully');

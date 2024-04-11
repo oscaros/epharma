@@ -11,6 +11,12 @@ trait AccessTrait
         ]
     ];
 
+    //entities
+    public static $entities = [
+        "Module" => ['Entity Management'],
+        "Entity" => ['View Entities', 'Edit Entities', 'Add Entities', 'Delete Entities'],
+    ];
+
 
  
 
@@ -78,6 +84,8 @@ trait AccessTrait
         $roles = static::spreadArrayKeys(
             array_merge(
                 static::$admin,
+
+                static::$entities,
                 
                 static::$reports,
               
@@ -101,6 +109,8 @@ trait AccessTrait
 
         $access = [
             "Dashboard" => self::$admin,
+
+            "Entities" => self::$entities,
            
             "Staff" => self::$staff,
             "Reports" =>  self::$reports,

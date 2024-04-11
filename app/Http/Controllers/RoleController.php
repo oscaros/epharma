@@ -104,17 +104,16 @@ class RoleController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'persmissions_menu' => 'required',
+            'permissions_menu' => 'required',
         ]);
 
         try {
             $role->update([
                 'name' => $request->name,
                 'description' => $request->description,
-                'permissions' => json_encode($request->persmissions_menu),
+                'permissions' => json_encode($request->permissions_menu),
                 'user_id' => auth()->user()->id,
-                'business_id' => auth()->user()->business->id,
-                'branch_id' => auth()->user()->branch->id
+                'entity_id' => auth()->user()->entity->id,
             ]);
 
             $this->createAudit($request, 'Updated Role', 'Update', $role->getTable(), $role->id);

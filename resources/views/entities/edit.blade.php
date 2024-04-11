@@ -1,27 +1,30 @@
 <x-app-layout :assets="$assets ?? []">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Update entities</h5>
+    <!-- Create Entity Form -->
+   <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                <div class="bg-white shadow-md rounded-lg p-6">
+                    <div class="mb-6">
+                        <h5 class="text-lg font-semibold">Edit Entity</h5>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('entities.update', $entity->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Entity Name</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{ $entity->name }}" required>
-                            </div>
-                            
-                           
-                            <!-- Add other fields as needed -->
-                            <button type="submit" class="btn btn-primary">Edit Entity</button>
-                        </form>
-                    </div>
+                    <form method="POST" action="{{ route('entities.update', $entity->id) }}">
+                    
+                        @csrf
+                        @method('PUT')
+
+                       
+                        <div class="mb-3">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Entity Name</label>
+                            <input type="text" class="form-input mt-1 block w-full rounded-md" id="name" name="name" placeholder="Enter entity name" value={{ $entity->name }} required>
+                        </div>
+
+
+
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update Entity</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <!-- End of Create Entity Form -->
 </x-app-layout>

@@ -20,8 +20,8 @@ class EntityController extends Controller
             return view('entities.index');
         } catch (\Throwable $th) {
             //throw $th;
-            // return redirect()->back()->with('error', 'An error occurred while trying to view entities');
-            return redirect()->back()->with('error', $th->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while trying to view entities');
+            // return redirect()->back()->with('error', $th->getMessage());
         
         }
     }
@@ -98,7 +98,7 @@ class EntityController extends Controller
         try {
             //code...
             $entity = Entity::find($id);
-            return view('enitities.edit', compact('entity'));
+            return view('entities.edit', compact('entity'));
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->back()->with('error', 'An error occurred while trying to edit entity');

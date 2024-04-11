@@ -83,6 +83,8 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         //
+        $product = Product::find($id);
+        return view('products.edit', compact('product'));
     }
 
     /**
@@ -91,6 +93,44 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        try {
+            //code...
+            $request->validate([
+                'name' => 'required',
+               
+            ]);
+            $product = Product::find($id);
+
+            if (!$product) {
+                return redirect()->back()->with('error', 'Product not found');
+            }
+            $old_quantity = $product->quantity;
+            $new_quantity = $request->new_quantity;
+            $quantity = $old_quantity + $new_quantity;
+
+           
+
+            $data = [
+                'name' => $request->name,
+                'price' => $request->price,
+                'quantity' => $quantity,
+                // 'serial_number' => $request->serial_number,
+                'expiry_date' => $request->expiry_date,
+                'entity_id' => auth()->user()->entity_id,
+
+               
+            ];
+
+           
+
+            $product->update($data);
+            $this->createAudit($request,  "Updated Product : {$product->name}", 'Update');
+            return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            // return redirect()->back()->with('error', $th->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while trying to update product');
+        }
     }
 
     /**

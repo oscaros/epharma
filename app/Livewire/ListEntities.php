@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\Action;
 
 class ListEntities extends Component implements HasForms, HasTable
 {
@@ -42,7 +43,31 @@ class ListEntities extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                //
+                //edit and delete actions
+                Action::make('edit')
+                ->label('Edit')
+                ->color('warning')
+                ->icon('heroicon-o-pencil')
+                ->url(function ($record) {
+                    // Return the URL for the clicked record
+                    return route('entities.edit', $record->id);
+                }),
+            Action::make('delete')
+                ->label('Delete')
+                ->requiresConfirmation()
+                ->color('danger')
+                ->icon('heroicon-o-trash')
+                ->action(function ($record) {
+                    // Delete the record
+                    if ($record->delete()) {
+                        Notification::make()
+                            ->title('Delete record ' . $record->id . ' successfully')
+                            ->success()
+                            ->send();
+                    }
+                }),
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
