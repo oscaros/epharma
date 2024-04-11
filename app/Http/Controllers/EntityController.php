@@ -13,16 +13,11 @@ class EntityController extends Controller
      * Display a listing of the resource.
      */
     use AuditTrait;
-    public function index(Request $request,  EntitiesDataTable $dataTable)
+    public function index()
     {
         try {
             //code...
-            $pageTitle = "Manage Entities";
-            // $auth_user = AuthHelper::authSession();
-            $assets = ['data-table'];
-            $headerAction = '<a href="' . route('entities.create') . '" class="btn btn-sm btn-primary" role="button">Add Entity</a>';
-            $this->createAudit($request,  'Viewed Entity List', 'View', null, null);
-            return $dataTable->render('global.datatable', compact('pageTitle',  'assets', 'headerAction'));
+            return view('entities.index');
         } catch (\Throwable $th) {
             //throw $th;
             // return redirect()->back()->with('error', 'An error occurred while trying to view entities');
@@ -68,7 +63,7 @@ class EntityController extends Controller
 
             $entity = Entity::create($data);
 
-            $this->createAudit($request,  'Created New Entity', 'Create', $entity->id, null);
+            $this->createAudit($request,  'Created New Entity named '. $entity->name, 'Create');
 
             return redirect()->route('entities.index')->with('success', 'Entity created successfully.');
         } catch (\Throwable $th) {

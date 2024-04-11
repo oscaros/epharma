@@ -7,7 +7,7 @@
                         <h5 class="card-title">Update entities</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('businesses.update', $entity->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('entities.update', $entity->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
