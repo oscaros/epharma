@@ -25,7 +25,7 @@ class ListAuditLogs extends Component implements HasForms, HasTable
             ->query(
                 AuditLog::query()
                     ->where('entity_id', auth()->user()->entity_id)
-                    // ->where("branch_id", auth()->user()->branch_id)
+                   
             )
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')

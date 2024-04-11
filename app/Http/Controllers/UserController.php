@@ -28,7 +28,7 @@ class UserController extends Controller
 
 
     public function index() {
-        $users = User::all();
+        $users = User::where('entity_id', auth()->user()->entity_id)->get();
         return view('users.index', compact('users'));
     }
 
@@ -67,6 +67,7 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'phone_number' => 'required',
                 'role_id' => 'required',
+                'entity_id' => 'required',
           
 
             ]);
@@ -83,7 +84,7 @@ class UserController extends Controller
                 'password' => Hash::make($password),
                 'role_id' => $request->role_id,
              
-                'entity_id' => auth()->user()->entity_id,
+                'entity_id' => $request->entity_id,
             ];
 
             // dd($data);

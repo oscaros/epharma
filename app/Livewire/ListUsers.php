@@ -44,9 +44,9 @@ class ListUsers extends Component implements HasForms, HasTable, HasActions
         return $table
             ->query(
                 User::query()
-                    ->orWhereNot("email", "superadmin@coffeeims.com")
+                    // ->orWhereNot("email", "superadmin@coffeeims.com")
                     ->where('entity_id', auth()->user()->entity_id)
-                    // ->where("branch_id", auth()->user()->branch_id)
+                    
             )
             ->columns([
                 TextColumn::make('name')

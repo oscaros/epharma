@@ -45,11 +45,11 @@ class ListProducts extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            // ->query(Product::query())
+           
             ->query(
                 Product::query()
                     ->where('entity_id', auth()->user()->entity_id)
-                // ->where("branch_id", auth()->user()->branch_id)
+               
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')

@@ -44,6 +44,17 @@
                             </select>
                         </div>
 
+                        <!-- entity select field with Select2 -->
+                        <div class="mb-3">
+                            <label for="entity_id" class="block text-sm font-medium text-gray-700">Entity</label>
+                            <select class="form-select w-full rounded-md" id="entity_id" name="entity_id" required>
+                                <option value="" selected disabled>Select user entity</option>
+                                @foreach($entities as $entity)
+                                <option value="{{ $entity->id }}">{{ $entity->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
 
 
 
@@ -71,6 +82,7 @@
 <script>
     $(document).ready(function() {
         $('#role_id').select2();
+        $('#entity_id').select2();
     });
 </script>
 

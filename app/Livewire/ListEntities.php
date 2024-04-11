@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Entity;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -23,6 +24,7 @@ class ListEntities extends Component implements HasForms, HasTable
     {
         return $table
             ->query(Entity::query())
+            ->where('entity_id', auth()->user()->entity_id)
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
