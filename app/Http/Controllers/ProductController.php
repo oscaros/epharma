@@ -38,7 +38,7 @@ class ProductController extends Controller
             //
             $request->validate([
                 'name' => 'required',
-                'price' => 'required|numeric',
+                // 'price' => 'required|numeric',
                 'quantity' => 'required|numeric',
                 // 'serial_number' => 'required',
                 'expiry_date' => 'required|date',
@@ -50,6 +50,7 @@ class ProductController extends Controller
 
             $product =  Product::create([
                 'name' => $request->name,
+                // 'price' => $request->price,
                 'price' => $request->price,
                 'quantity' => $request->quantity,
                 // 'serial_number' => $request->serial_number,

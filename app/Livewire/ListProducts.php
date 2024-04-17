@@ -44,7 +44,142 @@ class ListProducts extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        return $table
+
+        if (auth()->user()->role_id == 1) {
+
+            return $table
+           
+            ->query(
+                Product::query()
+                  
+               
+            )
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('price')
+                    ->money("UGX")
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->numeric()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('serial_number')
+                    ->searchable()
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('expiry_date')
+                    ->dateTime()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->label('From'),
+                        DatePicker::make('created_until')
+                            ->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['from'] ?? null) {
+                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                                ->removeField('from');
+                        }
+
+                        if ($data['until'] ?? null) {
+                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                                ->removeField('until');
+                        }
+
+                        return $indicators;
+                    }),
+            ])
+
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AdvanceExporter::class),
+
+
+                ImportAction::make()
+                    ->importer(ProductImporter::class)
+
+            ])
+
+            ->actions([
+                Action::make('sale')
+                    ->label('Add to Cart')
+                    ->color('primary')
+                    ->icon('heroicon-o-shopping-cart')
+                    ->url(function ($record) {
+                        // Return the URL for the clicked record
+                        return route('sales.show', $record->id);
+                    }),
+                Action::make('edit')
+                    ->label('Edit')
+                    ->color('warning')
+                    ->icon('heroicon-o-pencil')
+                    ->url(function ($record) {
+                        // Return the URL for the clicked record
+                        return route('products.edit', $record->id);
+                    }),
+                Action::make('delete')
+                    ->label('Delete')
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->action(function ($record) {
+                        // Delete the record
+                        if ($record->delete()) {
+                            Notification::make()
+                                ->title('Delete record ' . $record->id . ' successfully')
+                                ->success()
+                                ->send();
+                        }
+                    }),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    //
+                ]),
+            ]);
+
+        }
+
+        else {
+            return $table
            
             ->query(
                 Product::query()
@@ -172,6 +307,7 @@ class ListProducts extends Component implements HasForms, HasTable
                     //
                 ]),
             ]);
+        }
     }
 
     public function render(): View

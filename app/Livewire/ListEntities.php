@@ -22,66 +22,141 @@ class ListEntities extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        return $table
-            ->query(Entity::query()
-            ->where('id', auth()->user()->entity_id)
-            )
-            
-            ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                //edit and delete actions
-                Action::make('edit')
-                ->label('Edit')
-                ->color('warning')
-                ->icon('heroicon-o-pencil')
-                ->url(function ($record) {
-                    // Return the URL for the clicked record
-                    return route('entities.edit', $record->id);
-                }),
-            Action::make('delete')
-                ->label('Delete')
-                ->requiresConfirmation()
-                ->color('danger')
-                ->icon('heroicon-o-trash')
-                ->action(function ($record) {
-                    // Delete the record
-                    if ($record->delete()) {
-                        Notification::make()
-                            ->title('Delete record ' . $record->id . ' successfully')
-                            ->success()
-                            ->send();
-                    }
-                }),
+
+        if (auth()->user()->role_id == 1) {
+
+            return $table
+                ->query(
+                    Entity::query()
 
 
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+                )
+
+                ->columns([
+                    Tables\Columns\TextColumn::make('name')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('deleted_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ])
+                ->filters([
                     //
-                ]),
-            ]);
+                ])
+                ->actions([
+                    //edit and delete actions
+                    Action::make('edit')
+                        ->label('Edit')
+                        ->color('warning')
+                        ->icon('heroicon-o-pencil')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            return route('entities.edit', $record->id);
+                        }),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->requiresConfirmation()
+                        ->color('danger')
+                        ->icon('heroicon-o-trash')
+                        ->action(function ($record) {
+                            // Delete the record
+                            if ($record->delete()) {
+                                Notification::make()
+                                    ->title('Delete record ' . $record->id . ' successfully')
+                                    ->success()
+                                    ->send();
+                            }
+                        }),
+
+
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        //
+                    ]),
+                ]);
+        }
+        else {
+
+            return $table
+                ->query(
+                    Entity::query()
+                    ->where('id', auth()->user()->entity_id)
+
+
+                )
+
+                ->columns([
+                    Tables\Columns\TextColumn::make('name')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('deleted_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ])
+                ->filters([
+                    //
+                ])
+                ->actions([
+                    //edit and delete actions
+                    Action::make('edit')
+                        ->label('Edit')
+                        ->color('warning')
+                        ->icon('heroicon-o-pencil')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            return route('entities.edit', $record->id);
+                        }),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->requiresConfirmation()
+                        ->color('danger')
+                        ->icon('heroicon-o-trash')
+                        ->action(function ($record) {
+                            // Delete the record
+                            if ($record->delete()) {
+                                Notification::make()
+                                    ->title('Delete record ' . $record->id . ' successfully')
+                                    ->success()
+                                    ->send();
+                            }
+                        }),
+
+
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        //
+                    ]),
+                ]);
+
+        }
+        
+      
     }
 
     public function render(): View
+
+    
     {
+
+        
         return view('livewire.list-entities');
     }
 }

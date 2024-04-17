@@ -1,4 +1,5 @@
 <div>
+        @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
 
 
                  <div class="flex justify-end my-4">
@@ -6,4 +7,5 @@
                         </div>
         
     {{ $this->table }}
+    @endif
 </div>

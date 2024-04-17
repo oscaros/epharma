@@ -1,6 +1,8 @@
 
+ @if (in_array('Entities', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
 <x-app-layout>
- 
+
+
         <style>
             [x-cloak] {
                 display: none !important;
@@ -20,4 +22,11 @@
         @vite('resources/js/app.js')
 </html>
 
+
 </x-app-layout>
+
+@else
+    
+        <h1 class="text-lg font-semibold mb-6">You do not have permission to view this page</h1>
+    
+@endif

@@ -106,6 +106,7 @@ CREATE TABLE `products` (
 
 CREATE TABLE `sales` (
   `SaleID` int(11) NOT NULL,
+  'RefNumber' varchar(10) NOT NULL,
   `SaleDate` date NOT NULL,
   `TotalAmount` decimal(10,2) NOT NULL,
   `ServiceCharge` decimal(10,2) DEFAULT 0.00,

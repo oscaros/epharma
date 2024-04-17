@@ -22,6 +22,10 @@
                 <x-input id="email" type="email" name="email" :value="old('email')" required autofocus placeholder="enter your email" />                
             </div>
             <div>
+                <x-label for="phone" value="{{ __('Phone') }}" />
+                <x-input id="phone" type="number" name="phone" :value="old('phone')" required autofocus placeholder="enter your phone number" />                
+            </div>
+            <div>
                 <x-label for="password" value="{{ __('Password') }}" />
                 <x-input id="password" type="password" name="password" required autocomplete="current-password"  placeholder="enter your password"/>                
             </div>

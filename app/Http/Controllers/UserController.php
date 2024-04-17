@@ -42,7 +42,7 @@ class UserController extends Controller
         try {
             $roles = Role::all();
             $entities = Entity::all();
-            // $branches = Branch::all();
+          
             return view('users.create', compact('roles', 'entities'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'An error occurred while trying to create a new user');
@@ -76,7 +76,7 @@ class UserController extends Controller
             $role =  Role::find($request->role_id)->name;
             $name = $request->first_name . ' ' . $request->last_name;
 
-            // dd($name);
+         
             $data = [
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
@@ -87,7 +87,7 @@ class UserController extends Controller
                 'entity_id' => $request->entity_id,
             ];
 
-            // dd($data);
+       
             try {
                 //code...
                 Mail::to($request->email)->send(new AccountCreation($name, $password,  $role));
@@ -96,7 +96,7 @@ class UserController extends Controller
                 dd($th);
             }
 
-            // dd(User::create($data));
+           
             User::create($data);
 
             

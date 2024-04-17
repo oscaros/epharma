@@ -1,4 +1,4 @@
-
+  @if (in_array('Logs', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
 <x-app-layout>
  
         <style>
@@ -21,3 +21,8 @@
 </html>
 
 </x-app-layout>
+
+@else
+    
+        <h1 class="text-lg font-semibold mb-6">You do not have permission to view this page</h1>
+        @endif

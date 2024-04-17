@@ -23,7 +23,7 @@
             <!-- Logo -->
             <a class="block" href="{{ route('dashboard') }}">
 
-                <h2 class="text-2xl font-bold text-white">Pharmaceuticals</h2>
+                <h2 class="text-2xl font-bold text-white">ePharma</h2>
 
             </a>
         </div>
@@ -119,6 +119,9 @@
                                     </a>
                                 </li>
 
+                                {{-- if user is not super admin, hide roles --}}
+                                @if (Auth::user()->role_id == 1)
+                                    
                                 <li class="mb-1 last:mb-0">
                                     <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
                                         href="{{ route('roles.index') }}">
@@ -127,6 +130,8 @@
                                             Roles</span>
                                     </a>
                                 </li>
+
+                                @endif
 
                             </ul>
                         </div>

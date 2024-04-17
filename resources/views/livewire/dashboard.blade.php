@@ -1,7 +1,7 @@
 <div>
 
 
-
+        @if (in_array('Dashboard', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
     {{-- Date filter --}}
     <div class="mb-4 flex items-center">
         <div class="relative flex-grow">
@@ -23,31 +23,60 @@
         {{-- Total Products --}}
         <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer">
             <h3 class="text-xl font-semibold mb-4">Total Products</h3>
-            <p class="text-2xl font-bold">UGX {{ number_format($totalProducts, 2) }}</p>
+            <p class="text-2xl font-bold">{{ number_format($totalProducts) }}</p>
         </div>
 
                {{-- Total Sales--}}
         <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer">
-            <h3 class="text-xl font-semibold mb-4">Total Sales</h3>
+            <h3 class="text-xl font-semibold mb-4">Expired Products</h3>
+            <p class="text-2xl font-bold">{{ number_format($totalSales) }}</p>
+        </div>
+
+        
+        {{-- Total Products --}}
+        <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer" >
+            <h3 class="text-xl font-semibold mb-4">Total Receipts Issued</h3>
+            <p class="text-2xl font-bold">{{ number_format($pendingProducts) }}</p>
+        </div>
+
+ 
+        {{-- Total Invoices --}}
+        <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer" >
+            <h3 class="text-xl font-semibold mb-4">Total Invoices Created</h3>
+            <p class="text-2xl font-bold">{{ number_format($totalInvoices) }}</p>
+        </div>
+
+
+
+         {{-- Total Products --}}
+        <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer">
+            <h3 class="text-xl font-semibold mb-4">Products Pending Approval</h3>
+            <p class="text-2xl font-bold">{{ number_format($totalProducts) }}</p>
+        </div>
+
+               {{-- Total Sales--}}
+        <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer">
+            <h3 class="text-xl font-semibold mb-4">Total Sales Amount</h3>
             <p class="text-2xl font-bold">UGX {{ number_format($totalSales, 2) }}</p>
         </div>
 
         
         {{-- Total Products --}}
         <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer" >
-            <h3 class="text-xl font-semibold mb-4">Pending Products</h3>
-            <p class="text-2xl font-bold">UGX {{ number_format($pendingProducts, 2) }}</p>
+            <h3 class="text-xl font-semibold mb-4">Total Users</h3>
+            <p class="text-2xl font-bold">{{ number_format($pendingProducts) }}</p>
         </div>
 
  
         {{-- Total Invoices --}}
         <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer" >
-            <h3 class="text-xl font-semibold mb-4">Total Invoice</h3>
-            <p class="text-2xl font-bold">{{ number_format($totalInvoices, 2) }}</p>
+            <h3 class="text-xl font-semibold mb-4">Total Pharmacies Registered</h3>
+            <p class="text-2xl font-bold">{{ number_format($totalInvoices) }}</p>
         </div>
     </div>
 
    
     </div>
+    @endif
 </div>
 
