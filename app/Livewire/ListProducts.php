@@ -139,14 +139,15 @@ class ListProducts extends Component implements HasForms, HasTable
             ])
 
             ->actions([
-                Action::make('sale')
-                    ->label('Add to Cart')
-                    ->color('primary')
-                    ->icon('heroicon-o-shopping-cart')
-                    ->url(function ($record) {
-                        // Return the URL for the clicked record
-                        return route('sales.show', $record->id);
-                    }),
+               //action view
+               Action::make('view')
+                ->label('View')
+                ->color('primary')
+                ->icon('heroicon-o-eye')
+                ->url(function ($record) {
+                    // Return the URL for the clicked record
+                    return route('products.show', $record->id);
+                }),
                 Action::make('edit')
                     ->label('Edit')
                     ->color('warning')

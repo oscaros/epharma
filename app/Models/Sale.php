@@ -32,6 +32,10 @@ class Sale extends Model
         return $this->hasMany(Product::class);
     }
 
+    protected $casts = [
+        'product_id' => 'array',
+    ];
+
 
 
 }
