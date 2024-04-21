@@ -24,6 +24,8 @@
 
         <button wire:click="saveGrandTotal" style="margin-top: 10px;">Save Grand Total</button>
     </div>
+
+     
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

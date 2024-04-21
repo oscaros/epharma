@@ -51,7 +51,8 @@ class ListSales extends Component implements HasForms, HasTable
         } else {
             return $table
                 ->query(Sale::query()
-                    ->where('user_id', auth()->user()->id))
+                    ->where('user_id', auth()->user()->id)
+                    )
                 ->columns([
                     //
                 ])
