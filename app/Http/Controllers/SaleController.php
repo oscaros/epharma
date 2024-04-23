@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Sale;
 
 class SaleController extends Controller
 {
@@ -29,7 +30,20 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Retrieve the grand total from the request
+        $grandTotal = $request->amount;
+        
+        // Save the sale to the database
+        Sale::create([
+            'product_id' => $request->product_id,
+            'amount' => $grandTotal,
+            'user_id' => auth()->id(),
+            'entity_id' => auth()->user()->entity_id
+        ]);
+
+        session()->flash('message', 'Sale has been made successfully!');
+
+        return redirect()->route('sales.index');
     }
 
     /**
