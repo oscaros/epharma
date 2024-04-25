@@ -157,7 +157,10 @@ class ListSaleProducts extends Component implements HasForms, HasTable
     }
 
     public function saveGrandTotal()
+
     {
+
+        dd($this->grandTotal);
         // Save the grand total to the database
         // For example, you can save it in a 'sales' table
         Sale::create([

@@ -22,11 +22,11 @@ class Transaction extends Model
         'order_tracking_id',
         'OrderNotificationType',
         'user_id',
-        // 'child_id',
-        'product_id',
-        // 'child_ids',
+     
+        // 'product_id',
+      
         'product_ids',
-        'per_child_amount'
+    
     ];
 
     protected $casts = [

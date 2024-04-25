@@ -141,7 +141,7 @@ class Pesapal
      * @throws \Throwable Exception if an error occurs during processing.
      * @return mixed The processed order data.
      */
-    public static function orderProcess($reference, $amount, $phone, $description, $callback, $first_name, $last_name, $email, $customer_id, $cancel_url)
+    public static function orderProcess($reference, $amount, $phone, $description, $callback, $name, $email, $customer_id, $cancel_url)
     {
         try {
             //code...
@@ -157,9 +157,7 @@ class Pesapal
                 'call_back_url' => $cancel_url,
                 'notification_id' => "88df68a5-aa0f-41b4-badf-dd7e551505d9",
                 'billing_address' => array(
-                    'phone_number' => $phone,
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
+                    'name' => $name,
                     'email' => $email
 
                 )

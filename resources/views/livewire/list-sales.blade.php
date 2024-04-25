@@ -1,8 +1,6 @@
 <div>
 
-    <div>
-        @livewire('list-sale-products')
-    </div>
+  
 
 
     <div style="padding-top: 10px;">

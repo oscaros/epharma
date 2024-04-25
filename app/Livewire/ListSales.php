@@ -25,7 +25,7 @@ class ListSales extends Component implements HasForms, HasTable
                 ->query(Sale::query())
                 ->columns([
                     // return product name from products table based on product id in sales table
-                    Tables\Columns\TextColumn::make('product_id')
+                    Tables\Columns\TextColumn::make('id')
                         ->searchable()
                         ->sortable()
                         ->copyable()
@@ -55,6 +55,19 @@ class ListSales extends Component implements HasForms, HasTable
                     )
                 ->columns([
                     //
+                    // return product name from products table based on product id in sales table
+                    Tables\Columns\TextColumn::make('id')
+                        ->searchable()
+                        ->sortable()
+                        ->copyable()
+                        ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\TextColumn::make('amount')
+                        ->money('UGX')
+                        ->searchable()
+                        ->sortable()
+                        ->copyable()
+                        ->toggleable(isToggledHiddenByDefault: false),
+                
                 ])
                 ->filters([
                     //

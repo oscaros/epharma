@@ -38,138 +38,52 @@ class PaymentController extends Controller
             $orderTrackingId = $request->input('OrderTrackingId');
             $reference = $request->input('OrderMerchantReference');
 
-            Transaction::where("reference", $reference)->update([
+            Sale::where("reference", $reference)->update([
                 "order_tracking_id" => $orderTrackingId,
 
             ]);
             //get the actual transaction
-            $transaction = Transaction::where("reference", $reference)->first();
-            $customer = User::find($transaction->user_id);
+            $transaction = Sale::where("reference", $reference)->first();
+            // $cashier = User::find($transaction->user_id);
+            $cashier = User::find(auth()->user()->id);
             $data = Pesapal::transactionStatus($orderTrackingId, $orderTrackingId);
             $payment_method = $data->message->payment_method;
 
-            $name =  $customer->first_name . " " . $customer->last_name;
-            $email = $customer->email;
+            // $name =  $customer->first_name . " " . $customer->last_name;
+            // $email = $customer->email;
+            $email = $cashier->email;
+            $name = $cashier->name;
 
             if ($data->message->payment_status_description == config("status.payment_status.completed")) {
                 $message = "Hello {$name} your payment of {$transaction->amount} has been successfully completed.Thank you";
-                $this->sendMessage($customer->phone_number, $message);
+                $this->sendMessage($cashier->phone_number, $message);
                 //check if the transaction is already completed
                 if ($transaction->status == config("status.payment_status.completed")) {
                     // Send donation email to existing user
-                    if ($transaction->type == "RescueBaby") {
+                    // if ($transaction->type == "Retail") {
                         //update all babies to sponsored
                         //TODO:
                         //update sales table
                         Sale::update([
                             "status" => 1
                         ]);
-                    } else {
-                        $child_id = $transaction->child_id;
-                        $child = Children::find($child_id);
-                        $sponsor = Sponsor::find($transaction->sponsor_id);
-                        //update child to sponsored
-                        Children::where("id", $child_id)->update([
-                            "is_sponsored" => 1
-                        ]);
-                        if ($transaction->child_ids) {
-                            //do magic
-                            $childIds = json_decode($transaction->child_ids);
-                            foreach ($childIds as $childId) {
-                                $child = Children::find($childId);
-                                Transaction::create([
-                                    'reference' => $transaction->reference,
-                                    'amount' => $transaction->amount,
-                                    'sponsor_id' => $transaction->sponsor_id,
-                                    'status' => "Completed",
-                                    'description' => $transaction->description,
-                                    'phone_number' => $transaction->phone_number,
-                                    'payment_mode' => $transaction->payment_mode,
-                                    'OrderNotificationType' => $transaction->OrderNotificationType,
-                                    'order_tracking_id' => $transaction->order_tracking_id,
-                                    'type' => $transaction->type,
-                                    'payment_method' => $transaction->payment_method,
-                                    'user_id' => $transaction->user_id,
-                                    'child_id' => $childId
-                                ]);
-                                $sponsor = Sponsor::find($transaction->sponsor_id);
-                                //update child to sponsored
-                                Children::where("id", $childId)->update([
-                                    "is_sponsored" => 1
-                                ]);
-                                //attach the child to the sponsor
-                                $child->sponsors()->attach([$sponsor->id]);
-                            }
+                    // } 
+                  
                         }
-                        //attach the child to the sponsor
-                        $child->sponsors()->attach([$sponsor->id]);
-                    }
-                    Mail::to($email)->send(new DonationNotification("Donation Successful", $name, $transaction->amount, $transaction->status));
-                    return redirect()->route('login');
+                     
+                    Mail::to($email)->send(new DonationNotification("Payment Successful", $name, $transaction->amount, $transaction->status));
+                    return redirect()->route('sales.index');
                 } else {
-                    if ($transaction->type == "RescueBaby") {
-                        //update all babies to sponsored
-                        Baby::update([
-                            "is_sponsored" => 1
-                        ]);
-                    } else {
-                        $child_id = $transaction->child_id;
-                        $child = Children::find($child_id);
-                        $sponsor = Sponsor::find($transaction->sponsor_id);
-                        if ($transaction->child_ids) {
-                            //do magic
-                            $childIds = json_decode($transaction->child_ids);
-                            foreach ($childIds as $childId) {
-                                $child = Children::find($childId);
-                                Transaction::create([
-                                    'reference' => $transaction->reference,
-                                    'amount' => $transaction->amount,
-                                    'sponsor_id' => $transaction->sponsor_id,
-                                    'status' => "Completed",
-                                    'description' => $transaction->description,
-                                    'phone_number' => $transaction->phone_number,
-                                    'payment_mode' => $transaction->payment_mode,
-                                    'OrderNotificationType' => $transaction->OrderNotificationType,
-                                    'order_tracking_id' => $transaction->order_tracking_id,
-                                    'type' => $transaction->type,
-                                    'payment_method' => $transaction->payment_method,
-                                    'user_id' => $transaction->user_id,
-                                    'child_id' => $childId
-                                ]);
-                                $sponsor = Sponsor::find($transaction->sponsor_id);
-                                //update child to sponsored
-                                Children::where("id", $childId)->update([
-                                    "is_sponsored" => 1
-                                ]);
-                                //attach the child to the sponsor
-                                $child->sponsors()->attach([$sponsor->id]);
-                            }
-                        }
-                        //update child to sponsored
-                        Children::where("id", $child_id)->update([
-                            "is_sponsored" => 1
-                        ]);
-                        //attach the child to the sponsor
-                        $child->sponsors()->attach([$sponsor->id]);
-                    }
-
-                    $transaction->update([
-                        "status" => config("status.payment_status.completed"),
-                        "payment_method" => $payment_method
-                    ]);
-                    Mail::to($email)->send(new DonationNotification("Donation Successful", $name, $transaction->amount, $transaction->status));
-
-
-                    return redirect()->route('home');
-                }
-            } else {
+                    Mail::to($email)->send(new DonationNotification("Payment Failed", $name, $transaction->amount, $transaction->status));
+                    return redirect()->route('sales.index');
+                
 
 
                 $transaction->update([
                     "status" => config("status.payment_status.failed"),
                     "payment_method" => $payment_method
                 ]);
-                Mail::to($email)->send(new DonationNotification("Donation Failed", $name, $transaction->amount, $transaction->status));
+                Mail::to($email)->send(new DonationNotification("Payment Failed", $name, $transaction->amount, $transaction->status));
 
                 return redirect()->route('login');
             }
@@ -178,7 +92,7 @@ class PaymentController extends Controller
             Log::error($th->getMessage());
             Log::info("============finishh payment==================================");
 
-            return redirect()->route('login');
+            return redirect()->route('sales.index');
         }
     }
 
@@ -214,19 +128,19 @@ class PaymentController extends Controller
     {
         try {
             $payment_reference =  $request->input("payment_reference");
-            $transaction = Transaction::where("reference", $payment_reference)->first();
-            Transaction::where("reference", $payment_reference)->update([
+            $transaction = Sale::where("reference", $payment_reference)->first();
+            Sale::where("reference", $payment_reference)->update([
                 "status" => "Failed"
             ]);
-            $customer = Sponsor::find($transaction->sponsor_id);
-            $name =  $customer->first_name . " " . $customer->last_name;
+            $customer = User::find($transaction->sponsor_id);
+            $name =  $customer->name;
             $email = $customer->email;
-            if ($transaction->child_ids) {
+            // if ($transaction->child_ids) {
                 //do magic
-                $childIds = json_decode($transaction->child_ids);
-                foreach ($childIds as $childId) {
-                    $child = Children::find($childId);
-                    Transaction::create([
+                // $childIds = json_decode($transaction->child_ids);
+                // foreach ($childIds as $childId) {
+                    // $child = Children::find($childId);
+                    Sale::create([
                         'reference' => $transaction->reference,
                         'amount' => $transaction->amount,
                         'sponsor_id' => $transaction->sponsor_id,
@@ -239,20 +153,14 @@ class PaymentController extends Controller
                         'type' => $transaction->type,
                         'payment_method' => $transaction->payment_method,
                         'user_id' => $transaction->user_id,
-                        'child_id' => $childId
+                        // 'child_id' => $childId
                     ]);
-                    $sponsor = Sponsor::find($transaction->sponsor_id);
-                    //update child to sponsored
-                    Children::where("id", $childId)->update([
-                        "is_sponsored" => 1
-                    ]);
-                    //attach the child to the sponsor
-                    $child->sponsors()->attach([$sponsor->id]);
-                }
-            }
+                   
+                
+            
 
-            Mail::to($email)->send(new DonationNotification("Donation Failed", $name, $transaction->amount, $transaction->status));
-            return view("home");
+            Mail::to($email)->send(new DonationNotification("Payment Failed", $name, $transaction->amount, $transaction->status));
+            return view("sales.index");
         } catch (\Throwable $th) {
             Log::info("===========cancel payment===================================");
             Log::error($th->getMessage());
@@ -272,23 +180,23 @@ class PaymentController extends Controller
             $orderMerchantReference = $request->input('OrderMerchantReference');
 
             $orderNotificationType = $request->input('OrderNotificationType');
-            Transaction::where("reference", $orderMerchantReference)->update([
+            Sale::where("reference", $orderMerchantReference)->update([
                 "order_tracking_id" => $orderTrackingId,
                 "orderNotificationType" => $orderNotificationType
             ]);
 
-            $transaction = Transaction::where("reference", $orderMerchantReference)->first();
+            $transaction = Sale::where("reference", $orderMerchantReference)->first();
             if (!$transaction) {
                 return response()->json([
                     "status" => 500,
-                    "message" => "Transaction not found"
+                    "message" => "Sale not found"
                 ]);
             }
-            $customer = Sponsor::find($transaction->sponsor_id);
+            $customer = User::find(auth()->user()->id);
             $data = Pesapal::transactionStatus($orderTrackingId, $orderMerchantReference);
             // return $data;
             $payment_method = $data->message->payment_method;
-            $name =  $customer->first_name . " " . $customer->last_name;
+            $name =  $customer->name;
             $email = $customer->email;
 
             Log::info("=========================================call back executed=============================================================================================================");
@@ -301,21 +209,8 @@ class PaymentController extends Controller
 
                 //check if the transaction is already completed
                 if ($transaction->status == config("status.payment_status.completed")) {
-                    if ($transaction->type == "RescueBaby") {
-                        //update all babies to sponsored
-                        Baby::update([
-                            "is_sponsored" => 1
-                        ]);
-                    } else {
-                        $child_id = $transaction->child_id;
-                        $child = Children::find($child_id);
-                        $sponsor = Sponsor::find($transaction->sponsor_id);
-                        if ($transaction->child_ids) {
-                            //do magic
-                            $childIds = json_decode($transaction->child_ids);
-                            foreach ($childIds as $childId) {
-                                $child = Children::find($childId);
-                                Transaction::create([
+                 
+                                Sale::create([
                                     'reference' => $transaction->reference,
                                     'amount' => $transaction->amount,
                                     'sponsor_id' => $transaction->sponsor_id,
@@ -328,88 +223,51 @@ class PaymentController extends Controller
                                     'type' => $transaction->type,
                                     'payment_method' => $transaction->payment_method,
                                     'user_id' => $transaction->user_id,
-                                    'child_id' => $childId
+                                   
                                 ]);
-                                $sponsor = Sponsor::find($transaction->sponsor_id);
-                                //update child to sponsored
-                                Children::where("id", $childId)->update([
-                                    "is_sponsored" => 1
-                                ]);
-                                //attach the child to the sponsor
-                                $child->sponsors()->attach([$sponsor->id]);
-                            }
-                        }
-                        //update child to sponsored
-                        Children::where("id", $child_id)->update([
-                            "is_sponsored" => 1
-                        ]);
-                        //attach the child to the sponsor
-                        $child->sponsors()->attach([$sponsor->id]);
+                              
+                            
+                     
                     }
-                    Mail::to($email)->send(new DonationNotification("Donation Successful", $name, $transaction->amount, $transaction->status));
+                    Mail::to($email)->send(new DonationNotification("Payment Successful", $name, $transaction->amount, $transaction->status));
                     return response()->json([
                         "status" => 200,
                         "message" => "Transaction already completed"
                     ]);
-                } else {
-                    if ($transaction->type == "RescueBaby") {
-                        //update all babies to sponsored
-                        Baby::update([
-                            "is_sponsored" => 1
-                        ]);
-                    } else {
-                        $child_id = $transaction->child_id;
-                        $child = Children::find($child_id);
-                        $sponsor = Sponsor::find($transaction->sponsor_id);
-                        if ($transaction->child_ids) {
-                            //do magic
-                            $childIds = json_decode($transaction->child_ids);
-                            foreach ($childIds as $childId) {
-                                $child = Children::find($childId);
-                                Transaction::create([
-                                    'reference' => $transaction->reference,
-                                    'amount' => $transaction->amount,
-                                    'sponsor_id' => $transaction->sponsor_id,
-                                    'status' => $transaction->status,
-                                    'description' => $transaction->description,
-                                    'phone_number' => $transaction->phone_number,
-                                    'payment_mode' => $transaction->payment_mode,
-                                    'OrderNotificationType' => $transaction->OrderNotificationType,
-                                    'order_tracking_id' => $transaction->order_tracking_id,
-                                    'type' => $transaction->type,
-                                    'payment_method' => $transaction->payment_method,
-                                    'user_id' => $transaction->user_id,
-                                    'child_id' => $childId
-                                ]);
-                                $sponsor = Sponsor::find($transaction->sponsor_id);
-                                //update child to sponsored
-                                Children::where("id", $childId)->update([
-                                    "is_sponsored" => 1
-                                ]);
-                                //attach the child to the sponsor
-                                $child->sponsors()->attach([$sponsor->id]);
-                            }
-                        }
-                        //update child to sponsored
-                        Children::where("id", $child_id)->update([
-                            "is_sponsored" => 1
-                        ]);
-                        //attach the child to the sponsor
-                        $child->sponsors()->attach([$sponsor->id]);
-                    }
-                    Mail::to($email)->send(new DonationNotification("Donation Successful", $name, $transaction->amount, $transaction->status));
-                    $transaction->update([
-                        "status" => "completed",
-                        "payment_method" => $payment_method
-                    ]);
+                } 
+                // else  {
+                       
+                //                 Sale::create([
+                //                     'reference' => $transaction->reference,
+                //                     'amount' => $transaction->amount,
+                //                     'sponsor_id' => $transaction->sponsor_id,
+                //                     'status' => $transaction->status,
+                //                     'description' => $transaction->description,
+                //                     'phone_number' => $transaction->phone_number,
+                //                     'payment_mode' => $transaction->payment_mode,
+                //                     'OrderNotificationType' => $transaction->OrderNotificationType,
+                //                     'order_tracking_id' => $transaction->order_tracking_id,
+                //                     'type' => $transaction->type,
+                //                     'payment_method' => $transaction->payment_method,
+                //                     'user_id' => $transaction->user_id,
+                                  
+                //                 ]);
+                              
+                       
+                //     Mail::to($email)->send(new DonationNotification("Payment Successful", $name, $transaction->amount, $transaction->status));
+                //     $transaction->update([
+                //         "status" => "completed",
+                //         "payment_method" => $payment_method
+                //     ]);
 
-                    return response()->json([
-                        "status" => 200,
-                        "message" => "Transaction completed"
-                    ]);
-                }
-            } else {
-                Mail::to($email)->send(new DonationNotification("Donation Failed", $name, $transaction->amount, $transaction->status));
+                //     return response()->json([
+                //         "status" => 200,
+                //         "message" => "Transaction completed"
+                //     ]);
+                // }
+            // } 
+            else {
+                Mail::to($email)->send(new DonationNotification("Payment Failed", $name, $transaction->amount, $transaction->status));
                 return response()->json([
                     "status" => 500,
                     "message" => "Transaction failed"
@@ -487,7 +345,7 @@ class PaymentController extends Controller
         try {
             //code...
             $message = "Testing sending messages";
-            $phoneNumber = "+256759983853";
+            $phoneNumber = "+256756741414";
             $res = $this->sendMessage($phoneNumber, $message);
 
             return response()->json(['success' => true, 'message' => 'Success', 'response' => $res]);
@@ -502,24 +360,3 @@ class PaymentController extends Controller
 }
 
 
-
-// if ($child_ids) {
-//     foreach ($child_ids as $child_id) {
-
-//         Transaction::create([
-//             'reference' => $reference,
-//             'amount' => 500,
-//             'sponsor_id' => $sponsor->id,
-//             'status' => $status,
-//             'description' => $description,
-//             'phone_number' => $phone_number,
-//             'payment_mode' => "pesapal",
-//             'OrderNotificationType' => "pesapal",
-//             'order_tracking_id' => $reference,
-//             'type' => "SponsorChild",
-//             'payment_method' => "Pesapal",
-//             'user_id' => $user->id,
-//             'child_id' => $child_id
-//         ]);
-//     }
-// }
