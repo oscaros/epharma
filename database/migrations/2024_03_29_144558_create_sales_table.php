@@ -25,7 +25,7 @@ return new class extends Migration
 
          
             $table->string('type');
-            $table->string('amount');
+            // $table->string('amount');
             $table->string('phone_number');
             $table->string("payment_mode");
             $table->string("payment_method")->nullable();

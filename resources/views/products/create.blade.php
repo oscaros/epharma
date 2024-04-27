@@ -6,26 +6,26 @@
                 enctype="multipart/form-data">
                 @csrf
                 <div class="col-span-1">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Product Name <span
+                    <label for="ProductName" class="block text-sm font-medium text-gray-700">Product Name <span
                             class="text-danger">*</span></label>
-                    <input type="text" class="form-input mt-1 block w-full" id="name" name="name" required
+                    <input type="text" class="form-input mt-1 block w-full" id="ProductName" name="ProductName" required
                         placeholder="Enter product name">
                 </div>
 
                 <div class="col-span-1">
-                    <label for="price" class="block text-sm font-medium text-gray-700">Price <span
+                    <label for="Price" class="block text-sm font-medium text-gray-700">Price <span
                             class="text-danger">*</span></label>
-                    <input type="text" class="form-input mt-1 block w-full" id="price" name="price" required
-                        placeholder="Enter product price">
+                    <input type="text" class="form-input mt-1 block w-full" id="Price" name="Price" required
+                        placeholder="Enter product Price">
                     <!-- Hidden input field to store the raw numeric value -->
-                    <input type="hidden" id="raw_price" name="price" value="0">
+                    <input type="hidden" id="raw_price" name="Price" value="0">
                 </div>
 
                 <div class="col-span-1">
-                    <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity <span
+                    <label for="Quantity" class="block text-sm font-medium text-gray-700">Quantity <span
                             class="text-danger">*</span></label>
-                    <input type="number" class="form-input mt-1 block w-full" id="quantity" name="quantity" required
-                        placeholder="Enter product quantity">
+                    <input type="number" class="form-input mt-1 block w-full" id="Quantity" name="Quantity" required
+                        placeholder="Enter product Quantity">
                 </div>
 
                 <div class="col-span-1">
@@ -46,14 +46,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get the price input element
-        var priceInput = document.getElementById('price');
-        // Get the hidden input for raw price
+        // Get the Price input element
+        var priceInput = document.getElementById('Price');
+        // Get the hidden input for raw Price
         var rawPriceInput = document.getElementById('raw_price');
 
         // Add event listener for input event
         priceInput.addEventListener('input', function() {
-            // Get the current value of the price input and remove non-numeric characters
+            // Get the current value of the Price input and remove non-numeric characters
             var priceValue = priceInput.value.replace(/[^\d.]/g, '');
 
             // Parse the numeric value
@@ -62,7 +62,7 @@
             // Set the raw numeric value to the hidden input
             rawPriceInput.value = parsedPrice;
 
-            // Format the price value (assuming you want to format it as a currency)
+            // Format the Price value (assuming you want to format it as a currency)
             var formattedPrice =
                 parsedPrice.toLocaleString('en-US', {
                     style: 'currency',

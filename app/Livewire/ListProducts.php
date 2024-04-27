@@ -55,18 +55,18 @@ class ListProducts extends Component implements HasForms, HasTable
                
             )
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('ProductName')
                     ->searchable()
                     ->sortable()
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('price')
+                Tables\Columns\TextColumn::make('Price')
                     ->money("UGX")
                     ->searchable()
                     ->sortable()
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('quantity')
+                Tables\Columns\TextColumn::make('Quantity')
                     ->numeric()
                     ->sortable()
                     ->copyable()
@@ -188,18 +188,18 @@ class ListProducts extends Component implements HasForms, HasTable
                
             )
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('ProductName')
                     ->searchable()
                     ->sortable()
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('price')
+                Tables\Columns\TextColumn::make('Price')
                     ->money("UGX")
                     ->searchable()
                     ->sortable()
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('quantity')
+                Tables\Columns\TextColumn::make('Quantity')
                     ->numeric()
                     ->sortable()
                     ->copyable()

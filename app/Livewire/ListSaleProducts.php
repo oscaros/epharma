@@ -34,28 +34,28 @@ class ListSaleProducts extends Component implements HasForms, HasTable
             ->query(
                 Product::query()
                 // ->where('entity_id', auth()->user()->entity_id)
+                //todo: add query to get products with quantity greater than 0
+                //todo: add query to get products with expiry date greater than today
 
             )
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('ProductName')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-
+                Tables\Columns\TextColumn::make('Price')
                     ->money("UGX")
                     ->sortable()
                     ->searchable(),
-
-                Tables\Columns\TextColumn::make('quantity')
+                Tables\Columns\TextColumn::make('Quantity')
                     ->numeric()
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('serial_number')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('serial_number')
+                //     ->searchable(),
 
-                Tables\Columns\TextColumn::make('expiry_date')
-                    ->date()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('expiry_date')
+                //     ->date()
+                //     ->sortable(),
                 //add field to manually enter quantity of product to sell
 
                 InputColumn::make('Quantity to Sell')
@@ -65,32 +65,32 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                Action::make('edit')
-                    ->label('Edit')
-                    ->color('warning')
-                    ->icon('heroicon-o-pencil')
-                    ->url(function ($record) {
-                        // Return the URL for the clicked record
-                        return route('products.edit', $record->id);
-                    }),
+                // Action::make('edit')
+                //     ->label('Edit')
+                //     ->color('warning')
+                //     ->icon('heroicon-o-pencil')
+                //     ->url(function ($record) {
+                //         // Return the URL for the clicked record
+                //         return route('products.edit', $record->id);
+                //     }),
 
-                Action::make('delete')
-                    ->label('Delete')
-                    ->requiresConfirmation()
-                    ->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->action(function ($record) {
-                        // Delete the record
-                        if ($record->delete()) {
-                            Notification::make()
-                                ->title('Delete record ' . $record->id . ' successfully')
-                                ->success()
-                                ->send();
-                        }
-                    }),
+                // Action::make('delete')
+                //     ->label('Delete')
+                //     ->requiresConfirmation()
+                //     ->color('danger')
+                //     ->icon('heroicon-o-trash')
+                //     ->action(function ($record) {
+                //         // Delete the record
+                //         if ($record->delete()) {
+                //             Notification::make()
+                //                 ->title('Delete record ' . $record->id . ' successfully')
+                //                 ->success()
+                //                 ->send();
+                //         }
+                //     }),
                 // Add action to save the grand total
                 Action::make('save')
-                    ->label('Save Grand Total')
+                    ->label('Confirm Sale')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')                 
                     ->requiresConfirmation()
@@ -98,31 +98,31 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                         $this->saveGrandTotal();
                     })
                     ->fillForm(fn(Product $record): array => [
-                        'name' => $record->name,
-                        'quantity' => $record->quantity,
-                        'price' => $record->price,
+                        'ProductName' => $record->ProductName,
+                        'Quantity' => $record->Quantity,
+                        'Price' => $record->Price,
                         'serial_number' => $record->serial_number,
                         'expiry_date' => $record->expiry_date,
                     ])
                     ->form([
-                        TextInput::make('name')
+                        TextInput::make('ProductName')
                             ->label('Product Name')
                             ->default(function (Product $record) {
-                                return $record->name;
+                                return $record->ProductName;
                             })
                             ->required(),
 
-                        TextInput::make('quantity')
+                        TextInput::make('Quantity')
                             ->label('Available Stock')
                             //put field data of selected product in the form
                             ->default(function (Product $record) {
-                                return $record->quantity;
+                                return $record->Quantity;
                             })
                             ->required(),
 
-                        TextInput::make('price')
+                        TextInput::make('Price')
                             ->default(function (Product $record) {
-                                return $record->price;
+                                return $record->Price;
                             })
                             ->label('Price')
                             ->required(),

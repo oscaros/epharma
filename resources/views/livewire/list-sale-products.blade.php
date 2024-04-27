@@ -41,55 +41,7 @@
     </div>
 
 
-    <div>
-        <!-- Preview Modal -->
-        <div wire:ignore.self class="modal fade" id="previewModal" tabindex="-1" role="dialog"
-            aria-labelledby="previewModalLabel" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <h3 style="font-weight: bold;">Receipt</h3>
-                        <form id="previewReceiptForm" method="POST" action="{{ route('sales.store') }}">
-                            @csrf
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr>
-                                        <th style="border: 1px solid #ccc; padding: 8px;">Product</th>
-                                        <th style="border: 1px solid #ccc; padding: 8px;">Quantity</th>
-                                        <th style="border: 1px solid #ccc; padding: 8px;">Price</th>
-                                        <th style="border: 1px solid #ccc; padding: 8px;">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($cart as $key => $value)
-                                        <tr>
-                                            <td style="border: 1px solid #ccc; padding: 8px;">{{ $value['name'] }}</td>
-                                            <td style="border: 1px solid #ccc; padding: 8px;">{{ $value['quantity'] }}
-                                            </td>
-                                            <td style="border: 1px solid #ccc; padding: 8px;">{{ $value['price'] }}</td>
-                                            <td style="border: 1px solid #ccc; padding: 8px;">{{ $value['total'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                    <tr>
-                                        <td colspan="3" style="border: 1px solid #ccc; padding: 8px; "><strong>Grand
-                                                Total:</strong></td>
-                                        <td style="border: 1px solid #ccc; padding: 8px;">UGX {{ $grandTotal }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <input type="hidden" id="previewGrandTotal" name="grandTotal">
-                            <button type="submit" class="btn btn-primary">Make A Sale</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

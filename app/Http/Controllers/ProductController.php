@@ -37,9 +37,9 @@ class ProductController extends Controller
         try {
             //
             $request->validate([
-                'name' => 'required',
+                'ProductName' => 'required',
                 // 'price' => 'required|numeric',
-                'quantity' => 'required|numeric',
+                'Quantity' => 'required|numeric',
                 // 'serial_number' => 'required',
                 'expiry_date' => 'required|date',
 
@@ -49,10 +49,10 @@ class ProductController extends Controller
            
 
             $product =  Product::create([
-                'name' => $request->name,
+                'ProductName' => $request->ProductName,
                 // 'price' => $request->price,
-                'price' => $request->price,
-                'quantity' => $request->quantity,
+                'Price' => $request->Price,
+                'Quantity' => $request->Quantity,
                 // 'serial_number' => $request->serial_number,
                 //serial number genearate as random number 8 digits
                 'serial_number' => mt_rand(10000000, 99999999),
@@ -97,7 +97,7 @@ class ProductController extends Controller
         try {
             //code...
             $request->validate([
-                'name' => 'required',
+                'ProductName' => 'required',
                
             ]);
             $product = Product::find($id);
@@ -112,9 +112,9 @@ class ProductController extends Controller
            
 
             $data = [
-                'name' => $request->name,
-                'price' => $request->price,
-                'quantity' => $quantity,
+                'ProductName' => $request->name,
+                'Price' => $request->price,
+                'Quantity' => $quantity,
                 // 'serial_number' => $request->serial_number,
                 'expiry_date' => $request->expiry_date,
                 'entity_id' => auth()->user()->entity_id,
