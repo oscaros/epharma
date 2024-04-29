@@ -23,7 +23,7 @@
             </table>
 
             <div id="grandTotal" name="grandTotal" style="margin-top: 10px; font-weight: bold;">Grand Total: UGX {{ $grandTotal }}</div>
-            <input id="grandTotalInput" name="grandTotal" style="margin-top: 10px; font-weight: bold;" readonly value="{{ $grandTotal }}">
+            <input type="hidden" id="grandTotalInput" name="grandTotal" style="margin-top: 10px; font-weight: bold;" readonly value="{{ $grandTotal }}">
 
             <!-- Hidden input fields to store product information -->
             <input type="hidden" id="productIds" name="productIds">
@@ -97,7 +97,6 @@
             quantity: quantity,
             total: total
         };
-
         // Update the receipt
         updateReceipt();
     }

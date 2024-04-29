@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Mail\DonationNotification;
-// use App\Models\Baby;
-// use App\Models\Children;
+
 use App\Models\Customer;
-// use App\Models\Sponsor;
+
 use App\Models\Sale;
 use App\Models\Transaction;
 use App\Models\User;

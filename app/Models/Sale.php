@@ -16,7 +16,22 @@ class Sale extends Model
         'amount',
         //user id who made the sale
         'user_id',
-        'entity_id'
+        'entity_id',
+        'product_id',
+               
+            
+                'reference' ,
+               
+               
+                'status',
+                'description' ,
+                'phone_number' ,
+                'payment_mode' ,
+                'OrderNotificationType' ,
+                'order_tracking_id' ,
+                'type' ,
+                'payment_method',
+
         
     ];
 

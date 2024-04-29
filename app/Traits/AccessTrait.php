@@ -59,6 +59,12 @@ trait AccessTrait
     ];
 
 
+    public static $customers = [
+        "Module" => ['Customer Management'],
+        "Customers" => ['View Customers', 'Edit Customers', 'Add Customers', 'Delete Customers'],
+    ];
+
+
 
 
 
@@ -95,7 +101,9 @@ trait AccessTrait
                 static::$roles,
              
                 static::$products,
-                static::$sales
+                static::$sales,
+
+                static::$customers
 
 
 
@@ -119,7 +127,9 @@ trait AccessTrait
             "Roles" => self::$roles,
            
             "Products" => self::$products,
-            "Sales" => self::$sales
+            "Sales" => self::$sales,
+
+            "Customers" => self::$customers
 
 
             // "Accounting" => static::$accounting

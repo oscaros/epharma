@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -12,6 +13,7 @@ class CustomerController extends Controller
     public function index()
     {
         //
+        return view('customers.index');
     }
 
     /**
@@ -20,6 +22,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
+        return view('customers.create');
     }
 
     /**
@@ -28,6 +31,42 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            //code...
+            $request->validate([
+                'FirstName' => 'required',
+                'LastName' => 'required',
+                'Email' => 'required',
+                'Phone' => 'required',
+                // 'Address' => 'required',
+                // 'NIN' => 'required',
+                
+            ]);
+
+           
+
+            $data = [
+                'FirstName' => $request->FirstName,
+                'LastName' => $request->LastName,
+                'Email' => $request->Email,
+                'Phone' => $request->Phone,
+                'Address' => $request->Address,
+                'NIN' => $request->NIN,
+               
+            ];
+
+           
+
+            $customer = Customer::create($data);
+
+            $this->createAudit($request,  'Created New Customer named '. $customer->FirstName, 'Create');
+
+            return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+
     }
 
     /**
@@ -36,6 +75,7 @@ class CustomerController extends Controller
     public function show(string $id)
     {
         //
+        return view('customers.show');
     }
 
     /**
@@ -44,6 +84,7 @@ class CustomerController extends Controller
     public function edit(string $id)
     {
         //
+        return view('customers.edit');
     }
 
     /**
@@ -60,5 +101,6 @@ class CustomerController extends Controller
     public function destroy(string $id)
     {
         //
+
     }
 }

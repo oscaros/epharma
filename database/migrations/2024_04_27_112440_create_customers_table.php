@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('Email', 100)->nullable();
             $table->string('Phone', 20)->nullable();
             $table->string('Address', 255)->nullable();
+            //add NIN national id number 13 characters
+            $table->string('NIN', 14)->nullable();
             $table->timestamps();
         });
     }
