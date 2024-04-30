@@ -70,6 +70,7 @@ CREATE TABLE `products` (
   `ProductID` int(11) NOT NULL,
   `ProductName` varchar(100) NOT NULL,
   `Barcode` varchar(50) DEFAULT NULL,
+  `DrugClass` varchar(100) DEFAULT NULL,
   `GenericName` varchar(100) DEFAULT NULL,
   `BrandNames` text DEFAULT NULL,
   `ExpiryDate` date DEFAULT NULL,
