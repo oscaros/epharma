@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('Barcode')->nullable();
             // Product generic name
             $table->string('GenericName')->nullable();
+            $table->string('DrugClass')->nullable();
             // Product brand names (assuming multiple brands can be associated with a product)
             $table->text('BrandNames')->nullable();
             // Expiry date

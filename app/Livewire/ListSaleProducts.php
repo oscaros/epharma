@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Tables\Columns\InputColumn;
@@ -22,18 +23,40 @@ use Filament\Tables\Actions\Action;
 
 class ListSaleProducts extends Component implements HasForms, HasTable
 {
+
+    // protected $listeners = [
+    //     'updateCart' => '$refresh',
+    //     'clearSearch' => '$refresh', // Add a listener to refresh the page when the search filter is cleared
+    // ];
+
+    protected $listeners = [
+        'updateCart' => 'updateCart',
+        'updateGrandTotal' => 'updateGrandTotal',
+    ];
+
+
     use InteractsWithForms;
     use InteractsWithTable;
 
     public $grandTotal = 0;
     public $cart = [];
 
+    
+
+    // protected $listeners = ['updateCart'];
+
+    public function mount()
+    {
+        $this->cart = session('cart', []);
+        $this->updateGrandTotal();
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->query(
                 Product::query()
-                // ->where('entity_id', auth()->user()->entity_id)
+                    ->where('entity_id', auth()->user()->entity_id)
                 //todo: add query to get products with quantity greater than 0
                 //todo: add query to get products with expiry date greater than today
 
@@ -92,7 +115,7 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                 Action::make('save')
                     ->label('Confirm Sale')
                     ->color('success')
-                    ->icon('heroicon-o-check-circle')                 
+                    ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
                     ->action(function () {
                         $this->saveGrandTotal();
@@ -141,37 +164,36 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                             ->label('Expiry Date')
                             ->required(),
                         // Add a field for the quantity to be sold
-                       
+
                     ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([])
-            ]);
+            ])
+            ->searchable();
     }
+
+    
 
     public function render(): View
     {
-        return view('livewire.list-sale-products', [
+
+        $customers = Customer::all();
+
+
+        return view('livewire.list-sale-products', compact('customers'), [
             'grandTotal' => $this->grandTotal,
-        ]);
+        ]
+
+    
+    );
     }
 
-    public function saveGrandTotal()
-
+    public function updated($propertyName)
     {
-
-        dd($this->grandTotal);
-        // Save the grand total to the database
-        // For example, you can save it in a 'sales' table
-        Sale::create([
-            // 'product_id' => json_encode(array_keys($this->cart)),
-            'product_id' => json_encode(array_values([1, 2])),
-            'amount' => $this->grandTotal,
-            'user_id' => auth()->id(),
-            'entity_id' => auth()->user()->entity_id
+        $this->validateOnly($propertyName, [
+            'cart.*' => 'numeric|min:1',
         ]);
-
-        session()->flash('message', 'Grand Total has been saved successfully!');
     }
 
     public function updatedCart($productId, $quantity)
@@ -184,14 +206,51 @@ class ListSaleProducts extends Component implements HasForms, HasTable
         $this->updateGrandTotal();
     }
 
-    public function updateCart($productId)
+
+
+    public function saveGrandTotal()
     {
-        $this->updatedCart($productId, $this->cart[$productId]);
+        // Save the grand total to the database or perform any necessary actions
+        Sale::create([
+            'product_id' => json_encode(array_values(array_keys($this->cart))),
+            'amount' => $this->grandTotal,
+            'user_id' => auth()->id(),
+            'entity_id' => auth()->user()->entity_id
+        ]);
+
+        session()->flash('message', 'Grand Total has been saved successfully!');
+    }
+
+    public function updateCart($productId, $quantity)
+    {
+        if ($quantity <= 0) {
+            unset($this->cart[$productId]);
+        } else {
+            $this->cart[$productId] = $quantity;
+        }
+
+        // Flash updated cart to session
+        session(['cart' => $this->cart]);
+
+        $this->updateGrandTotal();
     }
 
     public function updateGrandTotal()
     {
         $this->grandTotal = collect($this->cart)->sum();
+    }
+
+    public function updateReceipt()
+    {
+        $customers = Customer::all();
+
+
+        return view('livewire.list-sale-products', compact('customers'), [
+            'grandTotal' => $this->grandTotal,
+        ]
+
+    
+    );
     }
 }
 

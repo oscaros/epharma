@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('FirstName', 50);
             $table->string('LastName', 50);
-            $table->string('Email', 100)->nullable();
+            $table->string('Email', 100)->unique()->nullable();
             $table->string('Phone', 20)->nullable();
             $table->string('Address', 255)->nullable();
             //add NIN national id number 13 characters

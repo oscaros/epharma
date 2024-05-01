@@ -17,6 +17,8 @@ class EntityController extends Controller
     {
         try {
             //code...
+
+          
             return view('entities.index');
         } catch (\Throwable $th) {
             //throw $th;
@@ -48,7 +50,8 @@ class EntityController extends Controller
         try {
             //code...
             $request->validate([
-                'name' => 'required',
+                'name' => 'required|name|unique:entities,name',
+               
                 
             ]);
 

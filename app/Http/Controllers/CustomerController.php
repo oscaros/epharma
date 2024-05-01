@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Traits\AuditTrait;
 
 class CustomerController extends Controller
 {
+
+    use AuditTrait; 
     /**
      * Display a listing of the resource.
      */
@@ -35,8 +38,8 @@ class CustomerController extends Controller
             //code...
             $request->validate([
                 'FirstName' => 'required',
-                'LastName' => 'required',
-                'Email' => 'required',
+                // 'LastName' => 'required',
+                'Email' => 'required|Email|unique:customers,Email',
                 'Phone' => 'required',
                 // 'Address' => 'required',
                 // 'NIN' => 'required',

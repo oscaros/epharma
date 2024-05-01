@@ -56,6 +56,7 @@ class SaleController extends Controller
             // $phone_number =  $request->input('phone_number');
             // $phone_number = preg_replace('/^0/','254',$phone_number);
             $phone_number = '0756741414';
+            $amount = '5000';
             $reference = Str::uuid();
 
             $description = 'Payment of' . $grandTotal . ' for reference number: ' . $reference;
@@ -63,7 +64,8 @@ class SaleController extends Controller
             // $sale =
             Sale::create([
                 'product_id' => $productId,
-                'amount' => $grandTotal,
+                // 'amount' => $grandTotal,
+                'amount' => $amount,
                 'user_id' => auth()->id(),
                 'entity_id' => auth()->user()->entity_id,
                 'reference' => $reference,
@@ -82,9 +84,9 @@ class SaleController extends Controller
             $cancel_url = 'https://epharma.rapharm.shop/cancelPayment';
 
             $res = Pesapal::orderProcess($reference, $amount, $phone_number, $description, $callback_url, $cashier->name, $cashier->email, $cashier->id, $cancel_url);
-            dd($res);
-            dd($res->success);
-            dd($res->message->redirect_url);
+            // dd($res);
+            // dd($res->success);
+            // dd($res->message->redirect_url);
             if ($res->success) {
                 // if($res) {
                 return redirect($res->message->redirect_url);

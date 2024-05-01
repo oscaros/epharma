@@ -377,7 +377,7 @@
                                             href="{{ route('sales.create') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Make
-                                                Sales</span>
+                                                Sale</span>
                                         </a>
                                     </li>
 

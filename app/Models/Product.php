@@ -16,6 +16,8 @@ class Product extends Model
         'Barcode',
         // Product generic name
         'GenericName',
+        // Product drug class
+        'DrugClass',
         // Product brand names
         'BrandNames',
         // Expiry date

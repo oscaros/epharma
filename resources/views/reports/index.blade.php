@@ -36,8 +36,8 @@
                         <input type="hidden" name="date" value="<?php echo date('Y-m-d'); ?>">
                         <!-- Button for viewing today's report -->
                         <button type="submit"
-                            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">View Today's
-                            Report</button>
+                            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Today's
+                           Summary</button>
                     </form>
                 </div>
             </div>

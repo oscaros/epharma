@@ -46,9 +46,12 @@ return [
     |
     */
 
-    'username' => 'email',
+    //use username as either email or phone_number
+    'username' => 'email' || 'phone_number',
 
     'email' => 'email',
+
+    'phone_number' => 'phone_number',
 
     /*
     |--------------------------------------------------------------------------
@@ -147,7 +150,7 @@ return [
     'features' => [
         Features::registration(),
         Features::resetPasswords(),
-        // Features::emailVerification(),
+        Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
         Features::twoFactorAuthentication([

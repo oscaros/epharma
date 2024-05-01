@@ -155,7 +155,7 @@ class Pesapal
                 'redirect_mode' => 'TOP_WINDOW',
                 'callback_url' => $callback,
                 'call_back_url' => $cancel_url,
-                'notification_id' => "88df68a5-aa0f-41b4-badf-dd7e551505d9",
+                'notification_id' => "770d6f95-b1fb-4f48-964b-dd4b27925da7",
                 'billing_address' => array(
                     'name' => $name,
                     'email' => $email
