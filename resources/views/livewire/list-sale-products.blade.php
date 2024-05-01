@@ -81,33 +81,33 @@
 
 
 
-      // Function to update local storage with cart data
-    function updateLocalStorage() {
-        localStorage.setItem('cart', JSON.stringify(cart));
+      // Function to update session storage with cart data
+    function updateSessionStorage() {
+        sessionStorage.setItem('cart', JSON.stringify(cart));
     }
 
-    // Function to retrieve cart data from local storage and populate the cart
-    function retrieveCartFromLocalStorage() {
-        const cartData = localStorage.getItem('cart');
+    // Function to retrieve cart data from session storage and populate the cart
+    function retrieveCartFromSessionStorage() {
+        const cartData = sessionStorage.getItem('cart');
         if (cartData) {
             cart = JSON.parse(cartData);
             updateReceipt(); // Update the receipt with retrieved cart data
         }
     }
 
-    // Call the function to retrieve cart data from local storage when the page loads
+    // Call the function to retrieve cart data from session storage when the page loads
     $(document).ready(function() {
-        retrieveCartFromLocalStorage();
+        retrieveCartFromSessionStorage();
     });
 
    
 
-    // Function to reset the cart and local storage
+    // Function to reset the cart and session storage
     function resetReceipt() {
         cart = {};
         grandTotal = 0;
         updateReceipt();
-        localStorage.removeItem('cart'); // Remove cart data from local storage
+        sessionStorage.removeItem('cart'); // Remove cart data from session storage
     }
 
 
@@ -163,7 +163,7 @@
         };
         // Update the receipt
         updateReceipt();
-         updateLocalStorage();
+         updateSessionStorage();
           //reload page
         location.reload();
     }

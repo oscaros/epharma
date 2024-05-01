@@ -13,7 +13,7 @@
                         {{-- add field  name --}}
                         <div class="mb-3">
                             <label for="name" class="block text-sm font-medium text-gray-700">Entity Name</label>
-                            <input type="text" class="form-input mt-1 block w-full rounded-md" id="name" name="name" placeholder="Enter entity name" required>
+                            <input type="text" class="form-input mt-1 block w-full rounded-md" id="name" name="EntityName" placeholder="Enter entity name" required>
                         </div>
 
                         {{-- entity phone --}}

@@ -33,7 +33,13 @@ class ListEntities extends Component implements HasForms, HasTable
                 )
 
                 ->columns([
-                    Tables\Columns\TextColumn::make('name')
+                    Tables\Columns\TextColumn::make('EntityName')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('Email')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('Phone')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('Address')
                         ->searchable(),
                     Tables\Columns\TextColumn::make('created_at')
                         ->dateTime()

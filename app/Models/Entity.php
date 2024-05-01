@@ -15,9 +15,9 @@ class Entity extends Model
         'Email',
         'Phone',
         'Address',
-        'CreatedBy',
-        'UpdatedBy',
-        
+        // 'CreatedBy',
+        // 'UpdatedBy',
+
     ];
 
     //has many products

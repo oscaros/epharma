@@ -49,8 +49,16 @@ class EntityController extends Controller
     {
         try {
             //code...
+            //ensure entity name is unique
+            $entity = Entity::where('EntityName', $request->EntityName)->first();
+            if ($entity) {
+                return redirect()->back()->with('error', 'Entity with name already exists');
+            }
+
+
+
             $request->validate([
-                'EntityName' => 'required|name|unique:entities,name',
+                'EntityName' => 'required',
                
                 
             ]);
@@ -58,11 +66,11 @@ class EntityController extends Controller
            
 
             $data = [
-                'EntityName' => $request->name,
+                'EntityName' => $request->EntityName,
                 'Email' => $request->email,
                 'Phone' => $request->phone,
                 'Address' => $request->address,
-                'CreatedBy' => auth()->user()->id,
+                // 'CreatedBy' => auth()->user()->id,
 
                
             ];
