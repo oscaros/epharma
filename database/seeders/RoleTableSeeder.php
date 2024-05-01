@@ -19,8 +19,8 @@ class RoleTableSeeder extends Seeder
     public function run()
     {
         Role::create([
-            'name' => 'Admin',
-            'description' => "admin",
+            'name' => 'Super Admin',
+            'description' => "super admin manages all the system roles and permissions",
             'permissions' => json_encode($this->getAllPermissions()),
             
             'entity_id' => 1,

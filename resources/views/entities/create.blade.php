@@ -10,11 +10,31 @@
                     <form method="POST" action="{{ route('entities.store') }}">
                         @csrf
 
-                        {{-- add field first name --}}
+                        {{-- add field  name --}}
                         <div class="mb-3">
                             <label for="name" class="block text-sm font-medium text-gray-700">Entity Name</label>
                             <input type="text" class="form-input mt-1 block w-full rounded-md" id="name" name="name" placeholder="Enter entity name" required>
                         </div>
+
+                        {{-- entity phone --}}
+                        <div class="mb-3">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                            <input type="text" class="form-input mt-1 block w-full rounded-md" id="phone" name="phone" placeholder="Enter entity phone" required>
+                        </div>
+
+                        {{-- entity email --}}
+                        <div class="mb-3">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" class="form-input mt-1 block w-full rounded-md" id="email" name="email" placeholder="Enter entity email" required>
+                        </div>
+
+                        {{-- entity address --}}
+                        <div class="mb-3">
+                            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                            <input type="text" class="form-input mt-1 block w-full rounded-md" id="address" name="address" placeholder="Enter entity address" required>
+                        </div>
+
+
 
 
 

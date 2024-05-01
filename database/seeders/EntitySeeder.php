@@ -17,7 +17,10 @@ class EntitySeeder extends Seeder
 
         Entity::create([
             
-            'name' => 'Pharmacy Main',
+            'EntityName' => 'Pharmacy Main',
+            'Email' => 'info@epharma.com',
+            'Phone' => '0772722999',
+            'Address' => 'Kampala, Uganda',
            
         ]);
     }

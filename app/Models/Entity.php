@@ -11,7 +11,13 @@ class Entity extends Model
 
     
     protected $fillable = [
-        'name'
+        'EntityName',
+        'Email',
+        'Phone',
+        'Address',
+        'CreatedBy',
+        'UpdatedBy',
+        
     ];
 
     //has many products

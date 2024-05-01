@@ -53,6 +53,8 @@ class ProductController extends Controller
                 // 'price' => $request->price,
                 'Price' => $request->Price,
                 'Quantity' => $request->Quantity,
+                'BrandNames' => $request->brand,
+                'DrugClass' => $request->drug_class,
                 // 'serial_number' => $request->serial_number,
                 //serial number genearate as random number 8 digits
                 'serial_number' => mt_rand(10000000, 99999999),

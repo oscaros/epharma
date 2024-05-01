@@ -28,6 +28,23 @@
                         placeholder="Enter product Quantity">
                 </div>
 
+                {{-- brand name text field--}}
+                <div class="col-span-1">
+                    <label for="brand" class="block text-sm font-medium text-gray-700">Brand Name<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-input mt-1 block w-full" id="brand" name="brand" required
+                        placeholder="Enter brand name">
+                </div>
+
+                {{-- drug class text field --}}
+                <div class="col-span-1">
+                    <label for="drug_class" class="block text-sm font-medium text-gray-700">Drug Class<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-input mt-1 block w-full" id="drug_class" name="drug_class" required
+                        placeholder="Enter drug class">
+                </div>
+
+
                 <div class="col-span-1">
                     <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date</label>
                     <input type="date" class="form-input mt-1 block w-full" id="expiry_date" name="expiry_date"

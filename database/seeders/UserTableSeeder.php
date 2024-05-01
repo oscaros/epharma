@@ -17,11 +17,11 @@ class UserTableSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'System Admin',
+                'name' => 'System Super Admin',
             
-                'email' => 'david@pharmacy.com',
+                'email' => 'super@epharma.com',
                 'password' => bcrypt('password'),
-                'phone_number' => '+256998190255',
+                'phone_number' => '0772722999',
                 'email_verified_at' => now(),
                 'role_id' => '1',
                

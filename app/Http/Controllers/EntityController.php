@@ -50,7 +50,7 @@ class EntityController extends Controller
         try {
             //code...
             $request->validate([
-                'name' => 'required|name|unique:entities,name',
+                'EntityName' => 'required|name|unique:entities,name',
                
                 
             ]);
@@ -58,7 +58,12 @@ class EntityController extends Controller
            
 
             $data = [
-                'name' => $request->name,
+                'EntityName' => $request->name,
+                'Email' => $request->email,
+                'Phone' => $request->phone,
+                'Address' => $request->address,
+                'CreatedBy' => auth()->user()->id,
+
                
             ];
 
@@ -117,14 +122,18 @@ class EntityController extends Controller
         try {
             //code...
             $request->validate([
-                'name' => 'required',
+                'EntityName' => 'required',
                
             ]);
             $entity = Entity::find($id);
            
 
             $data = [
-                'name' => $request->name,
+                'EntityName' => $request->name,
+                'Email' => $request->email,
+                'Phone' => $request->phone,
+                'Address' => $request->address,
+                'UpdatedBy' => auth()->user()->id,
                
             ];
 
