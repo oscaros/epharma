@@ -11,26 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
-            
-          
-          
-            
-
+        Schema::create('product_temps', function (Blueprint $table) {
+       
             $table->id();
             // Product name
             $table->string('ProductName');
-
-            //add enum type with options Drug and Service
-            $table->enum("type", ["Drug", "Service"]);
-            //enum status with pending == 0 and approved == 1 default is approved
-            $table->enum("Status", [0, 1])->default(1);
             // Product barcode
-            // $table->string('Barcode')->nullable();
-            //create blob to store qr code png
-            // $table->longText('QrCode')->nullable();
-            $table->binary('qr_code')->nullable();
-
+            $table->string('Barcode')->nullable();
             // Product generic name
             $table->string('GenericName')->nullable();
             $table->string('DrugClass')->nullable();
@@ -75,7 +62,10 @@ return new class extends Migration
             // Product price
             $table->decimal('Price', 10, 2);
             // Product quantity
-            $table->integer('Quantity')->nullable();
+            $table->integer('Quantity');
+            $table->integer('NewQuantity');
+            // Product status
+            $table->enum('Status', [0, 1, 2])->default(0);
             // User ID who added the product
             $table->unsignedBigInteger('AddedBy')->nullable();
             // Timestamp when the product was added
@@ -98,14 +88,20 @@ return new class extends Migration
             $table->foreign('ApprovedBy')->references('id')->on('users')->onDelete('cascade');
             // Product serial number (auto-generated random number)
             $table->string('serial_number')->unique(); // Assuming serial number should be unique
+    
           
-
+    
             // Expiry date
             $table->date('expiry_date')->nullable();
+              // Foreign key constraint
+            // $table->foreign('edit_approved_by')->references('id')->on('users')->onDelete('set null');
           
             //add timestamps
             $table->timestamps();
-        });
+        
+                
+              
+            });
     }
 
     /**
@@ -113,6 +109,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_temps');
     }
 };

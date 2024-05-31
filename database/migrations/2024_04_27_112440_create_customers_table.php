@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('Address', 255)->nullable();
             //add NIN national id number 13 characters
             $table->string('NIN', 14)->nullable();
+            $table->string('qr_code_path')->nullable();
             $table->timestamps();
         });
     }

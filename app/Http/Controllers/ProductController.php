@@ -39,9 +39,9 @@ class ProductController extends Controller
             $request->validate([
                 'ProductName' => 'required',
                 // 'price' => 'required|numeric',
-                'Quantity' => 'required|numeric',
+                // 'Quantity' => 'required|numeric',
                 // 'serial_number' => 'required',
-                'expiry_date' => 'required|date',
+                // 'expiry_date' => 'required|date',
 
                 
             ]);
@@ -50,6 +50,7 @@ class ProductController extends Controller
 
             $product =  Product::create([
                 'ProductName' => $request->ProductName,
+                'type' => $request->type,
                 // 'price' => $request->price,
                 'Price' => $request->Price,
                 'Quantity' => $request->Quantity,
@@ -110,6 +111,7 @@ class ProductController extends Controller
             $old_quantity = $product->Quantity;
             $new_quantity = $request->new_quantity;
             $quantity = $old_quantity + $new_quantity;
+            $type = $request->type;
 
            
 
@@ -117,6 +119,7 @@ class ProductController extends Controller
                 'ProductName' => $request->ProductName,
                 'Price' => $request->Price,
                 'Quantity' => $quantity,
+                'type' => $type,
                 // 'serial_number' => $request->serial_number,
                 'expiry_date' => $request->expiry_date,
                 'entity_id' => auth()->user()->entity_id,

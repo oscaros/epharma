@@ -18,6 +18,7 @@ class Sale extends Model
         'user_id',
         'entity_id',
         'product_id',
+        'quantities',
                
             
                 'reference' ,

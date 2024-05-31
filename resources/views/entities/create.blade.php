@@ -34,10 +34,6 @@
                             <input type="text" class="form-input mt-1 block w-full rounded-md" id="address" name="address" placeholder="Enter entity address" required>
                         </div>
 
-
-
-
-
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Entity</button>
                     </form>
                 </div>
@@ -46,3 +42,21 @@
     </div>
     <!-- End of Create Entity Form -->
 </x-app-layout>
+
+<!-- JavaScript to transform input value into CamelCase -->
+<script>
+    // Function to transform input value into CamelCase
+    function toCamelCase(str) {
+        return str.replace(/\b\w/g, function (match) {
+            return match.toUpperCase();
+        });
+    }
+
+    // Get the input element for entity name
+    const entityNameInput = document.getElementById('name');
+
+    // Event listener to transform input value into CamelCase when typing
+    entityNameInput.addEventListener('input', function() {
+        this.value = toCamelCase(this.value);
+    });
+</script>

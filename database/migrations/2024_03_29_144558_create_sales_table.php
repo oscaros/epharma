@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             // Product IDs as an array of many products made in one sale
             $table->json('product_id');
+            $table->json('quantities');
             // Sales total amount
+            //
             $table->decimal('amount', 10, 2); // Assuming 10 digits in total with 2 decimal places
             // User ID who made the sale
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Sale;
+use App\Models\SaleItem;
 use App\Models\User;
 use App\Payments\Pesapal;
 use Illuminate\Http\Request;
@@ -72,9 +74,16 @@ class SaleController extends Controller
 
             // Retrieve product information from the request
             // $productIds = explode(',', $request->productIds);
-            $productId = $request->productIds;
+            $productIds = json_decode($request->productIds);
+            $quantities = json_decode($request->productQuantities);
             // $productNames = explode(',', $request->productNames);
             // $productPrices = explode(',', $request->productPrices);
+
+             // Ensure $productIds and $quantities are arrays
+             if (!is_array($productIds) || !is_array($quantities)) {
+                throw new \Exception('Invalid product data provided.');
+            }
+
 
             // Save the sale to the database
             // foreach ($productIds as $key => $productId) {
@@ -94,9 +103,9 @@ class SaleController extends Controller
             $description = 'Payment of' . $grandTotal . ' for reference number: ' . $reference;
 
             // $sale =
-            Sale::create([
-                'product_id' => $productId,
-                // 'amount' => $grandTotal,
+            $sale = Sale::create([
+                'product_id' => json_encode($productIds),
+                'quantities' => json_encode($quantities),
                 'amount' => $amount,
                 'user_id' => auth()->id(),
                 'entity_id' => auth()->user()->entity_id,
@@ -111,6 +120,24 @@ class SaleController extends Controller
                 'payment_method' => 'Pesapal',
                 // 'product_id' => json_encode($productId)
             ]);
+
+
+
+
+             // Create Sale Items
+             // Create Sale Items
+             foreach ($productIds as $index => $productId) {
+                $product = Product::find($productId);
+                if ($product) {
+                    SaleItem::create([
+                        'SaleID' => $sale->id,
+                        'ProductID' => $productId,
+                        'Quantity' => $quantities[$index],
+                        'Price' => $product->Price,
+                        'Status' => 0
+                    ]);
+                }
+            }
 
             $callback_url = 'https://epharma.rapharm.shop/finishPayment';
             $cancel_url = 'https://epharma.rapharm.shop/cancelPayment';

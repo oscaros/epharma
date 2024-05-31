@@ -46,7 +46,7 @@
 
                         <div>
                             <label for="NIN" class="block text-sm font-medium text-gray-700">NIN</label>
-                            <input type="text" class="form-input mt-1 block w-full" id="NIN" name="NIN" placeholder="Enter your NIN">
+                            <input type="text" maxlength="14"  class="form-input mt-1 block w-full" id="NIN" name="NIN" placeholder="Enter your NIN" max="14">
                         </div>
 
                        

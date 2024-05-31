@@ -58,7 +58,7 @@ class EntityController extends Controller
 
 
             $request->validate([
-                'EntityName' => 'required',
+                'EntityName' => 'required|unique:entities,EntityName',
                
                 
             ]);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductTemp;
+use App\Traits\AccessTrait;
+use App\Traits\AuditTrait;
 use Illuminate\Http\Request;
 
 class ProductTempController extends Controller
@@ -10,9 +12,13 @@ class ProductTempController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    use AccessTrait;
+    use AuditTrait;
     public function index()
     {
         //
+        return view('products_temp.index');
     }
 
     /**
@@ -41,6 +47,8 @@ class ProductTempController extends Controller
                 
             ]);
 
+            // dd($request->all());
+
            
 
             $product =  ProductTemp::create([
@@ -48,6 +56,7 @@ class ProductTempController extends Controller
                 // 'price' => $request->price,
                 'Price' => $request->Price,
                 'Quantity' => $request->Quantity,
+                'NewQuantity' => $request->new_quantity,
                 'BrandNames' => $request->brand,
                 'DrugClass' => $request->drug_class,
                 // 'serial_number' => $request->serial_number,
@@ -63,8 +72,8 @@ class ProductTempController extends Controller
                 // 'edit_approved_at' => now(),
                 
             ]);
-            $this->createAudit($request, 'Created Product with name - ' . $product->name, 'CREATE');
-            return redirect()->route('products.index')->with('success', 'Product added successfully.');
+            $this->createAudit($request, 'Created Updated with name - ' . $product->name, 'CREATE');
+            return redirect()->route('products.index')->with('success', 'Product updated successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }

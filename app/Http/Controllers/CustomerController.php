@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use Illuminate\Http\Request;
 use App\Traits\AuditTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CustomerController extends Controller
 {
+    use AuditTrait;
 
-    use AuditTrait; 
     /**
      * Display a listing of the resource.
      */
@@ -35,7 +37,7 @@ class CustomerController extends Controller
     {
         //
         try {
-            //code...
+            // code...
             $request->validate([
                 'FirstName' => 'required',
                 // 'LastName' => 'required',
@@ -43,10 +45,7 @@ class CustomerController extends Controller
                 'Phone' => 'required',
                 // 'Address' => 'required',
                 // 'NIN' => 'required',
-                
             ]);
-
-           
 
             $data = [
                 'FirstName' => $request->FirstName,
@@ -55,32 +54,61 @@ class CustomerController extends Controller
                 'Phone' => $request->Phone,
                 'Address' => $request->Address,
                 'NIN' => $request->NIN,
-               
             ];
 
             // dd($data);
 
-           
-
             $customer = Customer::create($data);
 
-            $this->createAudit($request,  'Created New Customer named '. $customer->FirstName, 'Create');
+            // Generate QR code with phone number
+            $qrCode = QrCode::format('png')->generate($customer->Phone);
+
+            // Store QR code in the public directory
+            $fileName = 'qrcodes/' . $customer->id . '.png';
+            Storage::disk('public')->put($fileName, $qrCode);
+
+            // Save QR code file path in the database
+            $customer->qr_code_path = $fileName;
+            $customer->save();
+
+            $this->createAudit($request, 'Created New Customer named ' . $customer->FirstName, 'Create');
 
             return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             return redirect()->back()->with('error', $th->getMessage());
         }
-
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    /** Display the specified resource. */
+    // public function show(string $id)
+    // {
+    //     //
+    //     return view('customers.show');
+    // }
+
+    public function show($id)
     {
-        //
-        return view('customers.show');
+        $customer = Customer::findOrFail($id);
+        return view('customers.show', compact('customer'));
+    }
+
+   
+    
+
+
+    public function retrieve(Request $request)
+    {
+        // Assume the QR code contains the customer's phone number
+        $phone = $request->input('phone');
+
+        $customer = Customer::where('Phone', $phone)->first();
+
+        if ($customer) {
+            return view('customers.show', compact('customer'));
+        } else {
+            return redirect()->route('customers.scan')->with('error', 'Customer not found.');
+        }
     }
 
     /**
@@ -106,6 +134,5 @@ class CustomerController extends Controller
     public function destroy(string $id)
     {
         //
-
     }
 }

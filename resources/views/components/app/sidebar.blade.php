@@ -34,108 +34,105 @@
             <div>
                 <ul class="mt-3">
 
-                                 @if (in_array('Dashboard', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
-                    <!-- Dashboard -->
-                    <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['dashboard'])) {{ 'bg-slate-900' }} @endif"
-                        x-data="{ open: {{ in_array(Request::segment(1), ['dashboard']) ? 1 : 0 }} }" href="{{ route('dashboard') }}">
-                        <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['dashboard'])) {{ 'hover:text-slate-200' }} @endif"
-                            href="{{ route('dashboard') }}">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <svg class="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                                        <path
-                                            class="fill-current @if (in_array(Request::segment(1), ['dashboard'])) {{ 'text-indigo-500' }}@else{{ 'text-slate-400' }} @endif"
-                                            d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0z" />
-                                        <path
-                                            class="fill-current @if (in_array(Request::segment(1), ['dashboard'])) {{ 'text-indigo-600' }}@else{{ 'text-slate-600' }} @endif"
-                                            d="M12 3c-4.963 0-9 4.037-9 9s4.037 9 9 9 9-4.037 9-9-4.037-9-9-9z" />
-                                        <path
-                                            class="fill-current @if (in_array(Request::segment(1), ['dashboard'])) {{ 'text-indigo-200' }}@else{{ 'text-slate-400' }} @endif"
-                                            d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z" />
-                                    </svg>
-                                    <span
-                                        class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                                        href="{{ route('dashboard') }}">
-                                        Dashboard
-                                    </span>
+                    @if (in_array('Dashboard', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
+                        <!-- Dashboard -->
+                        <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['dashboard'])) {{ 'bg-slate-900' }} @endif"
+                            x-data="{ open: {{ in_array(Request::segment(1), ['dashboard']) ? 1 : 0 }} }" href="{{ route('dashboard') }}">
+                            <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['dashboard'])) {{ 'hover:text-slate-200' }} @endif"
+                                href="{{ route('dashboard') }}">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <svg class="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+                                            <path
+                                                class="fill-current @if (in_array(Request::segment(1), ['dashboard'])) {{ 'text-indigo-500' }}@else{{ 'text-slate-400' }} @endif"
+                                                d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0z" />
+                                            <path
+                                                class="fill-current @if (in_array(Request::segment(1), ['dashboard'])) {{ 'text-indigo-600' }}@else{{ 'text-slate-600' }} @endif"
+                                                d="M12 3c-4.963 0-9 4.037-9 9s4.037 9 9 9 9-4.037 9-9-4.037-9-9-9z" />
+                                            <path
+                                                class="fill-current @if (in_array(Request::segment(1), ['dashboard'])) {{ 'text-indigo-200' }}@else{{ 'text-slate-400' }} @endif"
+                                                d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z" />
+                                        </svg>
+                                        <span
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
+                                            href="{{ route('dashboard') }}">
+                                            Dashboard
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
 
-                    </li>
+                        </li>
                     @endif
 
 
 
 
-                 @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
+                    @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
 
-                    <!-- Users -->
-                    <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'bg-slate-900' }} @endif"
-                        x-data="{ open: {{ in_array(Request::segment(1), ['users', 'roles']) ? 1 : 0 }} }">
-                        <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'hover:text-slate-200' }} @endif"
-                            href="#0" @click.prevent="sidebarExpanded ? open = !open : sidebarExpanded = true">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
+                        <!-- Users -->
+                        <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'bg-slate-900' }} @endif"
+                            x-data="{ open: {{ in_array(Request::segment(1), ['users', 'roles']) ? 1 : 0 }} }">
+                            <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'hover:text-slate-200' }} @endif"
+                                href="#0" @click.prevent="sidebarExpanded ? open = !open : sidebarExpanded = true">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
 
 
-                                    <svg class="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                                        <path
-                                            class="fill-current @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'text-indigo-300' }} @else {{ 'text-slate-400' }} @endif"
-                                            d="M18.974 8H22a2 2 0 012 2v6h-2v5a1 1 0 01-1 1h-2a1 1 0 01-1-1v-5h-2v-6a2 2 0 012-2h.974zM20 7a2 2 0 11-.001-3.999A2 2 0 0120 7zM2.974 8H6a2 2 0 012 2v6H6v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5H0v-6a2 2 0 012-2h.974zM4 7a2 2 0 11-.001-3.999A2 2 0 014 7z" />
-                                        <path
-                                            class="fill-current @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'text-indigo-500' }} @else {{ 'text-slate-600' }} @endif"
-                                            d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z" />
-                                        <path
-                                            class="fill-current @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'text-indigo-300' }} @else {{ 'text-slate-400' }} @endif"
-                                            d="M12 15l11-7L11.504.136a1 1 0 00-1.019.007L0 7l13 8z" />
-                                    </svg>
+                                        <svg class="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+                                            <path
+                                                class="fill-current @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'text-indigo-300' }} @else {{ 'text-slate-400' }} @endif"
+                                                d="M18.974 8H22a2 2 0 012 2v6h-2v5a1 1 0 01-1 1h-2a1 1 0 01-1-1v-5h-2v-6a2 2 0 012-2h.974zM20 7a2 2 0 11-.001-3.999A2 2 0 0120 7zM2.974 8H6a2 2 0 012 2v6H6v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5H0v-6a2 2 0 012-2h.974zM4 7a2 2 0 11-.001-3.999A2 2 0 014 7z" />
+                                            <path
+                                                class="fill-current @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'text-indigo-500' }} @else {{ 'text-slate-600' }} @endif"
+                                                d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z" />
+                                            <path
+                                                class="fill-current @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'text-indigo-300' }} @else {{ 'text-slate-400' }} @endif"
+                                                d="M12 15l11-7L11.504.136a1 1 0 00-1.019.007L0 7l13 8z" />
+                                        </svg>
 
-                                    <span
-                                        class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Users</span>
+                                        <span
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Users</span>
+                                    </div>
+                                    <!-- Icon -->
+                                    <div
+                                        class="flex shrink-0 ml-2 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                        <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-slate-400 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'rotate-180' }} @endif"
+                                            :class="open ? 'rotate-180' : 'rotate-0'" viewBox="0 0 12 12">
+                                            <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                                        </svg>
+
+
+                                    </div>
                                 </div>
-                                <!-- Icon -->
-                                <div
-                                    class="flex shrink-0 ml-2 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                    <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-slate-400 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'rotate-180' }} @endif"
-                                        :class="open ? 'rotate-180' : 'rotate-0'" viewBox="0 0 12 12">
-                                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                                    </svg>
+                            </a>
+                            <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                <ul class="pl-9 mt-1 @if (!in_array(Request::segment(1), ['users', 'roles'])) {{ 'hidden' }} @endif"
+                                    :class="open ? '!block' : 'hidden'">
+                                    <li class="mb-1 last:mb-0">
+                                        <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('users.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
+                                            href="{{ route('users.index') }}">
+                                            <span
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
+                                                Users</span>
+                                        </a>
+                                    </li>
 
+                                    {{-- if user is not super admin, hide roles --}}
+                                    @if (Auth::user()->role_id == 1)
+                                        <li class="mb-1 last:mb-0">
+                                            <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
+                                                href="{{ route('roles.index') }}">
+                                                <span
+                                                    class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
+                                                    Roles</span>
+                                            </a>
+                                        </li>
+                                    @endif
 
-                                </div>
+                                </ul>
                             </div>
-                        </a>
-                        <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                            <ul class="pl-9 mt-1 @if (!in_array(Request::segment(1), ['users', 'roles'])) {{ 'hidden' }} @endif"
-                                :class="open ? '!block' : 'hidden'">
-                                <li class="mb-1 last:mb-0">
-                                    <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('users.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
-                                        href="{{ route('users.index') }}">
-                                        <span
-                                            class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                            Users</span>
-                                    </a>
-                                </li>
-
-                                {{-- if user is not super admin, hide roles --}}
-                                @if (Auth::user()->role_id == 1)
-                                    
-                                <li class="mb-1 last:mb-0">
-                                    <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
-                                        href="{{ route('roles.index') }}">
-                                        <span
-                                            class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                            Roles</span>
-                                    </a>
-                                </li>
-
-                                @endif
-
-                            </ul>
-                        </div>
-                    </li>
+                        </li>
                     @endif
                     <!--users-->
 
@@ -143,7 +140,6 @@
 
                     <!-- entities -->
                     @if (in_array('Entity', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['entities'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['entities']) ? 1 : 0 }} }">
                             <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['entities'])) {{ 'hover:text-slate-200' }} @endif"
@@ -165,7 +161,7 @@
                                         </svg>
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Entities</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pharmacies</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -185,7 +181,7 @@
                                             href="{{ route('entities.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                Entities</span>
+                                                Pharmacies</span>
                                         </a>
                                     </li>
 
@@ -195,12 +191,11 @@
                         </li>
                     @endif
 
-                        <!-- entities-->
+                    <!-- entities-->
 
 
-                           {{-- @if (in_array('Customers', json_decode(optional(Auth::user()->role)->permissions, true) ?? [])) --}}
-                           @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
+                    {{-- @if (in_array('Customers', json_decode(optional(Auth::user()->role)->permissions, true) ?? [])) --}}
+                    @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <!-- products-->
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['customers'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['customers']) ? 1 : 0 }} }">
@@ -248,6 +243,16 @@
                                     </li>
 
 
+                                    <li class="mb-1 last:mb-0">
+                                        <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('sale-items.index')) {{ '!text-indigo-500' }} @endif"
+                                            href="{{ route('sale-items.index') }}">
+                                            <span
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                                Customer Prescriptions</span>
+                                        </a>
+                                    </li>
+
+
                                 </ul>
                             </div>
                         </li>
@@ -260,13 +265,13 @@
 
 
 
-                 @if (in_array('Products', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
+                    @if (in_array('Products', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <!-- products-->
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['products'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['products']) ? 1 : 0 }} }">
                             <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['products'])) {{ 'hover:text-slate-200' }} @endif"
-                                href="#0" @click.prevent="sidebarExpanded ? open = !open : sidebarExpanded = true">
+                                href="#0"
+                                @click.prevent="sidebarExpanded ? open = !open : sidebarExpanded = true">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
 
@@ -284,7 +289,7 @@
                                         </svg>
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Products</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Drugs and Services</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -304,25 +309,36 @@
                                             href="{{ route('products.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                products</span>
-                                        </a>
+                                            Drugs and Services</span>
+                                             </a>
                                     </li>
+                                </ul>
+                            </div>
 
-
+                            <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                <ul class="pl-9 mt-1 @if (!in_array(Request::segment(1), ['products_temp'])) {{ 'hidden' }} @endif"
+                                    :class="open ? '!block' : 'hidden'">
+                                    <li class="mb-1 last:mb-0">
+                                        <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('products_temp.index')) {{ '!text-indigo-500' }} @endif"
+                                            href="{{ route('products_temp.index') }}">
+                                            <span
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pending
+                                                Drugs and Services</span>
+                                             </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
                     @endif
 
-                        <!-- products-->
+                    <!-- products-->
 
 
 
 
 
 
-                         @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
+                    @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <!-- sales-->
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['sales'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['sales']) ? 1 : 0 }} }">
@@ -348,7 +364,7 @@
 
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Sales</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe & Sale</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -368,16 +384,15 @@
                                             href="{{ route('sales.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                Sales</span>
+                                                Prescriptions</span>
                                         </a>
                                     </li>
 
-                                      <li class="mb-1 last:mb-0">
+                                    <li class="mb-1 last:mb-0">
                                         <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('sales.index')) {{ '!text-indigo-500' }} @endif"
                                             href="{{ route('sales.create') }}">
                                             <span
-                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Make
-                                                Sale</span>
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe Drug/Service</span>
                                         </a>
                                     </li>
 
@@ -386,12 +401,11 @@
                             </div>
                         </li>
                     @endif
-                        <!-- sales-->
+                    <!-- sales-->
 
-                        <!-- Report -->
+                    <!-- Report -->
 
-                                         @if (in_array('Report', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
+                    @if (in_array('Report', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['report', 'reports.index'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['report', 'reports.index']) ? 1 : 0 }} }">
                             <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['report', 'reports.index'])) {{ 'hover:text-slate-200' }} @endif"
@@ -440,13 +454,12 @@
                             </div>
                         </li>
                     @endif
-                        <!-- Report -->
+                    <!-- Report -->
 
 
 
-                        <!-- logs-->
-                                         @if (in_array('Logs', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
+                    <!-- logs-->
+                    @if (in_array('Logs', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['audit-logs'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['audit-logs']) ? 1 : 0 }} }">
                             <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['audit-logs'])) {{ 'hover:text-slate-200' }} @endif"

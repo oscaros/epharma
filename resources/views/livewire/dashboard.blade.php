@@ -32,12 +32,18 @@
             <p class="text-2xl font-bold">{{ number_format($totalSales) }}</p>
         </div> --}}
 
+        <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer">
+            <h3 class="text-xl font-semibold mb-4">Total Sales</h3>
+            <p class="text-2xl font-bold">{{ number_format($totalSales) }}</p>
+        </div>
         
         {{-- Total Products --}}
         <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer" >
-            <h3 class="text-xl font-semibold mb-4">Pending Sales</h3>
-            <p class="text-2xl font-bold">{{ number_format($pendingSales) }}</p>
+            <h3 class="text-xl font-semibold mb-4">pendingProducts</h3>
+            <p class="text-2xl font-bold">{{ number_format($pendingProducts) }}</p>
         </div>
+
+        
 
  
         {{-- Total Invoices --}}
@@ -59,6 +65,8 @@
             <h3 class="text-xl font-semibold mb-4">Total Sales Amount</h3>
             <p class="text-2xl font-bold">UGX {{ number_format($totalSalesAmount, 2) }}</p>
         </div>
+
+       
 
         
         {{-- Total Products --}}

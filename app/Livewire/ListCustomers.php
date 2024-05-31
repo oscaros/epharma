@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Customer;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -46,7 +48,40 @@ class ListCustomers extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
-                //
+                //edit and delete actions
+                Action::make('edit')
+                    ->label('Edit')
+                    ->color('warning')
+                    ->icon('heroicon-o-pencil')
+                    ->url(function ($record) {
+                        // Return the URL for the clicked record
+                        return route('entities.edit', $record->id);
+                    }),
+                Action::make('delete')
+                    ->label('Delete')
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->action(function ($record) {
+                        // Delete the record
+                        if ($record->delete()) {
+                            Notification::make()
+                                ->title('Delete record ' . $record->id . ' successfully')
+                                ->success()
+                                ->send();
+                        }
+                    }),
+                    //add action to show details
+                Action::make('details')
+                    ->label('Details')
+                    ->color('info')
+                    ->icon('heroicon-o-eye')
+                    ->url(function ($record) {
+                        // Return the URL for the clicked record
+                        return route('entities.show', $record->id);
+                    }),
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

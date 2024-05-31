@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('ProductID')->nullable();
             $table->integer('Quantity');
             $table->decimal('Price', 10, 2);
+            //add enum status with 2 options
+            $table->enum('Status', [0, 1])->default(0);
             
             // Foreign key constraints
             $table->foreign('SaleID')->references('id')->on('sales')->onDelete('cascade');
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sale_items');
+        Schema::dropIfExists('saleitems');
     }
 };

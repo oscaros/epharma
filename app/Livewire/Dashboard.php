@@ -72,6 +72,8 @@ class Dashboard extends Component
             $this->totalInvoices = Sale::all()->count();
             $this->totalEntities = Entity::all()->count();
             $this->pendingSales = Sale::all()->where('status', 'Pending')->count();
+            // $this->pendingProducts = ProductTemp::all()''
+            $this->totalSales = Sale::all()->count();
         }
         else {
             //filter by entity_id
@@ -82,6 +84,7 @@ class Dashboard extends Component
             $this->pendingSales = Sale::where('entity_id', auth()->user()->entity_id)->where('status', 'Pending')->count();
             $this->totalEntities = Entity::query()->where('id', auth()->user()->entity_id)->count();
             $this->totalInvoices = Sale::query()->where('entity_id', auth()->user()->entity_id)->count();
+            $this->totalSales = Sale::query()->where('entity_id', auth()->user()->entity_id)->count();
         }
     
 
@@ -96,12 +99,13 @@ class Dashboard extends Component
         return view('livewire.dashboard', [
             'date' => $date,
             'pendingSales' => $this->pendingSales,
-            // 'totalSales' => $this->totalSales,
+            'totalSales' => $this->totalSales,
             'totalInvoices' => $this->totalInvoices,
             'totalProducts' => $this->totalProducts,
             'totalUsers' => $this->totalUsers,
             'totalSalesAmount' => $this->totalSalesAmount,
             'totalEntities' => $this->totalEntities,
+
 
             // 'totalProducts' => $currentProducts,
         

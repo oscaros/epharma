@@ -13,6 +13,7 @@ class SaleItemController extends Controller
     public function index()
     {
         //
+        return view('sale-items.index');
     }
 
     /**
@@ -21,6 +22,7 @@ class SaleItemController extends Controller
     public function create()
     {
         //
+        return view('sale-items.create');
     }
 
     /**
@@ -37,14 +39,16 @@ class SaleItemController extends Controller
     public function show(SaleItem $saleItem)
     {
         //
+        return view('sale-items.show', compact('saleItem'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SaleItem $saleItem)
+    public function edit(SaleItem $saleItem, Request $request)
     {
         //
+        return view('sale-items.edit', compact('saleItem'));
     }
 
     /**

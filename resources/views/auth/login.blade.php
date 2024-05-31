@@ -1,8 +1,8 @@
 <x-authentication-layout>
     <h1 class="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-6"> ✨ {{ __('ePharma') }}</h1>
-    <h1 class="text-3xl text-center text-slate-800 dark:text-slate-100 font-bold mb-6">{{ __('Sign In') }}</h1>
+    {{-- <h1 class="text-3xl text-center text-slate-800 dark:text-slate-100 font-bold mb-6">{{ __('Sign In') }}</h1> --}}
    
-    <p class="text-slate-600 dark:text-slate-400 mb-6 text-center">{{ __('Login ') }}</p>
+    {{-- <p class="text-slate-600 dark:text-slate-400 mb-6 text-center">{{ __('Login ') }}</p> --}}
     @if (session('status'))
         <div class="mb-4 font-medium text-sm text-green-600">
             {{ session('status') }}
@@ -10,14 +10,14 @@
     @endif   
     <!-- Tab navigation -->
     <div class="flex justify-center mb-6">
-        <button id="email-tab" class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 focus:outline-none mr-4" onclick="switchTab('email')">Email</button>
-        <button id="phone-tab" class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 focus:outline-none" onclick="switchTab('phone')">Phone</button>
+        <button id="email-tab" class="px-4 py-2 rounded-md bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-300 focus:outline-none mr-4" onclick="switchTab('email')">Sign In Using Email</button>
+        <button id="phone-tab" class="px-4 py-2 rounded-md bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-300 focus:outline-none" onclick="switchTab('phone')">Sign In Using Phone Number</button>
     </div>
     
     <!-- Email input -->
     <form id="email-input" method="POST" action="{{ route('login') }}">
         @csrf
-        <x-label for="email" value="{{ __('Email') }}" />
+        <x-label for="email" value="{{ __('Email Address') }}" />
         <x-input id="email" type="email" name="email" :value="old('email')"  autofocus placeholder="enter your email" />                
         
         <!-- Password input -->
@@ -82,6 +82,8 @@
                 //add style
                 document.getElementById('phone-tab').style.backgroundColor = 'white';
                 document.getElementById('email-tab').style.backgroundColor = 'grey';
+                document.getElementById('phone-tab').style.color = 'grey';
+                document.getElementById('email-tab').style.color = 'white';
             } else {
                 document.getElementById('phone-tab').classList.add('active');
                 document.getElementById('email-tab').classList.remove('active');
@@ -90,6 +92,8 @@
                 //add style
                 document.getElementById('email-tab').style.backgroundColor = 'white';
                 document.getElementById('phone-tab').style.backgroundColor = 'grey';
+                document.getElementById('email-tab').style.color = 'grey';
+                document.getElementById('phone-tab').style.color = 'white';
             }
         }
 

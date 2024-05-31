@@ -1,6 +1,52 @@
 @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
     <x-app-layout>
         <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+
+
+            <div class="form-group mt-4 mb-4">
+                {{-- add avatar --}}
+
+                <label for="customer_id">
+                    <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36"
+                        height="36" alt="User 01" id="customer-icon" />
+                    Customer
+                </label>
+                <div id="qrScannerModal" style="display: none;">
+                    <div id="qr-reader"></div>
+                    <button id="closeQrScanner">Close</button>
+                </div>
+
+
+
+
+                {{-- <label for="customer_id">  <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36" height="36" alt="User 01" />Customer</label> --}}
+
+                <br>
+                <select class="form-control" id="customer_id" name="customer_id">
+                    <option value="">Select Customer</option>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer->id }}">{{ $customer->FirstName }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- <div class="form-group mt-4 mb-4"> --}}
+            {{-- add avatar --}}
+            {{-- <label for="customer_id">Customer</label>
+                <br>
+                <select class="form-control" id="customer_id" name="customer_id">
+                    <option value="">Select Customer</option>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer->id }}">
+                            <img src="https://robohash.org/{{ $customer->id }}?size=50x50" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+                            {{ $customer->FirstName }}
+                        </option>
+                    @endforeach
+                </select>
+            </div> --}}
+
+
+
             <h1 class="text-lg font-semibold mb-6">Make Sale</h1>
             {{-- @livewire('list-sales', ['filter' => request()->query('filter', 'all')]) --}}
 
@@ -9,8 +55,11 @@
                     @livewire('list-sale-products')
                 </div>
 
-                <div id="receipt" style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
-                    <h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>
+                <div id="receipt"
+                    style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
+                    <h3
+                        style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">
+                        Receipt</h3>
                     <form id="receiptForm" method="POST" action="{{ route('sales.store') }}">
                         @csrf
                         <table style="width: 100%; border-collapse: collapse;">
@@ -27,30 +76,32 @@
                             </tbody>
                         </table>
 
-                        <div class="form-group mt-4">
-                            <label for="customer_id">Customer</label>
-                            <select class="form-control" id="customer_id" name="customer_id">
-                                <option value="">Select Customer</option>
-                                @foreach ($customers as $customer)
-                                    <option value="{{ $customer->id }}">{{ $customer->FirstName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
 
-                        <div id="grandTotal" name="grandTotal" style="margin-top: 10px; font-weight: bold;">Grand Total: UGX {{ $grandTotal }}</div>
-                        <input type="hidden" id="grandTotalInput" name="grandTotal" style="margin-top: 10px; font-weight: bold;" readonly value="{{ $grandTotal }}">
+
+                        <div id="grandTotal" name="grandTotal" style="margin-top: 10px; font-weight: bold;">Grand Total:
+                            UGX {{ $grandTotal }}</div>
+                        <input type="hidden" id="grandTotalInput" name="grandTotal"
+                            style="margin-top: 10px; font-weight: bold;" readonly value="{{ $grandTotal }}">
 
                         <!-- Hidden input fields to store product information -->
                         <input type="hidden" id="productIds" name="productIds">
                         <input type="hidden" id="productNames" name="productNames">
                         <input type="hidden" id="productPrices" name="productPrices">
+                        <!-- Hidden input fields to store product information -->
+
+                        <input type="hidden" id="productQuantities" name="productQuantities">
+                        <!-- New hidden input for quantities -->
+
 
                         <div style="margin-top: 10px; display: flex; justify-content: space-between;">
-                            <button type="submit" class="btn btn-primary" style="color: white; background-color: rgb(24, 24, 61); padding: 8px; border-radius: 50px; margin-top: 10px">Make A Sale</button>
+                            <button type="submit" class="btn btn-primary"
+                                style="color: white; background-color: rgb(24, 24, 61); padding: 8px; border-radius: 50px; margin-top: 10px">Make
+                                A Sale</button>
                         </div>
                     </form>
 
-                    <button onclick="previewReceipt()" style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
+                    <button onclick="previewReceipt()"
+                        style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
                 </div>
             </div>
         </div>
@@ -61,6 +112,9 @@
 
 @livewireScripts
 <!-- Include Select2 JavaScript -->
+<!-- Include html5-qrcode library -->
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -78,7 +132,6 @@
 
 
 <script>
-
     $(document).ready(function() {
         $('#signout').click(function() {
             cart = {};
@@ -135,9 +188,12 @@
                                 $('#customer_id').empty();
                                 $.each(response.data, function(index, customer) {
                                     $('#customer_id').append(
-                                        '<option value="' + customer.id + '">' + customer.name + '</option>');
+                                        '<option value="' + customer
+                                        .id + '">' + customer.name +
+                                        '</option>');
                                 });
-                                $('#customer_id').val(result?.value?.data?.id).trigger('change');
+                                $('#customer_id').val(result?.value?.data?.id)
+                                    .trigger('change');
                             },
                             error: function(xhr, status, error) {
                                 console.error(error);
@@ -150,128 +206,195 @@
     });
 
     let cart = {};
-    let grandTotal = 0;
+let grandTotal = 0;
 
-    function updateSessionStorage() {
-        sessionStorage.setItem('cart', JSON.stringify(cart));
+function updateSessionStorage() {
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function retrieveCartFromSessionStorage() {
+    const cartData = sessionStorage.getItem('cart');
+    if (cartData) {
+        cart = JSON.parse(cartData);
+        updateReceipt();
+    }
+}
+
+$(document).ready(function() {
+    retrieveCartFromSessionStorage();
+});
+
+function resetReceipt() {
+    cart = {};
+    grandTotal = 0;
+    updateReceipt();
+    sessionStorage.removeItem('cart');
+}
+
+function updateReceipt() {
+    let receiptContent = '';
+    grandTotal = 0;
+
+    let productIds = [];
+    let productQuantities = []; // Array to store quantities
+
+    for (const [key, value] of Object.entries(cart)) {
+        receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ? '#f2f2f2' : '#ffffff') + ';">';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;"><button style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' + key + '\')">Remove</button></td>';
+        receiptContent += '</tr>';
+
+        productIds.push(key);
+        productQuantities.push(value.quantity); // Store quantity
+
+        grandTotal += value.total;
+    }
+    receiptContent += '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td></tr>';
+
+    $('#receipt table tbody').html(receiptContent);
+    $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
+    $('#grandTotalInput').val(grandTotal);
+
+    $('#productIds').val(JSON.stringify(productIds));
+    $('#productQuantities').val(JSON.stringify(productQuantities)); // Save quantities
+}
+
+function updateCart(input) {
+    var quantity = parseInt($(input).val());
+    var productId = $(input).data('product-id');
+    var productName = $(input).data('product-name');
+    var price = $(input).data('product-price');
+    var total = price * quantity;
+    cart[productId] = {
+        name: productName,
+        price: price,
+        quantity: quantity,
+        total: total
+    };
+    updateReceipt();
+    updateSessionStorage();
+}
+
+function removeItem(productId) {
+    delete cart[productId];
+    updateReceipt();
+}
+
+function previewReceipt() {
+    let receiptContent = '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
+    receiptContent += '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+    receiptContent += '<thead style="background-color: #007bff; color: white;">';
+    receiptContent += '<tr>';
+    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Product</th>';
+    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Quantity</th>';
+    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Price</th>';
+    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Total</th>';
+    receiptContent += '</tr>';
+    receiptContent += '</thead>';
+    receiptContent += '<tbody>';
+
+    for (const [key, value] of Object.entries(cart)) {
+        receiptContent += '<tr>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
+        receiptContent += '</tr>';
     }
 
-    function retrieveCartFromSessionStorage() {
-        const cartData = sessionStorage.getItem('cart');
-        if (cartData) {
-            cart = JSON.parse(cartData);
-            updateReceipt();
+    receiptContent += '<tr>';
+    receiptContent += '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
+    receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td>';
+    receiptContent += '</tr>';
+
+    receiptContent += '</tbody>';
+    receiptContent += '</table>';
+
+    Swal.fire({
+        title: 'Receipt Preview',
+        html: receiptContent,
+        showCancelButton: false,
+        confirmButtonText: 'Print',
+        confirmButtonColor: '#007bff',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.print();
         }
-    }
+    });
+}
+
+
+
+
 
     $(document).ready(function() {
-        retrieveCartFromSessionStorage();
-    });
-
-    function resetReceipt() {
-        cart = {};
-        grandTotal = 0;
-        updateReceipt();
-        sessionStorage.removeItem('cart');
-    }
-
-    function updateReceipt() {
-        let receiptContent = '';
-        grandTotal = 0;
-
-        let productIds = [];
-
-        for (const [key, value] of Object.entries(cart)) {
-            receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ? '#f2f2f2' : '#ffffff') + ';">';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;"><button style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' + key + '\')">Remove</button></td>';
-            receiptContent += '</tr>';
-
-            productIds.push(key);
-
-            grandTotal += value.total;
+        // Function to start QR scanner
+        function startQrScanner() {
+            qrScanner = new Html5QrcodeScanner("qr-reader", {
+                fps: 10,
+                qrbox: 250
+            }, /* verbose= */ false);
+            qrScanner.render(onScanSuccess, onScanError);
         }
-        receiptContent += '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td></tr>';
 
-        $('#receipt table tbody').html(receiptContent);
-        $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
-        $('#grandTotalInput').val(grandTotal);
-
-        $('#productIds').val(JSON.stringify(productIds));
-    }
-
-    function updateCart(input) {
-        var quantity = parseInt($(input).val());
-        var productId = $(input).data('product-id');
-        var productName = $(input).data('product-name');
-        var price = $(input).data('product-price');
-        var total = price * quantity;
-        cart[productId] = {
-            name: productName,
-            price: price,
-            quantity: quantity,
-            total: total
-        };
-        updateReceipt();
-        updateSessionStorage();
-        // location.reload();
-    }
-
-    window.addEventListener('livewire:load', function() {
-        Livewire.on('updateGrandTotal', function(grandTotal) {
-            $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
+        // Attach click event listener to the customer icon
+        $('#customer-icon').click(function() {
+            startQrScanner(); // Call the function to start the QR scanner when the icon is clicked
         });
-    });
 
-    function removeItem(productId) {
-        delete cart[productId];
-        updateReceipt();
-    }
+        // Close QR Scanner
+        $('#closeQrScanner').click(function() {
+            $('#qrScannerModal').hide();
+            stopQrScanner();
+        });
 
-    function previewReceipt() {
-        let receiptContent = '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
-        receiptContent += '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
-        receiptContent += '<thead style="background-color: #007bff; color: white;">';
-        receiptContent += '<tr>';
-        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Product</th>';
-        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Quantity</th>';
-        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Price</th>';
-        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Total</th>';
-        receiptContent += '</tr>';
-        receiptContent += '</thead>';
-        receiptContent += '<tbody>';
+        let qrScanner;
 
-        for (const [key, value] of Object.entries(cart)) {
-            receiptContent += '<tr>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
-            receiptContent += '</tr>';
+        function startQrScanner() {
+            qrScanner = new Html5QrcodeScanner("qr-reader", {
+                fps: 10,
+                qrbox: 250
+            }, /* verbose= */ false);
+
+            qrScanner.render(onScanSuccess, onScanError);
         }
 
-        receiptContent += '<tr>';
-        receiptContent += '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td>';
-        receiptContent += '</tr>';
-
-        receiptContent += '</tbody>';
-        receiptContent += '</table>';
-
-        Swal.fire({
-            title: 'Receipt Preview',
-            html: receiptContent,
-            showCancelButton: false,
-            confirmButtonText: 'Print',
-            confirmButtonColor: '#007bff',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.print();
+        function stopQrScanner() {
+            if (qrScanner) {
+                qrScanner.clear();
             }
-        });
-    }
-</script>
+        }
 
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the result here
+            $('#qrScannerModal').hide();
+            stopQrScanner();
+            fetchCustomerData(decodedText);
+        }
+
+        function onScanError(errorMessage) {
+            // Handle scan error here
+            console.warn(`QR Code Scan Error: ${errorMessage}`);
+        }
+
+        function fetchCustomerData(customerId) {
+            $.ajax({
+                url: `/customers/${customerId}`, // Adjust the URL to your customer endpoint
+                method: 'GET',
+                success: function(response) {
+                    const customer = response.data;
+                    $('#customer_id').append(
+                        `<option value="${customer.id}" selected>${customer.FirstName}</option>`
+                    ).trigger('change');
+                },
+                error: function(xhr, status, error) {
+                    console.error(`Error fetching customer data: ${error}`);
+                    Swal.fire('Error', 'Unable to fetch customer data. Please try again.', 'error');
+                }
+            });
+        }
+    });
+</script>

@@ -16,6 +16,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SaleItemController;
 use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
@@ -65,7 +66,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('sales', SaleController::class);
 
-    Route::resource('productstemp', ProductTempController::class);
+    Route::resource('sale-items', SaleItemController::class);
+
+
+    // Route::resource('products-temp', ProductTempController::class);
+
+
+    Route::get('customers/scan', [CustomerController::class, 'scan'])->name('customers.scan');
+Route::post('customers/retrieve', [CustomerController::class, 'retrieve'])->name('customers.retrieve');
 
    
 
