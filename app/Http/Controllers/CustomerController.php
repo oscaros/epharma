@@ -77,6 +77,8 @@ class CustomerController extends Controller
                 'Phone' => $request->Phone,
                 'Address' => $request->Address,
                 'NIN' => $request->NIN,
+                'PInsured' => $request->PInsured,
+                'PType' => $request->PType
             ];
 
             // dd($data);

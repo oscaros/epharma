@@ -16,6 +16,8 @@ class Customer extends Model
         'Phone',
         'Address',
         'NIN',
+        'PInsured',
+        'PType'
         
 
     ];

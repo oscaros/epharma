@@ -25,6 +25,27 @@
                             </div>
                         </div>
 
+
+                        {{-- add select for patient type with options inpatient, outpatient  --}}
+                        <div>
+                            <label for="PType" class="block text-sm font-medium text-gray-700">Patient Type <span class="text-red-500">*</span></label>
+                            <select name="PType" id="PType" class="form-select mt-1 block w-full" required>
+                                <option value="">Select Patient Type</option>
+                                <option value="Inpatient">Inpatient</option>
+                                <option value="Outpatient">Outpatient</option>
+                            </select>
+
+                        </div>
+
+
+                         
+                {{-- Insured --}}
+                <div class="col-span-1">
+                    <label for="PInsured" class="block text-sm font-medium text-gray-700">Insured?</label>
+                    <input type="hidden" name="PInsured" id="PInsured" value="0"> <!-- Hidden input to ensure a value is always sent -->
+                    <input type="checkbox" id="PInsured" name="PInsured" value="1" class="form-checkbox mt-1 block">
+                </div>
+
                         <div>
                             <label for="Phone" class="block text-sm font-medium text-gray-700">Phone Number <span class="text-red-500">*</span></label>
                             <input type="number" class="form-input mt-1 block w-full" id="Phone" name="Phone" placeholder="Enter your phone number" required>
