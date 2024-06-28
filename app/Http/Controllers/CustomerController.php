@@ -21,6 +21,29 @@ class CustomerController extends Controller
         return view('customers.index');
     }
 
+    public function sales()
+    {
+        //
+        return view('customers.sales');
+    }
+
+    public function scan()
+    {
+        return view('customers.scan');
+    }
+
+    public function scanProcess(Request $request)
+    {
+        $phone = $request->input('phone');
+        $customer = Customer::where('Phone', $phone)->first();
+
+        if ($customer) {
+            return redirect()->route('sale-items.index', ['customer_id' => $customer->id]);
+        } else {
+            return redirect()->back()->with('error', 'Customer not found.');
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -71,9 +94,9 @@ class CustomerController extends Controller
             $customer->qr_code_path = $fileName;
             $customer->save();
 
-            $this->createAudit($request, 'Created New Customer named ' . $customer->FirstName, 'Create');
+            $this->createAudit($request, 'Created New Patient named ' . $customer->FirstName, 'Create');
 
-            return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+            return redirect()->route('customers.index')->with('success', 'Patient created successfully.');
         } catch (\Throwable $th) {
             // throw $th;
             return redirect()->back()->with('error', $th->getMessage());
@@ -93,10 +116,6 @@ class CustomerController extends Controller
         return view('customers.show', compact('customer'));
     }
 
-   
-    
-
-
     public function retrieve(Request $request)
     {
         // Assume the QR code contains the customer's phone number
@@ -107,7 +126,7 @@ class CustomerController extends Controller
         if ($customer) {
             return view('customers.show', compact('customer'));
         } else {
-            return redirect()->route('customers.scan')->with('error', 'Customer not found.');
+            return redirect()->route('customers.scan')->with('error', 'Patient not found.');
         }
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Sale;
 use App\Models\SaleItem;
 use Illuminate\Http\Request;
 
@@ -10,10 +12,30 @@ class SaleItemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        return view('sale-items.index');
+
+        
+
+        $customerId = $request->query('customer_id');
+
+
+        // dd($customerId);
+        $customer = Customer::find($customerId);
+
+        // dd($customer);
+
+
+        $sales = Sale::where('customer_id', $customerId)->get();
+
+        // dd($sales);
+        
+        return view('sale-items.index', compact('customer', 'sales'));
+
+
+        
+
     }
 
     /**

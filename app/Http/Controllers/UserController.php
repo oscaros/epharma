@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Entity;
 use App\Models\User;
 use App\Traits\AuditTrait;
@@ -42,8 +43,9 @@ class UserController extends Controller
         try {
             $roles = Role::all();
             $entities = Entity::all();
+            $departments = Department::all();
             // dd($entities);          
-            return view('users.create', compact('roles', 'entities'));
+            return view('users.create', compact('roles', 'entities', 'departments'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'An error occurred while trying to create a new user');
         }
@@ -83,6 +85,7 @@ class UserController extends Controller
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($password),
                 'role_id' => $request->role_id,
+                'department_id' => $request->department_id,
              
                 'entity_id' => $request->entity_id,
             ];

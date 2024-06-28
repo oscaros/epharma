@@ -8,6 +8,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Tables;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -31,6 +32,14 @@ class ListCustomers extends Component implements HasForms, HasTable
                     ->searchable(),
                 Tables\Columns\TextColumn::make('Email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('PType')
+                    ->label('Patient Type')
+                    ->searchable(),
+                    CheckboxColumn::make('PInsured')
+                    ->label('Is Insured?')
+                    ->sortable()
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('Phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('Address')

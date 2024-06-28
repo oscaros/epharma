@@ -1,66 +1,57 @@
 @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
     <x-app-layout>
-        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
 
-            <div class="form-group mt-4 mb-4">
-                {{-- add avatar --}}
+        <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
+            <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
-                <label for="customer_id">
-                    <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36"
-                        height="36" alt="User 01" id="customer-icon" />
-                    Customer
-                </label>
-                <div id="qrScannerModal" style="display: none;">
-                    <div id="qr-reader"></div>
-                    <button id="closeQrScanner">Close</button>
+
+                <div class="form-group mt-4 mb-4">
+                    {{-- add avatar --}}
+
+                    <label for="customer_id">
+                        <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36"
+                            height="36" alt="User 01" id="customer-icon" />
+                        Patient
+                    </label>
+                    <div id="qrScannerModal" style="display: none;">
+                        <div id="qr-reader"></div>
+                        <button id="closeQrScanner">Close</button>
+                    </div>
+
+
+
+
+                    {{-- <label for="customer_id">  <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36" height="36" alt="User 01" />Customer</label> --}}
+
+                    <br>
+                    <form id="receiptForm" method="POST" action="{{ route('sales.store') }}"> <select
+                            class="form-control" id="customer_id" name="customer_id">
+                            <option value="">Select Customer</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}">{{ $customer->FirstName }}</option>
+                            @endforeach
+                        </select>
                 </div>
 
+               
 
 
 
-                {{-- <label for="customer_id">  <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36" height="36" alt="User 01" />Customer</label> --}}
+                <h1 class="text-lg font-semibold mb-6">Prescribe Medication</h1>
+                {{-- @livewire('list-sales', ['filter' => request()->query('filter', 'all')]) --}}
 
-                <br>
-                <select class="form-control" id="customer_id" name="customer_id">
-                    <option value="">Select Customer</option>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->FirstName }}</option>
-                    @endforeach
-                </select>
-            </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 50%;" id="table">
+                        @livewire('list-sale-products')
+                    </div>
 
-            {{-- <div class="form-group mt-4 mb-4"> --}}
-            {{-- add avatar --}}
-            {{-- <label for="customer_id">Customer</label>
-                <br>
-                <select class="form-control" id="customer_id" name="customer_id">
-                    <option value="">Select Customer</option>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                            <img src="https://robohash.org/{{ $customer->id }}?size=50x50" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
-                            {{ $customer->FirstName }}
-                        </option>
-                    @endforeach
-                </select>
-            </div> --}}
-
-
-
-            <h1 class="text-lg font-semibold mb-6">Make Sale</h1>
-            {{-- @livewire('list-sales', ['filter' => request()->query('filter', 'all')]) --}}
-
-            <div style="display: flex; justify-content: space-between;">
-                <div style="width: 50%;" id="table">
-                    @livewire('list-sale-products')
-                </div>
-
-                <div id="receipt"
-                    style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
-                    <h3
-                        style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">
-                        Receipt</h3>
-                    <form id="receiptForm" method="POST" action="{{ route('sales.store') }}">
+                    <div id="receipt"
+                        style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
+                        <h3
+                            style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">
+                            Receipt</h3>
+                        {{-- <form id="receiptForm" method="POST" action="{{ route('sales.store') }}"> --}}
                         @csrf
                         <table style="width: 100%; border-collapse: collapse;">
                             <thead>
@@ -95,16 +86,17 @@
 
                         <div style="margin-top: 10px; display: flex; justify-content: space-between;">
                             <button type="submit" class="btn btn-primary"
-                                style="color: white; background-color: rgb(24, 24, 61); padding: 8px; border-radius: 50px; margin-top: 10px">Make
-                                A Sale</button>
+                                style="color: white; background-color: rgb(24, 24, 61); padding: 8px; border-radius: 50px; margin-top: 10px">Confirm
+                                Prescription</button>
                         </div>
-                    </form>
 
-                    <button onclick="previewReceipt()"
-                        style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
+
+                        <button onclick="previewReceipt()"
+                            style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </x-app-layout>
 @else
     <h1 class="text-lg font-semibold mb-6">You do not have permission to view this page</h1>
@@ -206,125 +198,132 @@
     });
 
     let cart = {};
-let grandTotal = 0;
+    let grandTotal = 0;
 
-function updateSessionStorage() {
-    sessionStorage.setItem('cart', JSON.stringify(cart));
-}
+    function updateSessionStorage() {
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+    }
 
-function retrieveCartFromSessionStorage() {
-    const cartData = sessionStorage.getItem('cart');
-    if (cartData) {
-        cart = JSON.parse(cartData);
+    function retrieveCartFromSessionStorage() {
+        const cartData = sessionStorage.getItem('cart');
+        if (cartData) {
+            cart = JSON.parse(cartData);
+            updateReceipt();
+        }
+    }
+
+    $(document).ready(function() {
+        retrieveCartFromSessionStorage();
+    });
+
+    function resetReceipt() {
+        cart = {};
+        grandTotal = 0;
+        updateReceipt();
+        sessionStorage.removeItem('cart');
+    }
+
+    function updateReceipt() {
+        let receiptContent = '';
+        grandTotal = 0;
+
+        let productIds = [];
+        let productQuantities = []; // Array to store quantities
+
+        for (const [key, value] of Object.entries(cart)) {
+            receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ? '#f2f2f2' :
+                '#ffffff') + ';">';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
+            receiptContent +=
+                '<td style="border: 1px solid #ccc; padding: 8px;"><button style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' +
+                key + '\')">Remove</button></td>';
+            receiptContent += '</tr>';
+
+            productIds.push(key);
+            productQuantities.push(value.quantity); // Store quantity
+
+            grandTotal += value.total;
+        }
+        receiptContent +=
+            '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' +
+            grandTotal + '</td></tr>';
+
+        $('#receipt table tbody').html(receiptContent);
+        $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
+        $('#grandTotalInput').val(grandTotal);
+
+        $('#productIds').val(JSON.stringify(productIds));
+        $('#productQuantities').val(JSON.stringify(productQuantities)); // Save quantities
+    }
+
+    function updateCart(input) {
+        var quantity = parseInt($(input).val());
+        var productId = $(input).data('product-id');
+        var productName = $(input).data('product-name');
+        var price = $(input).data('product-price');
+        var total = price * quantity;
+        cart[productId] = {
+            name: productName,
+            price: price,
+            quantity: quantity,
+            total: total
+        };
+        updateReceipt();
+        updateSessionStorage();
+    }
+
+    function removeItem(productId) {
+        delete cart[productId];
         updateReceipt();
     }
-}
 
-$(document).ready(function() {
-    retrieveCartFromSessionStorage();
-});
-
-function resetReceipt() {
-    cart = {};
-    grandTotal = 0;
-    updateReceipt();
-    sessionStorage.removeItem('cart');
-}
-
-function updateReceipt() {
-    let receiptContent = '';
-    grandTotal = 0;
-
-    let productIds = [];
-    let productQuantities = []; // Array to store quantities
-
-    for (const [key, value] of Object.entries(cart)) {
-        receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ? '#f2f2f2' : '#ffffff') + ';">';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;"><button style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' + key + '\')">Remove</button></td>';
-        receiptContent += '</tr>';
-
-        productIds.push(key);
-        productQuantities.push(value.quantity); // Store quantity
-
-        grandTotal += value.total;
-    }
-    receiptContent += '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td></tr>';
-
-    $('#receipt table tbody').html(receiptContent);
-    $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
-    $('#grandTotalInput').val(grandTotal);
-
-    $('#productIds').val(JSON.stringify(productIds));
-    $('#productQuantities').val(JSON.stringify(productQuantities)); // Save quantities
-}
-
-function updateCart(input) {
-    var quantity = parseInt($(input).val());
-    var productId = $(input).data('product-id');
-    var productName = $(input).data('product-name');
-    var price = $(input).data('product-price');
-    var total = price * quantity;
-    cart[productId] = {
-        name: productName,
-        price: price,
-        quantity: quantity,
-        total: total
-    };
-    updateReceipt();
-    updateSessionStorage();
-}
-
-function removeItem(productId) {
-    delete cart[productId];
-    updateReceipt();
-}
-
-function previewReceipt() {
-    let receiptContent = '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
-    receiptContent += '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
-    receiptContent += '<thead style="background-color: #007bff; color: white;">';
-    receiptContent += '<tr>';
-    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Product</th>';
-    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Quantity</th>';
-    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Price</th>';
-    receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Total</th>';
-    receiptContent += '</tr>';
-    receiptContent += '</thead>';
-    receiptContent += '<tbody>';
-
-    for (const [key, value] of Object.entries(cart)) {
+    function previewReceipt() {
+        let receiptContent =
+            '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
+        receiptContent += '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+        receiptContent += '<thead style="background-color: #007bff; color: white;">';
         receiptContent += '<tr>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
-        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
+        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Product</th>';
+        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Quantity</th>';
+        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Price</th>';
+        receiptContent += '<th style="border: 1px solid #ccc; padding: 8px;">Total</th>';
         receiptContent += '</tr>';
-    }
+        receiptContent += '</thead>';
+        receiptContent += '<tbody>';
 
-    receiptContent += '<tr>';
-    receiptContent += '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
-    receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td>';
-    receiptContent += '</tr>';
-
-    receiptContent += '</tbody>';
-    receiptContent += '</table>';
-
-    Swal.fire({
-        title: 'Receipt Preview',
-        html: receiptContent,
-        showCancelButton: false,
-        confirmButtonText: 'Print',
-        confirmButtonColor: '#007bff',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.print();
+        for (const [key, value] of Object.entries(cart)) {
+            receiptContent += '<tr>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
+            receiptContent += '</tr>';
         }
-    });
-}
+
+        receiptContent += '<tr>';
+        receiptContent +=
+            '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
+        receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td>';
+        receiptContent += '</tr>';
+
+        receiptContent += '</tbody>';
+        receiptContent += '</table>';
+
+        Swal.fire({
+            title: 'Receipt Preview',
+            html: receiptContent,
+            showCancelButton: false,
+            confirmButtonText: 'Print',
+            confirmButtonColor: '#007bff',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.print();
+            }
+        });
+    }
 
 
 

@@ -22,6 +22,7 @@ return new class extends Migration
             // User ID who made the sale
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('entity_id')->constrained('entities')->onDelete('cascade');
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
         
 
 
@@ -35,8 +36,7 @@ return new class extends Migration
             $table->string('reference');
             $table->string('status');
             $table->string("order_tracking_id")->nullable();
-            $table->string("OrderNotificationType")->nullable();
-      
+            $table->string("OrderNotificationType")->nullable();      
             $table->softDeletes();
             $table->timestamps();
 

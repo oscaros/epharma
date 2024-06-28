@@ -69,7 +69,12 @@ class Product extends Model
         // Timestamp when edit was approved
         'ApprovedOn',
         // Entity ID
+        'Type',
+        'Insured',
+
         'entity_id',
+        // Department ID
+        'department_id',
         // User ID who approved edit
         'edit_approved_by',
         // Timestamp when edit was approved
@@ -84,5 +89,10 @@ class Product extends Model
     public function entity()
     {
         return $this->belongsTo(Entity::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

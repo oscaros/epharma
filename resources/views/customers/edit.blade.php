@@ -100,7 +100,7 @@
                                 <!-- Add other fields as needed -->
                                 <button type="submit"
                                     class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update
-                                    Customer Details</button>
+                                    Patient Details</button>
                             </div>
                         </form>
                     </div>

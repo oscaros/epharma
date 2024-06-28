@@ -17,6 +17,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -56,6 +57,13 @@ class ListProducts extends Component implements HasForms, HasTable
             )
             ->columns([
                 Tables\Columns\TextColumn::make('ProductName')
+                ->label("Name")
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('BrandNames')
+                ->label("Item")
                     ->searchable()
                     ->sortable()
                     ->copyable()
@@ -66,21 +74,31 @@ class ListProducts extends Component implements HasForms, HasTable
                     ->sortable()
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('Quantity')
-                    ->numeric()
+                    // Tables\Columns\TextColumn::make('BrandNames')
+                    // ->searchable()
+                    // ->sortable()
+                    
+                    // ,
+                // Tables\Columns\TextColumn::make('Quantity')
+                //     ->numeric()
+                //     ->sortable()
+                //     ->copyable()
+                //     ->toggleable(isToggledHiddenByDefault: false),
+                CheckboxColumn::make('Insured')
+                    ->label('Covered?')
                     ->sortable()
-                    ->copyable()
+                    ->alignCenter()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('serial_number')
                     ->searchable()
                     ->copyable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('expiry_date')
-                    ->dateTime()
-                    ->sortable()
-                    ->copyable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                // Tables\Columns\TextColumn::make('expiry_date')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->copyable()
+                //     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('ProductName');
 
             //add enum type with options Drug and Service
-            $table->enum("type", ["Drug", "Service"]);
+            $table->enum("Type", ["Drug", "Service"]);
             //enum status with pending == 0 and approved == 1 default is approved
             $table->enum("Status", [0, 1])->default(1);
             // Product barcode

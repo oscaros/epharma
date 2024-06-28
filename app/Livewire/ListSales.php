@@ -20,41 +20,32 @@ class ListSales extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    public $customer_id;
+
+    public function mount($customer_id = null)
+    {
+        $this->customer_id = $customer_id;
+    }
+
+
     public function table(Table $table): Table
     {
+
+       
+
         if (auth()->user()->role_id == 1) {
+
+            $query = Sale::query()->with('customer');
+
+            if ($this->customer_id) {
+                $query->where('customer_id', $this->customer_id);
+            }
+
+
             return $table
                 ->query(Sale::query())
                 ->columns([
-                    // return product name from products table based on product id in sales table
-                    // Tables\Columns\TextColumn::make('id')
-                    //     ->searchable()
-                    //     ->sortable()
-                    //     ->copyable()
-                    //     ->toggleable(isToggledHiddenByDefault: false),
-                        //get product name from referenced id
-                    // Tables\Columns\TextColumn::make('product.name')
-                    //     ->searchable()
-                    //     ->sortable()
-                    //     ->copyable()
-                    //     ->toggleable(isToggledHiddenByDefault: false),
-                    // TextColumn::make('product_id')
-                    //     ->label('Product Names')
-                    //     ->sortable()
-                    //     ->default(function ($row) {
-                    //         //explode ids
-                    //         // $productIds = implode(',', $row->product_id);
-                    //         $productIds = json_decode($row->product_id);
-                    //         dd($productIds);
-                    //         $productNames = [];
-                    //         foreach ($productIds as $productId) {
-                    //             $product = Product::find($productId);
-                    //             if ($product) {
-                    //                 $productNames[] = $product->name;
-                    //             }
-                    //         }
-                    //         return implode(', ', $productNames);
-                    //     }),
+                 
                      Tables\Columns\TextColumn::make('description')
                         ->searchable()
                         ->sortable()
@@ -71,12 +62,18 @@ class ListSales extends Component implements HasForms, HasTable
                         ->sortable()
                         ->copyable()
                         ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\TextColumn::make('customers.FirstName')
+                        ->sortable()
+                        ->label('Patient Name')
+                        ->searchable(),
                 ])
                 ->filters([
                     //
                 ])
                 ->actions([
                     //
+                    
+
                 ])
                 ->bulkActions([
                     Tables\Actions\BulkActionGroup::make([
@@ -84,6 +81,14 @@ class ListSales extends Component implements HasForms, HasTable
                     ]),
                 ]);
         } else {
+
+            $query = Sale::query()->with('customer');
+
+            if ($this->customer_id) {
+                $query->where('customer_id', $this->customer_id);
+            }
+
+            
             return $table
                 ->query(Sale::query()
                     ->where('user_id', auth()->user()->id)

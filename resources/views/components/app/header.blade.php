@@ -1,10 +1,13 @@
 <header class="sticky top-0 bg-white dark:bg-[#182235] border-b border-slate-200 dark:border-slate-700 z-30">
+
     <div class="px-4 sm:px-6 lg:px-8">
+
+        
         <div class="flex items-center justify-between h-16 -mb-px">
 
             <!-- Header: Left side -->
             <div class="flex">
-                
+                <h1 class="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1" > {{Auth::user()->entity->EntityName}} </h1>
                 <!-- Hamburger button -->
                 <button
                     class="text-slate-500 hover:text-slate-600 lg:hidden"
@@ -36,8 +39,13 @@
                 <!-- User button -->
                 <x-dropdown-profile align="right" />
 
+
             </div>
 
+            
+
         </div>
+
+        
     </div>
 </header>

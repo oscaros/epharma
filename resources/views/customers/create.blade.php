@@ -1,14 +1,14 @@
 <x-app-layout>
-    <!-- Add Customer Form -->
+    <!-- Add Patient Form -->
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="grid grid-cols-1">
             <div class="col-span-1 md:col-span-3">
                 <div class="bg-white shadow-md rounded-lg p-6">
-                    <h1 class="text-lg font-semibold mb-6">Add Customer</h1>
+                    <h1 class="text-lg font-semibold mb-6">Add Patient</h1>
                     <form method="POST" action="{{ route('customers.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4" enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Customer Information -->
+                        <!-- Patient Information -->
                         <div>
                             <label for="FirstName" class="block text-sm font-medium text-gray-700">First Name <span class="text-red-500">*</span></label>
                             <input type="text" class="form-input mt-1 block w-full" id="FirstName" name="FirstName" placeholder="Enter First Name" required>
@@ -53,14 +53,14 @@
 
                         <!-- Submit Button -->
                         <div class="col-span-2">
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" type="submit">Add Customer</button>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" type="submit">Add Patient</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End of Add Customer Form -->
+    <!-- End of Add Patient Form -->
 
 
 </x-app-layout>

@@ -19,6 +19,29 @@
                 </div>
 
 
+
+                 
+                {{-- Insured --}}
+                <div class="col-span-1">
+                    <label for="Insured" class="block text-sm font-medium text-gray-700">Insured?</label>
+                    <input type="hidden" name="Insured" id="Insured" value="0"> <!-- Hidden input to ensure a value is always sent -->
+                    <input type="checkbox" id="Insured" name="Insured" value="1" class="form-checkbox mt-1 block">
+                </div>
+
+
+
+                <!-- department select field with Select2 -->
+                <div class="mb-3">
+                    <label for="department_id" class="block text-sm font-medium text-gray-700">Service Point</label>
+                    <select class="form-select w-full rounded-md" id="department_id" name="department_id" required>
+                        <option value="" selected disabled>Select Service Point</option>
+                        @foreach($departments as $department)
+                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+
                 {{-- Product Name --}}
                 <div class="col-span-1">
                     <label id="ProductName" for="ProductName" class="block text-sm font-medium text-gray-700">Drug Name <span
@@ -54,19 +77,19 @@
                 </div>
 
                 {{-- Drug Class --}}
-                <div class="col-span-1" id="drug_class">
+                {{-- <div class="col-span-1" id="drug_class">
                     <label for="drug_class" class="block text-sm font-medium text-gray-700">Drug Class<span
                             class="text-danger">*</span></label>
                     <input type="text" class="form-input mt-1 block w-full" id="drug_class" name="drug_class" 
                         placeholder="Enter drug class">
-                </div>
+                </div> --}}
 
                 {{-- Expiry Date --}}
-                <div class="col-span-1" id="expiry_date">
+                {{-- <div class="col-span-1" id="expiry_date">
                     <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date</label>
                     <input type="date" class="form-input mt-1 block w-full" id="expiry_date" name="expiry_date"
                         placeholder="Enter expiry date">
-                </div>
+                </div> --}}
 
                
 
@@ -87,6 +110,26 @@
     }
 </style>
 
+
+<!-- Include Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Select2 JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- Initialize Select2 -->
+<script>
+    $(document).ready(function() {
+        $('#role_id').select2();
+        // $('#type').select2();
+        $('#department_id').select2();
+    });
+</script>
+
+
 <script>
     // Function to show or hide fields based on the selected type
     function toggleFields() {
@@ -95,10 +138,10 @@
         var price = document.getElementById('Price');
         var quantity = document.getElementById('Quantity');
         var brand = document.getElementById('brand');
-        var drugClass = document.getElementById('drug_class');
-        var expiryDate = document.getElementById('expiry_date');
+        // var drugClass = document.getElementById('drug_class');
+        // var expiryDate = document.getElementById('expiry_date');
 
-        if (type === 'Product') {
+        if (type === 'Drug') {
             // Show all fields
             productName.disabled = false;
             price.disabled = false;
@@ -110,8 +153,8 @@
 
             document.getElementById('quantity').style.display = 'block';
             document.getElementById('brand').style.display = 'block';
-            document.getElementById('drug_class').style.display = 'block';
-            document.getElementById('expiry_date').style.display = 'block';
+            // document.getElementById('drug_class').style.display = 'block';
+            // document.getElementById('expiry_date').style.display = 'block';
 
 
             document.getElementById('ProductName').innerHTML = 'Drug Name *';
@@ -127,8 +170,8 @@
             //display none for price
             document.getElementById('quantity').style.display = 'none';
             document.getElementById('brand').style.display = 'none';
-            document.getElementById('drug_class').style.display = 'none';
-            document.getElementById('expiry_date').style.display = 'none';
+            // document.getElementById('drug_class').style.display = 'none';
+            // document.getElementById('expiry_date').style.display = 'none';
 
             price.disabled = false;
             // quantity.disabled = true;

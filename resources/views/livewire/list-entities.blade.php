@@ -1,6 +1,6 @@
 
 <div>
-@if (in_array('Entity', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
+@if (in_array('Entities', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
 
 
 

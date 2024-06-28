@@ -99,8 +99,13 @@ class SaleController extends Controller
             $phone_number = '0756741414';
             $amount = '5000';
             $reference = Str::uuid();
+            // $customer_id = $request->input('customer_id');
+            // $customer_id = $request->customer_id;
+            $customer_id = 1;
 
-            $description = 'Payment of' . $grandTotal . ' for reference number: ' . $reference;
+            
+
+            $description = 'Payment of ' . $grandTotal . ' for reference number: ' . $reference;
 
             // $sale =
             $sale = Sale::create([
@@ -118,8 +123,13 @@ class SaleController extends Controller
                 'order_tracking_id' => $reference,
                 'type' => 'Wholesale',
                 'payment_method' => 'Pesapal',
+                'customer_id' => $customer_id,
                 // 'product_id' => json_encode($productId)
             ]);
+
+            // dd($customer_id);
+
+            // dd($sale);
 
 
 

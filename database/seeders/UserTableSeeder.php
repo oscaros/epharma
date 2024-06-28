@@ -25,7 +25,8 @@ class UserTableSeeder extends Seeder
                 'email_verified_at' => now(),
                 'role_id' => '1',
                
-                'entity_id' => '1'
+                'entity_id' => '1',
+                'department_id' => '1'
 
             ]
         ];

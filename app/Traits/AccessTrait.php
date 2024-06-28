@@ -13,8 +13,14 @@ trait AccessTrait
 
     //entities
     public static $entities = [
-        "Module" => ['Entity Management'],
-        "Entity" => ['View Entities', 'Edit Entities', 'Add Entities', 'Delete Entities'],
+        "Module" => ['Entities Management'],
+        "Entities" => ['View Entities', 'Edit Entities', 'Add Entities', 'Delete Entities'],
+    ];
+
+
+    public static $departments = [
+        "Module" => ['Departments Management'],
+        "Departments" => ['View Departments', 'Edit Departments', 'Add Departments', 'Delete Departments'],
     ];
 
 
@@ -26,29 +32,29 @@ trait AccessTrait
     ];
 
     public static $reports = [
-        "Module" => ['Report Management'],
-        "Report" => ['View Report', 'Edit Report', 'Add Report', 'Delete Report'],
+        "Module" => ['Reports Management'],
+        "Reports" => ['View Report', 'Edit Report', 'Add Report', 'Delete Report'],
 
     ];
 
 
 
     public static $logs = [
-        "Module" => ['Log Management'],
+        "Module" => ['Logs Management'],
         "Logs" => ['View Logs', 'Edit Logs', 'Add Logs', 'Delete Logs'],
     ];
 
     //roles
     public static $roles = [
-        "Module" => ['Role Management'],
-        "Role" => ['View Roles', 'Edit Roles', 'Add Roles', 'Delete Roles'],
+        "Module" => ['Roles Management'],
+        "Roles" => ['View Roles', 'Edit Roles', 'Add Roles', 'Delete Roles'],
     ];
 
     
 
     //products
     public static $products = [
-        "Module" => ['Product Management'],
+        "Module" => ['Products Management'],
         "Products" => ['View Products', 'Edit Products', 'Add Products', 'Delete Products'],
     ];
 
@@ -60,7 +66,7 @@ trait AccessTrait
 
 
     public static $customers = [
-        "Module" => ['Customer Management'],
+        "Module" => ['Customers Management'],
         "Customers" => ['View Customers', 'Edit Customers', 'Add Customers', 'Delete Customers'],
     ];
 
@@ -92,18 +98,26 @@ trait AccessTrait
                 static::$admin,
 
                 static::$entities,
+
+                static::$departments,
+
+                static::$staff,
                 
                 static::$reports,
               
-                static::$staff,
+                
                
                 static::$logs,
+
                 static::$roles,
              
                 static::$products,
+
                 static::$sales,
 
-                static::$customers
+                static::$customers,
+
+                
 
 
 
@@ -119,17 +133,24 @@ trait AccessTrait
             "Dashboard" => self::$admin,
 
             "Entities" => self::$entities,
+
+            "Departments" =>self::$departments,
            
             "Staff" => self::$staff,
+
             "Reports" =>  self::$reports,
       
             "Logs" => self::$logs,
+
             "Roles" => self::$roles,
            
             "Products" => self::$products,
+            
             "Sales" => self::$sales,
 
-            "Customers" => self::$customers
+            "Customers" => self::$customers,
+
+           
 
 
             // "Accounting" => static::$accounting

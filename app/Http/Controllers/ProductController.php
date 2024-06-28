@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Product;
 use App\Traits\AuditTrait;
 use Illuminate\Http\Request;
@@ -25,7 +26,9 @@ class ProductController extends Controller
     public function create()
     {
         //
-        return view('products.create');
+        $departments = Department::all();
+
+        return view('products.create', compact('departments'));
     }
 
     /**
@@ -50,7 +53,8 @@ class ProductController extends Controller
 
             $product =  Product::create([
                 'ProductName' => $request->ProductName,
-                'type' => $request->type,
+                'Insured' => $request->Insured,
+                'Type' => $request->type,
                 // 'price' => $request->price,
                 'Price' => $request->Price,
                 'Quantity' => $request->Quantity,
@@ -59,6 +63,7 @@ class ProductController extends Controller
                 // 'serial_number' => $request->serial_number,
                 //serial number genearate as random number 8 digits
                 'serial_number' => mt_rand(10000000, 99999999),
+                'department_id' => $request->department_id,
                 
                 'entity_id' => auth()->user()->entity_id,
                 'expiry_date' => $request->expiry_date,
@@ -66,8 +71,8 @@ class ProductController extends Controller
                 // 'edit_approved_at' => now(),
                 
             ]);
-            $this->createAudit($request, 'Created Product with name - ' . $product->name, 'CREATE');
-            return redirect()->route('products.index')->with('success', 'Product added successfully.');
+            $this->createAudit($request, 'Created Drug/Service with name - ' . $product->name, 'CREATE');
+            return redirect()->route('products.index')->with('success', 'Medication added successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -130,8 +135,8 @@ class ProductController extends Controller
            
 
             $product->update($data);
-            $this->createAudit($request,  "Updated Product : {$product->name}", 'Update');
-            return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+            $this->createAudit($request,  "Updated Medication : {$product->name}", 'Update');
+            return redirect()->route('products.index')->with('success', 'Medication updated successfully.');
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->back()->with('error', $th->getMessage());

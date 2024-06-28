@@ -5,7 +5,7 @@
             <div class="col-span-1 md:col-span-2 lg:col-span-3">
                 <div class="bg-white shadow-md rounded-lg p-6">
                     <div class="mb-6">
-                        <h5 class="text-lg font-semibold">Create User</h5>
+                        <h5 class="text-lg font-semibold">Add Staff Member</h5>
                     </div>
                     <form method="POST" action="{{ route('users.store') }}">
                         @csrf
@@ -44,6 +44,21 @@
                             </select>
                         </div>
 
+
+
+                         <!-- department select field with Select2 -->
+                         <div class="mb-3">
+                            <label for="department_id" class="block text-sm font-medium text-gray-700">Service Point</label>
+                            <select class="form-select w-full rounded-md" id="department_id" name="department_id" required>
+                                <option value="" selected disabled>Select User's Service Point</option>
+                                @foreach($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
+
                         <!-- entity select field with Select2 -->
                         <div class="mb-3">
                             <label for="entity_id" class="block text-sm font-medium text-gray-700">Entity</label>
@@ -59,7 +74,7 @@
 
 
 
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add User</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Staff Member</button>
                     </form>
                 </div>
             </div>
@@ -83,6 +98,7 @@
     $(document).ready(function() {
         $('#role_id').select2();
         $('#entity_id').select2();
+        $('#department_id').select2();
     });
 </script>
 
