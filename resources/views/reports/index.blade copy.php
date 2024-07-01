@@ -1,5 +1,5 @@
 
-  @if (in_array('Report', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
+  @if (in_array('Reports', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
 <x-app-layout :assets="$assets ?? []">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
         integrity="sha512-****" crossorigin="anonymous" />

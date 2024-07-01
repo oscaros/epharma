@@ -5,104 +5,62 @@
             <div class="col-span-1 md:col-span-1">
                 <div class="bg-white rounded-lg shadow-md">
                     <div class="bg-green-500 py-4 px-6 rounded-t-lg">
-                        <h4 class="mb-0 text-xl font-semibold text-black">Total Capital</h4>
+                        <h4 class="mb-0 text-xl font-semibold text-black">Total Cash In</h4>
                     </div>
                     <div class="p-6">
                         <ul class="divide-y divide-gray-200">
                             <!-- Incomes -->
                             <li class="flex justify-between items-center py-3">
-                                <span>Opening Capital</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($todaysCapital, 2) }}</span>
+                                <span>Todays Customers</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($todaysCustomers, 2) }}</span>
                             </li>
                             <li class="flex justify-between items-center py-3">
-                                <span>Advance Paid</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalAdvancePaid, 2) }}</span>
+                                <span>Total Sales</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalSales, 2) }}</span>
                             </li>
                             <li class="flex justify-between items-center py-3">
-                                <span>Milling</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalMilling, 2) }}</span>
+                                <span>Total Sales Amount</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalSalesAmount, 2) }}</span>
                             </li>
                             <li class="flex justify-between items-center py-3">
-                                <span>Arabica Milling</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalArabicaMilling, 2) }}</span>
+                                <span>Pending Invoices</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalPendingInvoices, 2) }}</span>
                             </li>
                             <li class="flex justify-between items-center py-3">
-                                <span>Robusta Milling</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalRobustaMilling, 2) }}</span>
+                                <span>Total Drugs and Services</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalProducts, 2) }}</span>
                             </li>
                             <li class="flex justify-between items-center py-3">
-                                <span>Box</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalBox, 2) }}</span>
+                                <span>Total Users</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalUsers, 2) }}</span>
                             </li>
                             <li class="flex justify-between items-center py-3">
-                                <span>Transport</span>
-                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalTransport, 2) }}</span>
+                                <span>Total Invoices</span>
+                                <span class="bg-green-500 text-black px-3 py-1 rounded">{{ number_format($totalInvoices, 2) }}</span>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-span-1 md:col-span-1">
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="bg-red-500  py-4 px-6 rounded-t-lg">
-                        <h4 class="mb-0 text-xl font-semibold text-black">Total Expenditures</h4>
-                    </div>
-                    <div class="p-6">
-                        <ul class="divide-y divide-gray-200">
-                            <!-- Expenditures -->
-                            <li class="flex justify-between items-center py-3">
-                                <span>Total Advances Taken</span>
-                                <span class="bg-red-500 text-black px-3 py-1 rounded">{{ number_format($totalAdvances, 2) }}</span>
-                            </li>
-                            <li class="flex justify-between items-center py-3">
-                                <span>Total Expenses</span>
-                                <span class="bg-red-500 text-black px-3 py-1 rounded">{{ number_format($totalExpenses, 2) }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+          
         </div>
         <div class="bg-blue-500 text-white mt-4 rounded-lg shadow-md">
             <div class="p-6">
                 <h4 class="mb-3 text-xl font-semibold">Summary</h4>
                 <ul class="divide-y divide-gray-200">
+                    
                     <li class="flex justify-between items-center py-3">
-                        <span>Overall Expenditure</span>
-                        <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($overallExpenditure, 2) }}</span>
+                        <span>Overall Income Made</span>
+                        <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalSalesAmount, 2) }}</span>
                     </li>
                     <li class="flex justify-between items-center py-3">
-                        <span>Overall Income</span>
-                        <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($overAllIncome, 2) }}</span>
-                    </li>
-                    <li class="flex justify-between items-center py-3">
-                        <span>Closing Capital</span>
-                        <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($netCapital, 2) }}</span>
+                        <span>Closing Prescriptions Made</span>
+                        <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalSales, 2) }}</span>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div class="bg-blue-500 text-white rounded-lg shadow-md">
-                <div class="p-6">
-                    <h4 class="mb-1 text-xl font-semibold">Total Stock</h4>
-                    <ul class="divide-y divide-gray-200">
-                        <li class="flex justify-between items-center py-3">
-                            <span>Total Arabica Stock</span>
-                            <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalArabica, 2) }}</span>
-                        </li>
-                        <li class="flex justify-between items-center py-3">
-                            <span>Total Robusta Stock</span>
-                            <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalRobusta, 2) }}</span>
-                        </li>
-                    </ul>
-                    <div class="flex justify-between items-center mt-3">
-                        <span class="font-semibold">Total Stock:</span>
-                        <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalStock, 2) }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
     </div>
     </div>
 </x-app-layout>
