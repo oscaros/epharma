@@ -203,6 +203,8 @@ class ListProducts extends Component implements HasForms, HasTable
             ->query(
                 Product::query()
                     ->where('entity_id', auth()->user()->entity_id)
+                    // ->where('department_id', auth()->user()->department_id)
+                    // ->orderBy('created_at', 'desc')
                
             )
             ->columns([

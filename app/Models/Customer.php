@@ -21,4 +21,10 @@ class Customer extends Model
         
 
     ];
+
+
+    public function entity()
+    {
+        return $this->belongsTo(Entity::class);
+    }
 }

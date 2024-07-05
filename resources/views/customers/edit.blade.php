@@ -16,86 +16,31 @@
                                 <label for="name" class="block text-sm font-medium text-gray-700">Name <span
                                         class="text-red-500"> *</span></label></label>
                                 <input type="text" class="form-input mt-1 block w-full rounded-md" id="name"
-                                    name="name" value="{{ $customer->name }}" required>
+                                    name="name" value="{{ $customer->FirstName.' '.$customer->LastName }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone
                                     Number <span class="text-red-500"> *</span></label></label>
                                 <input type="text" class="form-input mt-1 block w-full rounded-md" id="phone_number"
-                                    name="phone_number" value="{{ $customer->phone_number }}" required>
+                                    name="phone_number" value="{{ $customer->Phone }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="nin" class="block text-sm font-medium text-gray-700">NIN</label>
                                 <input type="text" class="form-input mt-1 block w-full rounded-md" id="nin"
-                                    name="nin" value="{{ $customer->nin }}">
+                                    name="nin" value="{{ $customer->NIN }}">
                             </div>
-                            <div class="mb-3">
-                                <label for="next_of_kin" class="block text-sm font-medium text-gray-700">Next of
-                                    Kin</label>
-                                <input type="text" class="form-input mt-1 block w-full rounded-md" id="next_of_kin"
-                                    name="next_of_kin" value="{{ $customer->next_of_kin }}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="alternative_number"
-                                    class="block text-sm font-medium text-gray-700">Alternative Phone Number</label>
-                                <input type="text" class="form-input mt-1 block w-full rounded-md"
-                                    id="alternative_number" name="alternative_number"
-                                    value="{{ $customer->alternative_number }}">
-                            </div>
-                            
+                           
 
-                            <div class="mb-4">
-                                <label for="balance" class="block text-sm font-medium text-gray-700">Current Advance
-                                    Balance</label>
-                                <input type="text" class="form-input mt-1 block w-full rounded-md" id="balance"
-                                    value="{{$customer->balance }}"required placeholder="Enter amount to lend" min = "0">
-                                <input type="hidden" id="raw_balance"
-                                    name="balance" value= "{{ $customer->balance }}" min="0">
-                            </div>
+                         
 
 
                             {{-- customer address --}}
                             <div class="mb-3">
                                 <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
                                 <input type="text" class="form-input mt-1 block w-full rounded-md" id="address"
-                                    name="address" rows="3" required value="{{ $customer->address }}">
+                                    name="address" rows="3" required value="{{ $customer->Address }}">
                             </div>
-                            <div class="mb-3">
-                                <label for="guarantor_name" class="block text sm font-medium text-gray-700">Guarantor
-                                    Name</label> <input type="text" class="form-input mt-1 block w-full rounded-md"
-                                    id="guarantor_name" name="guarantor_name" value="{{ $customer->guarantor->name }}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="guarantor_phone_number"
-                                    class="block text sm font-medium text-gray-700">Guarantor
-                                    Phone Number</label> <input type="text"
-                                    class="form-input mt-1 block w-full rounded-md" id="guarantor_phone_number"
-                                    name="guarantor_phone_number" value="{{ $customer->guarantor->phone_number }}">
-                            </div>
-                            <div class="mb-3">
-
-                                <label for="guarantor_location"
-                                    class="block text sm font-medium text-gray-700">Guarantor
-                                    Location</label> <input type="text"
-                                    class="form-input mt-1 block w-full rounded-md" id="guarantor_location"
-                                    name="guarantor_location" value="{{ $customer->guarantor->location }}">
-                            </div>
-                            {{-- care taker information --}}
-                            <div class="mb-3">
-                                <label for="care_name" class="block text sm font-medium text-gray-700">Care
-                                    Taker
-                                    Name <span class="text-red-500"> *</span></label></label> <input type="text"
-                                    class="form-input mt-1 block w-full rounded-md" id="care_name" name="care_name"
-                                    value="{{ $customer->careTaker->name }}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="care_phone_number" class="block text sm font-medium text-gray-700">Care
-                                    Taker
-                                    Phone Number <span class="text-red-500"> *</span></label></label> <input
-                                    type="text" class="form-input mt-1 block w-full rounded-md"
-                                    id="care_phone_number" name="care_phone_number"
-                                    value="{{ $customer->careTaker->phone_number }}">
-                            </div>
+                        
                             <div class= "col-span-2 ">
                                 <!-- Add other fields as needed -->
                                 <button type="submit"

@@ -64,7 +64,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                     ->icon('heroicon-o-pencil')
                     ->url(function ($record) {
                         // Return the URL for the clicked record
-                        return route('entities.edit', $record->id);
+                        return route('customers.edit', $record->id);
                     }),
                 Action::make('delete')
                     ->label('Delete')
@@ -87,7 +87,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                     ->icon('heroicon-o-eye')
                     ->url(function ($record) {
                         // Return the URL for the clicked record
-                        return route('entities.show', $record->id);
+                        return route('customers.show', $record->id);
                     }),
 
 

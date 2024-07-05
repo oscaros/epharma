@@ -66,6 +66,8 @@ class CustomerController extends Controller
                 // 'LastName' => 'required',
                 'Email' => 'required|Email|unique:customers,Email',
                 'Phone' => 'required',
+                'LastName' => 'required',
+                'PInsured' => 'required',
                 // 'Address' => 'required',
                 // 'NIN' => 'required',
             ]);
@@ -99,9 +101,11 @@ class CustomerController extends Controller
             $this->createAudit($request, 'Created New Patient named ' . $customer->FirstName, 'Create');
 
             return redirect()->route('customers.index')->with('success', 'Patient created successfully.');
+            // return response()->json(['data' => $customer], 201);
         } catch (\Throwable $th) {
             // throw $th;
             return redirect()->back()->with('error', $th->getMessage());
+            // return response()->json(['error' => $th->getMessage()], 500);
         }
     }
 
@@ -112,10 +116,20 @@ class CustomerController extends Controller
     //     return view('customers.show');
     // }
 
-    public function show($id)
+    // public function show($id)
+    // {
+    //     $customer = Customer::findOrFail($id);
+    //     return view('customers.show', compact('customer'));
+    // }
+
+     public function show($id)
     {
-        $customer = Customer::findOrFail($id);
-        return view('customers.show', compact('customer'));
+        try {
+            $customer = Customer::findOrFail($id);
+            return response()->json($customer);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Customer not found'], 500);
+        }
     }
 
     public function retrieve(Request $request)
@@ -138,7 +152,14 @@ class CustomerController extends Controller
     public function edit(string $id)
     {
         //
-        return view('customers.edit');
+        try {
+            //code...
+            $customer = Customer::find($id);
+            return view('customers.edit', compact('customer'));
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', 'An error occurred while trying to edit customer');
+        }
     }
 
     /**
@@ -147,7 +168,44 @@ class CustomerController extends Controller
     public function update(Request $request, string $id)
     {
         //
+
+        try {
+            //code...
+            $request->validate([
+                
+               
+            ]);
+            $customer = Customer::find($id);
+           
+
+            $data = [
+                // 'Name' => $request->name,
+                // 'Email' => $request->email,
+                'Phone' => $request->phone,
+                'Address' => $request->address,
+                'UpdatedBy' => auth()->user()->id,
+               
+            ];
+
+           
+
+            $customer->update($data);
+            $this->createAudit($request,  "Updated Patient with ID: {$customer->id}", 'Update', $customer->id, null);
+            return redirect()->route('customers.index')->with('success', 'Patient Details updated successfully.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
+
+
+
+    public function getCustomerDetails($id)
+{
+    $customer = Customer::findOrFail($id);
+    return response()->json($customer);
+}
+
 
     /**
      * Remove the specified resource from storage.

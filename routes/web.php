@@ -69,6 +69,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('permissions', PermissionController::class);
 
     Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.delete');
+
+    
+    Route::get('/customers/{id}', [CustomerController::class, 'getCustomerDetails']);
+
+
+
     Route::post('create_report', [ReportController::class, 'createReport'])->name('create_report');
     // Route::get('ipn', [YoPayments::class, 'receive_payment_notification'])->name('ipn');
+
+
+    // Route for fetching customer data
+Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
+
+// Route for fetching product data
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 });

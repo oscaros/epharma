@@ -81,9 +81,14 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        try {
+            $product = Product::findOrFail($id);
+            return response()->json($product);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Product not found'], 500);
+        }
     }
 
     /**

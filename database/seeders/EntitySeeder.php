@@ -17,8 +17,8 @@ class EntitySeeder extends Seeder
 
         Entity::create([
             
-            'EntityName' => 'Pharmacy Main',
-            'Email' => 'info@epharma.com',
+            'EntityName' => 'KashTre',
+            'Email' => 'info@kashtre.com',
             'Phone' => '0772722999',
             'Address' => 'Kampala, Uganda',
            

@@ -37,4 +37,9 @@ class Entity extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
 }

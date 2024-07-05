@@ -15,8 +15,8 @@ class DepartmentSeeder extends Seeder
     {
         //
         Department::create([
-            'name' => 'Admin',
-            'code' => 'ADMIN',
+            'name' => 'Service Point 1',
+            'code' => '001',
             'entity_id' => 1, // Assuming entity_id 1 exists or adjust accordingly
             // 'user_id' => 1 // Assuming user_id 1 exists or adjust accordingly
         ]);

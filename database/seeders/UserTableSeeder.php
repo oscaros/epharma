@@ -19,7 +19,7 @@ class UserTableSeeder extends Seeder
             [
                 'name' => 'System Super Admin',
             
-                'email' => 'super@epharma.com',
+                'email' => 'super@kashtre.com',
                 'password' => bcrypt('password'),
                 'phone_number' => '0772722999',
                 'email_verified_at' => now(),

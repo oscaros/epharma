@@ -1,52 +1,45 @@
 @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
     <x-app-layout>
-        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
+        <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
+            <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
-            <div class="form-group mt-4 mb-4">
-                {{-- add avatar --}}
-              
+                <div class="form-group mt-4 mb-4">
+                    <label for="customer_id">
+                        <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36"
+                            height="36" alt="User 01" id="customer-icon" />
+                        Patient
+                    </label>
+                    <div id="qrScannerModal" style="display: none;">
+                        <div id="qr-reader"></div>
+                        <button id="closeQrScanner" type="button">Close</button>
+                    </div>
 
+                    <div>
+                        <button id="qr-scan-btn" type="button" style="border-radius: 10%; padding: 10px; background-color: blue; color: white;">Scan QR Code</button>
+                    </div>
 
-                <label for="customer_id">  <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36" height="36" alt="User 01" />Customer</label>
-
-                <br>
-                <select class="form-control" id="customer_id" name="customer_id">
-                    <option value="">Select Customer</option>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->FirstName }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- <div class="form-group mt-4 mb-4"> --}}
-                {{-- add avatar --}}
-                {{-- <label for="customer_id">Customer</label>
-                <br>
-                <select class="form-control" id="customer_id" name="customer_id">
-                    <option value="">Select Customer</option>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                            <img src="https://robohash.org/{{ $customer->id }}?size=50x50" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
-                            {{ $customer->FirstName }}
-                        </option>
-                    @endforeach
-                </select>
-            </div> --}}
-            
-
-
-            <h1 class="text-lg font-semibold mb-6">Make Sale</h1>
-            {{-- @livewire('list-sales', ['filter' => request()->query('filter', 'all')]) --}}
-
-            <div style="display: flex; justify-content: space-between;">
-                <div style="width: 50%;" id="table">
-                    @livewire('list-sale-products')
+                    <br>
+                    <select class="form-control" id="customer_id" name="customer_id">
+                        <option value="">Select Patient</option>
+                        @foreach ($customers as $customer)
+                            <option value="{{ $customer->id }}" data-insured="{{ $customer->PInsured }}">{{ $customer->FirstName }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <div id="receipt" style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
-                    <h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>
-                    <form id="receiptForm" method="POST" action="{{ route('sales.store') }}">
+                <h1 class="text-lg font-semibold mb-6">Prescribe Medication</h1>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 50%;" id="table">
+                        @livewire('list-sale-products')
+                    </div>
+
+                    <div id="receipt"
+                        style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
+                        <h3
+                            style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">
+                            Receipt</h3>
                         @csrf
                         <table style="width: 100%; border-collapse: collapse;">
                             <thead>
@@ -58,122 +51,115 @@
                                     <th style="border: 1px solid #ccc; padding: 8px;">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
-
-                       
 
                         <div id="grandTotal" name="grandTotal" style="margin-top: 10px; font-weight: bold;">Grand Total: UGX {{ $grandTotal }}</div>
                         <input type="hidden" id="grandTotalInput" name="grandTotal" style="margin-top: 10px; font-weight: bold;" readonly value="{{ $grandTotal }}">
-
-                        <!-- Hidden input fields to store product information -->
                         <input type="hidden" id="productIds" name="productIds">
-                        <input type="hidden" id="productNames" name="productNames">
+                        <input type="hidden" id="productQuantities" name="productQuantities">
                         <input type="hidden" id="productPrices" name="productPrices">
+                        <input type="hidden" id="productNames" name="productNames">
 
                         <div style="margin-top: 10px; display: flex; justify-content: space-between;">
-                            <button type="submit" class="btn btn-primary" style="color: white; background-color: rgb(24, 24, 61); padding: 8px; border-radius: 50px; margin-top: 10px">Make A Sale</button>
+                            <button type="button" onclick="previewReceipt()" class="btn btn-primary"
+                                style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
                         </div>
-                    </form>
-
-                    <button onclick="previewReceipt()" style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
+
     </x-app-layout>
 @else
     <h1 class="text-lg font-semibold mb-6">You do not have permission to view this page</h1>
 @endif
 
 @livewireScripts
-<!-- Include Select2 JavaScript -->
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Include Select2 CSS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
-<!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Include Select2 JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 
 
 <script>
 
-    $(document).ready(function() {
-        $('#signout').click(function() {
-            cart = {};
-            localStorage.clear();
-            sessionStorage.clear();
-        });
+    
+$(document).ready(function() {
+    $('#signout').click(function() {
+        cart = {};
+        localStorage.clear();
+        sessionStorage.clear();
+    });
 
-        $('#customer_id').select2({
-            placeholder: "Search Customer",
-            allowClear: true,
-            tags: true
-        });
+    $('#customer_id').select2({
+        placeholder: "Search Patient",
+        allowClear: true,
+        tags: true
+    });
 
-        $('#customer_id').on('select2:selecting', function(e) {
-            var selectedData = e.params.args.data;
-            if (selectedData.element == null) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Add Customer?',
-                    html: '<label for="swal-input1" class="block mb-1">Customer Name</label>' +
-                        '<input id="swal-input1" class="swal2-input mb-2" placeholder="Customer Name" value="' +
-                        selectedData.text + '" readonly>' +
-                        '<label for="swal-input2" class="block mb-1">Phone Number</label>' +
-                        '<input id="swal-input2" class="swal2-input" placeholder="Phone Number">' +
-                        '<label for="swal-input3" class="block mb-1">Email</label>' +
-                        '<input id="swal-input3" class="swal3-input" placeholder="Email">',
-                    showCancelButton: true,
-                    confirmButtonText: 'Create',
-                    cancelButtonText: 'Cancel',
-                    showLoaderOnConfirm: true,
-                    preConfirm: () => {
-                        var name = $('#swal-input1').val();
-                        var phone = $('#swal-input2').val();
-                        var email = $('#swal-input3').val();
-                        return $.ajax({
-                            url: "{{ route('customers.store') }}",
-                            method: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                FirstName: name,
-                                Phone: phone,
-                                Email: email
-                            }
-                        });
-                    },
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire('Customer created successfully!', '', 'success');
-                        $.ajax({
-                            url: "{{ route('customers.index') }}",
-                            method: 'GET',
-                            success: function(response) {
-                                $('#customer_id').empty();
-                                $.each(response.data, function(index, customer) {
-                                    $('#customer_id').append(
-                                        '<option value="' + customer.id + '">' + customer.name + '</option>');
-                                });
-                                $('#customer_id').val(result?.value?.data?.id).trigger('change');
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
-                            }
-                        });
-                    }
-                });
-            }
-        });
+    $('#customer_id').on('select2:selecting', function(e) {
+        var selectedData = e.params.args.data;
+        if (selectedData.element == null) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Add Customer?',
+                html: '<label for="swal-input1" class="block mb-1">Customer Name</label>' +
+                    '<input id="swal-input1" class="swal2-input mb-2" placeholder="Customer Name" value="' +
+                    selectedData.text + '" readonly>' +
+                    '<label for="swal-input2" class="block mb-1">Phone Number</label>' +
+                    '<input id="swal-input2" class="swal2-input" placeholder="Phone Number">' +
+                    '<label for="swal-input3" class="block mb-1">Email</label>' +
+                    '<input id="swal-input3" class="swal3-input" placeholder="Email">',
+                showCancelButton: true,
+                confirmButtonText: 'Create',
+                cancelButtonText: 'Cancel',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    var name = $('#swal-input1').val();
+                    var phone = $('#swal-input2').val();
+                    var email = $('#swal-input3').val();
+                    return $.ajax({
+                        url: "{{ route('customers.store') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            FirstName: name,
+                            Phone: phone,
+                            Email: email
+                        }
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Patient created successfully!', '', 'success');
+                    $.ajax({
+                        url: "{{ route('customers.index') }}",
+                        method: 'GET',
+                        success: function(response) {
+                            $('#customer_id').empty();
+                            $.each(response.data, function(index, customer) {
+                                $('#customer_id').append('<option value="' + customer.id + '" data-insured="' + customer.PInsured + '">' + customer.FirstName + '</option>');
+                            });
+                            $('#customer_id').val(result.value.data.id).trigger('change');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    $('#customer_id').on('select2:select', function(e) {
+        var selectedCustomer = e.params.data;
+        console.log('Selected Customer:', selectedCustomer); // Log selected customer data
+        updateReceipt();
     });
 
     let cart = {};
@@ -191,9 +177,7 @@
         }
     }
 
-    $(document).ready(function() {
-        retrieveCartFromSessionStorage();
-    });
+    retrieveCartFromSessionStorage();
 
     function resetReceipt() {
         cart = {};
@@ -207,20 +191,26 @@
         grandTotal = 0;
 
         let productIds = [];
+        let productQuantities = []; // Array to store quantities
 
         for (const [key, value] of Object.entries(cart)) {
+            let productPrice = value.price;
+            let productTotal = productPrice * value.quantity;
+
             receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ? '#f2f2f2' : '#ffffff') + ';">';
             receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
             receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;"><button style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' + key + '\')">Remove</button></td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;"><button type="button" style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' + key + '\')">Remove</button></td>';
             receiptContent += '</tr>';
 
             productIds.push(key);
+            productQuantities.push(value.quantity); // Store quantity
 
-            grandTotal += value.total;
+            grandTotal += productTotal;
         }
+
         receiptContent += '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td></tr>';
 
         $('#receipt table tbody').html(receiptContent);
@@ -228,37 +218,90 @@
         $('#grandTotalInput').val(grandTotal);
 
         $('#productIds').val(JSON.stringify(productIds));
+        $('#productQuantities').val(JSON.stringify(productQuantities)); // Save quantities
     }
 
-    function updateCart(input) {
+    window.updateCart = function(input) {
         var quantity = parseInt($(input).val());
         var productId = $(input).data('product-id');
         var productName = $(input).data('product-name');
         var price = $(input).data('product-price');
-        var total = price * quantity;
-        cart[productId] = {
-            name: productName,
-            price: price,
-            quantity: quantity,
-            total: total
-        };
-        updateReceipt();
-        updateSessionStorage();
-        // location.reload();
+
+        // Check if customer is selected
+        var customerId = $('#customer_id').val();
+        if (!customerId) {
+            Swal.fire('Error', 'Please select a customer before adding products.', 'error');
+            $(input).val('');
+            return;
+        }
+
+        // Fetch customer insurance status if not available
+        fetchCustomerInsuranceStatus(customerId).then(customerInsured => {
+            // Fetch product insurance status via AJAX
+            fetchProductInsuranceStatus(productId).then(productInsured => {
+                var productPrice = (productInsured == 1 && customerInsured == 1) ? 0 : price;
+                var total = productPrice * quantity;
+
+                // Log product data
+                console.log('Product Data:', {
+                    productId,
+                    productName,
+                    price,
+                    insured: productInsured,
+                    quantity
+                });
+
+                cart[productId] = {
+                    name: productName,
+                    price: productPrice,
+                    quantity: quantity,
+                    total: total,
+                    insured: productInsured
+                };
+                updateReceipt();
+                updateSessionStorage();
+            });
+        });
     }
 
-    window.addEventListener('livewire:load', function() {
-        Livewire.on('updateGrandTotal', function(grandTotal) {
-            $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
+    function fetchCustomerInsuranceStatus(customerId) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/customers/${customerId}`,
+                method: 'GET',
+                success: function(customer) {
+                    resolve(customer.PInsured);
+                },
+                error: function(xhr, status, error) {
+                    console.error(`Error fetching customer data: ${error}`);
+                    reject(error);
+                }
+            });
         });
-    });
+    }
 
-    function removeItem(productId) {
+    function fetchProductInsuranceStatus(productId) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/products/${productId}`, // Adjust this URL to your actual route
+                method: 'GET',
+                success: function(product) {
+                    resolve(product.Insured);
+                },
+                error: function(xhr, status, error) {
+                    console.error(`Error fetching product data: ${error}`);
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    window.removeItem = function(productId) {
         delete cart[productId];
         updateReceipt();
     }
 
-    function previewReceipt() {
+    window.previewReceipt = function() {
         let receiptContent = '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
         receiptContent += '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
         receiptContent += '<thead style="background-color: #007bff; color: white;">';
@@ -272,11 +315,13 @@
         receiptContent += '<tbody>';
 
         for (const [key, value] of Object.entries(cart)) {
+            let productPrice = value.price;
+            let productTotal = productPrice * value.quantity;
             receiptContent += '<tr>';
             receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
             receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.price + '</td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.total + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice + '</td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal + '</td>';
             receiptContent += '</tr>';
         }
 
@@ -291,14 +336,69 @@
         Swal.fire({
             title: 'Receipt Preview',
             html: receiptContent,
-            showCancelButton: false,
-            confirmButtonText: 'Print',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm Prescription',
+            cancelButtonText: 'Close',
             confirmButtonColor: '#007bff',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.print();
+                $('#receiptForm').submit();
             }
         });
     }
-</script>
 
+    let qrScanner;
+
+    function startQrScanner() {
+        qrScanner = new Html5QrcodeScanner("qr-reader", {
+            fps: 10,
+            qrbox: 250
+        }, false);
+        qrScanner.render(onScanSuccess, onScanError);
+    }
+
+    function stopQrScanner() {
+        if (qrScanner) {
+            qrScanner.clear();
+        }
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        $('#qrScannerModal').hide();
+        stopQrScanner();
+        fetchCustomerData(decodedText);
+    }
+
+    function onScanError(errorMessage) {
+        console.warn(`QR Code Scan Error: ${errorMessage}`);
+    }
+
+    $('#qr-scan-btn').click(function() {
+        startQrScanner();
+    });
+
+    $('#closeQrScanner').click(function() {
+        $('#qrScannerModal').hide();
+        stopQrScanner();
+    });
+
+    function fetchCustomerData(customerId) {
+        $.ajax({
+            url: `/customers/${customerId}`,
+            method: 'GET',
+            success: function(response) {
+                const customer = response;
+                console.log('Fetched Customer Data:', customer); // Log customer data
+                $('#customer_id').append(`<option value="${customer.id}" selected>${customer.FirstName}</option>`).trigger('change');
+                $('#customer-icon').attr('src', `/storage/${customer.qr_code_path}`);
+            },
+            error: function(xhr, status, error) {
+                console.error(`Error fetching customer data: ${error}`);
+                Swal.fire('Error', 'Unable to fetch customer data. Please try again.', 'error');
+            }
+        });
+    }
+});
+
+
+</script>
