@@ -30,11 +30,109 @@ class ListRoles extends Component implements HasForms, HasTable, HasActions
 
     public function table(Table $table): Table
     {
-        return $table
+
+        if (auth()->user()->role_id == 1) {
+
+            return $table
+
+                ->query(
+                    Role::query()
+
+
+                )
+                ->columns([
+                    Tables\Columns\TextColumn::make('name')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('description')
+                        ->searchable(),
+
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ])
+                ->filters([
+                    //
+                    Filter::make('created_at')
+                        ->form([
+                            DatePicker::make('created_from')
+                                ->label('From'),
+                            DatePicker::make('created_until')
+                                ->label('To'),
+                        ])
+                        ->query(function (Builder $query, array $data): Builder {
+                            return $query
+                                ->when(
+                                    $data['created_from'],
+                                    fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                )
+                                ->when(
+                                    $data['created_until'],
+                                    fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                );
+                        })
+                        ->indicateUsing(function (array $data): array {
+                            $indicators = [];
+
+                            if ($data['from'] ?? null) {
+                                $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                                    ->removeField('from');
+                            }
+
+                            if ($data['until'] ?? null) {
+                                $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                                    ->removeField('until');
+                            }
+
+                            return $indicators;
+                        }),
+                ], FiltersLayout::AboveContent)
+                ->actions([
+                    //
+                    Action::make('edit')
+                        ->label('Edit')
+                        ->color('warning')
+                        ->icon('heroicon-o-pencil')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            return route('roles.edit', $record->id);
+                        }),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->requiresConfirmation()
+                        ->color('danger')
+                        ->icon('heroicon-o-trash')
+                        ->action(function ($record) {
+                            // Delete the record
+                            if ($record->delete()) {
+                                Notification::make()
+                                    ->title('Delete record ' . $record->id . ' successfully')
+                                    ->success()
+                                    ->send();
+                            }
+                        }),
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        //
+                    ]),
+                ]);
+        }
+        else {
+            return $table
+
             ->query(
                 Role::query()
                     ->where('entity_id', auth()->user()->entity_id)
-                   
+                    // ->where('department_id', auth()->user()->department_id)
+                    // ->orderBy('created_at', 'desc')
+               
+
+
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -64,11 +162,11 @@ class ListRoles extends Component implements HasForms, HasTable, HasActions
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     })
                     ->indicateUsing(function (array $data): array {
@@ -117,6 +215,7 @@ class ListRoles extends Component implements HasForms, HasTable, HasActions
                     //
                 ]),
             ]);
+        }
     }
 
     public function render(): View

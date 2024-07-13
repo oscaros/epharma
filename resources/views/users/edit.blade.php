@@ -32,6 +32,26 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="mb-4">
+                            <label for="entity_id" class="block text-sm font-medium text-gray-700">Business:</label>
+                            <select class="select2 form-select mt-1 block w-full" id="entity_id" name="entity_id" required>
+                                <option value="">Select a Business</option>
+                                @foreach($entities as $entity)
+                                    <option value="{{ $entity->id }}" {{ $user->entity_id == $entity->id ? 'selected' : '' }}>{{ $entity->EntityName }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="department_id" class="block text-sm font-medium text-gray-700">Service Point:</label>
+                            <select class="select2 form-select mt-1 block w-full" id="department_id" name="department_id" required>
+                                <option value="">Select a Service Point</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}" {{ $user->department_id == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                        
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update User</button>
                     </form>
@@ -41,3 +61,27 @@
     </div>
     <!-- End of Edit User Form -->
 </x-app-layout>
+
+
+{{-- select2 script --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+{{-- select2 css --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+
+<!-- Initialize Select2 -->
+<script>
+    $(document).ready(function() {
+        $('#role_id').select2();
+        $('#entity_id').select2();
+        $('#department_id').select2();
+    });
+</script>
+

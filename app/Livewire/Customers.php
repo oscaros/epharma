@@ -20,8 +20,18 @@ class Customers extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        return $table
-            ->query(Customer::query())
+     
+     
+
+            if (auth()->user()->role_id == 1) {
+
+                return $table
+               
+                ->query(
+                    Customer::query()
+                      
+                   
+                )
             ->columns([
                 Tables\Columns\TextColumn::make('FirstName')
                     ->searchable(),
@@ -53,6 +63,55 @@ class Customers extends Component implements HasForms, HasTable
                     //
                 ]),
             ]);
+
+        }
+        else {
+            return $table
+
+            ->query(
+                Customer::query()
+                    ->where('entity_id', auth()->user()->entity_id)
+                    // ->where('department_id', auth()->user()->department_id)
+                    // ->orderBy('created_at', 'desc')
+               
+
+
+            )
+
+           
+            ->columns([
+                Tables\Columns\TextColumn::make('FirstName')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('LastName')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('Email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('Phone')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('Address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                //
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    //
+                ]),
+            ]);
+        }
+
     }
 
     public function render(): View

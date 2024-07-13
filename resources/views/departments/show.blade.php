@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <strong>Entity Name:</strong> {{ $entity->name }}
+                            <strong>Entity Name:</strong> {{ $department->name }}
                         </div>
                        
                     </div>

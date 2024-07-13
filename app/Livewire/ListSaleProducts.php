@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class ListSaleProducts extends Component implements HasForms, HasTable
@@ -54,6 +55,7 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                 ->query(Product::query())
                 ->columns([
                     Tables\Columns\TextColumn::make('ProductName')
+                        ->label('Item')
                         ->sortable()
                         ->searchable(),
                     Tables\Columns\TextColumn::make('Price')
@@ -160,11 +162,14 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                 ])
                 ->searchable();
         } else {
+            
+
             return $table
                 ->query(Product::query()
                     ->where('entity_id', auth()->user()->entity_id))
                 ->columns([
                     Tables\Columns\TextColumn::make('ProductName')
+                    ->label('Item')
                         ->sortable()
                         ->searchable(),
                     Tables\Columns\TextColumn::make('Price')
@@ -211,55 +216,55 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                     //         }
                     //     }),
                     // Add action to save the grand total
-                    Action::make('save')
-                        ->label('Confirm Sale')
-                        ->color('success')
-                        ->icon('heroicon-o-check-circle')
-                        ->requiresConfirmation()
-                        ->action(function () {
-                            $this->saveGrandTotal();
-                        })
-                        ->fillForm(fn(Product $record): array => [
-                            'ProductName' => $record->ProductName,
-                            'Quantity' => $record->Quantity,
-                            'Price' => $record->Price,
-                            'serial_number' => $record->serial_number,
-                            'expiry_date' => $record->expiry_date,
-                        ])
-                        ->form([
-                            TextInput::make('ProductName')
-                                ->label('Product Name')
-                                ->default(function (Product $record) {
-                                    return $record->ProductName;
-                                })
-                                ->required(),
-                            TextInput::make('Quantity')
-                                ->label('Available Stock')
-                                // put field data of selected product in the form
-                                ->default(function (Product $record) {
-                                    return $record->Quantity;
-                                })
-                                ->required(),
-                            TextInput::make('Price')
-                                ->default(function (Product $record) {
-                                    return $record->Price;
-                                })
-                                ->label('Price')
-                                ->required(),
-                            TextInput::make('serial_number')
-                                ->default(function (Product $record) {
-                                    return $record->serial_number;
-                                })
-                                ->label('Serial Number')
-                                ->required(),
-                            TextInput::make('expiry_date')
-                                ->default(function (Product $record) {
-                                    return $record->expiry_date;
-                                })
-                                ->label('Expiry Date')
-                                ->required(),
+                    // Action::make('save')
+                    //     ->label('Confirm Sale')
+                    //     ->color('success')
+                    //     ->icon('heroicon-o-check-circle')
+                    //     ->requiresConfirmation()
+                    //     ->action(function () {
+                    //         $this->saveGrandTotal();
+                    //     })
+                        // ->fillForm(fn(Product $record): array => [
+                        //     'ProductName' => $record->ProductName,
+                        //     'Quantity' => $record->Quantity,
+                        //     'Price' => $record->Price,
+                        //     'serial_number' => $record->serial_number,
+                        //     'expiry_date' => $record->expiry_date,
+                        // ])
+                        // ->form([
+                        //     TextInput::make('ProductName')
+                        //         ->label('Product Name')
+                        //         ->default(function (Product $record) {
+                        //             return $record->ProductName;
+                        //         })
+                        //         ->required(),
+                        //     TextInput::make('Quantity')
+                        //         ->label('Available Stock')
+                        //         // put field data of selected product in the form
+                        //         ->default(function (Product $record) {
+                        //             return $record->Quantity;
+                        //         })
+                        //         ->required(),
+                        //     TextInput::make('Price')
+                        //         ->default(function (Product $record) {
+                        //             return $record->Price;
+                        //         })
+                        //         ->label('Price')
+                        //         ->required(),
+                        //     TextInput::make('serial_number')
+                        //         ->default(function (Product $record) {
+                        //             return $record->serial_number;
+                        //         })
+                        //         ->label('Serial Number')
+                        //         ->required(),
+                        //     TextInput::make('expiry_date')
+                        //         ->default(function (Product $record) {
+                        //             return $record->expiry_date;
+                        //         })
+                        //         ->label('Expiry Date')
+                        //         ->required(),
                             // Add a field for the quantity to be sold
-                        ])
+                        // ])
                 ])
                 ->bulkActions([
                     Tables\Actions\BulkActionGroup::make([])

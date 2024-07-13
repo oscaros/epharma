@@ -67,7 +67,10 @@ class UserController extends Controller
                 'first_name' => 'required',
                 'last_name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'phone_number' => 'required',
+                //ensure phone is unique
+
+                // 'phone_number' => 'required',
+                'phone_number' => 'required|unique:users,phone_number',
                 'role_id' => 'required',
                 'entity_id' => 'required',
           
@@ -135,8 +138,9 @@ class UserController extends Controller
             $roles = Role::all();
        
             $entities = Entity::all();
+            $departments = Department::all();
             $user = User::find($id);
-            return view('users.edit', compact('user', 'roles', 'entities'));
+            return view('users.edit', compact('user', 'roles', 'entities', 'departments'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'An error occurred while trying to edit user');
         }

@@ -27,7 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/customers/scan', [CustomerController::class, 'scan'])->name('customers.scan');
-    Route::post('/customers/scan', [CustomerController::class, 'scanProcess'])->name('customers.scan.process');
+    Route::post('/customers/scan', [CustomerController::class, 'scanProcess'])->name('customers.scanProcess');
+    Route::post('/customers/scan', [CustomerController::class, 'scanProcess2'])->name('customers.scanProcess2');
     Route::post('yopay', [YoPayments::class, 'makePayment'])->name('yopay');
 
     // Route::post('/deposit-funds', [YoPaymentsController::class, 'depositFunds']);
@@ -81,6 +82,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route for fetching customer data
 Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
+
+Route::get('/customers2/{id}', [CustomerController::class, 'getCustomerDetails'])->name('getCustomerDetails');
 
 // Route for fetching product data
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');

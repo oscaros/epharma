@@ -35,42 +35,101 @@ class ListSaleItems extends Component implements HasForms, HasTable
             }
         });
 
-        return $table
-            ->query($query)
-            ->columns([
-                Tables\Columns\TextColumn::make('products.ProductName')
-                    ->label('Medicine Name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('Quantity')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('Price')
-                    ->label('Price(UGX)')
-                    ->numeric()
-                    ->sortable(),
-                CheckboxColumn::make('Status')
-                    ->label('Offered?')
-                    ->sortable()
-                    ->alignCenter()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                // Add filters if needed
-            ])
-            ->actions([
-                // Add actions if needed
-            ])
-            ->bulkActions([
-                // Add bulk actions if needed
-            ]);
+
+
+        if (auth()->user()->role_id == 1) {
+
+            return $table
+
+                ->query($query)
+
+
+
+
+
+
+
+
+                ->columns([
+                    Tables\Columns\TextColumn::make('products.ProductName')
+                        ->label('Medicine Name')
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('Quantity')
+                        ->numeric()
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('Price')
+                        ->label('Price(UGX)')
+                        ->numeric()
+                        ->sortable(),
+                    CheckboxColumn::make('Status')
+                        ->label('Offered?')
+                        ->sortable()
+                        ->alignCenter()
+                        ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ])
+                ->filters([
+                    // Add filters if needed
+                ])
+                ->actions([
+                    // Add actions if needed
+                ])
+                ->bulkActions([
+                    // Add bulk actions if needed
+                ]);
+        }
+
+            else {
+                return $table
+    
+                ->query(
+                    $query
+                   
+    
+    
+                )
+                ->columns([
+                    Tables\Columns\TextColumn::make('products.ProductName')
+                        ->label('Medicine Name')
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('Quantity')
+                        ->numeric()
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('Price')
+                        ->label('Price(UGX)')
+                        ->numeric()
+                        ->sortable(),
+                    CheckboxColumn::make('Status')
+                        ->label('Offered?')
+                        ->sortable()
+                        ->alignCenter()
+                        ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ])
+                ->filters([
+                    // Add filters if needed
+                ])
+                ->actions([
+                    // Add actions if needed
+                ])
+                ->bulkActions([
+                    // Add bulk actions if needed
+                ]);
+            }
     }
 
     public function render(): View

@@ -20,10 +20,15 @@ class CreateDepartment extends Component implements HasForms
     public array $entities = []; // Add property to store entities
 
     public function mount(): void
-    {
-        $this->entities = Entity::pluck('EntityName', 'id')->toArray(); // Load entities
-        $this->form->fill();
+{
+    if (auth()->user()->role_id == 1) {
+        $this->entities = Entity::pluck('EntityName', 'id')->toArray(); // Load all entities
+    } else {
+        $userEntityId = auth()->user()->entity_id;
+        $this->entities = Entity::where('id', $userEntityId)->pluck('EntityName', 'id')->toArray(); // Load entity matching user's entity ID
     }
+    $this->form->fill();
+}
 
     
 
@@ -31,15 +36,23 @@ class CreateDepartment extends Component implements HasForms
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                // Forms\Components\TextInput::make('name')
+                // // ->unique()->where('name', '!=', 'N/A')
+                //     ->required()
+                //     ->maxLength(255),
+                Forms\Components\Select::make('name')
+    ->label('Service Point')
+    ->searchable()
+    ->options(Department::all()->pluck('name', 'id')->toArray())
+    ->required()
+    ->maxLength(255),
                 Forms\Components\TextInput::make('code')
-                    ->required()
+                ->label('Room Number (Optional)')
+                    // ->required()
                     ->maxLength(255),
               
                 Forms\Components\Select::make('entity_id') // Change to Select
-                    ->label('Pharmacy')
+                    ->label('Business')
                     ->searchable()
                     ->required()
                     ->options($this->entities), // Set options for Select
@@ -48,14 +61,21 @@ class CreateDepartment extends Component implements HasForms
             ->model(Department::class);
     }
 
-    public function create(): void
-    {
-        $data = $this->form->getState();
+   public function create(): void
+{
+    $data = $this->form->getState();
 
-        $record = Department::create($data);
+    $record = Department::create($data);
 
-        $this->form->model($record)->saveRelationships();
-    }
+    $this->form->model($record)->saveRelationships();
+
+    // Flash a success message
+    session()->flash('success', 'Department created successfully!');
+
+    // Redirect to the index page
+    $this->redirectRoute('departments.index'); // Replace 'departments.index' with your actual route name
+}
+
 
     public function render(): View
     {

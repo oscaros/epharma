@@ -56,8 +56,8 @@ class SaleController extends Controller
             return view('sales.create', compact('customers'), ['grandTotal' => $this->grandTotal]);
         }
         else {
-            $customers = Customer::query()->where('entity_id', auth()->user()->entity_id);
-            return view('sales.index', compact('customers'), ['grandTotal' => $this->grandTotal]);
+            $customers = Customer::query()->where('entity_id', auth()->user()->entity_id)->get();
+            return view('sales.create', compact('customers'), ['grandTotal' => $this->grandTotal]);
 
         }
     }

@@ -23,8 +23,103 @@ class ListCustomers extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        return $table
-            ->query(Customer::query())
+
+        if (auth()->user()->role_id == 1) {
+
+            return $table
+
+                ->query(
+                    Customer::query()
+
+
+                )
+                ->columns([
+                    Tables\Columns\TextColumn::make('FirstName')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('LastName')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('Email')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('PType')
+                        ->label('Patient Type')
+                        ->searchable(),
+                    CheckboxColumn::make('PInsured')
+                        ->label('Is Insured?')
+                        ->sortable()
+                        ->alignCenter()
+                        ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\TextColumn::make('Phone')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('Address')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                ])
+                ->filters([
+                    //
+                ])
+                ->actions([
+                    //edit and delete actions
+                    Action::make('edit')
+                        ->label('Edit')
+                        ->color('warning')
+                        ->icon('heroicon-o-pencil')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            return route('customers.edit', $record->id);
+                        }),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->requiresConfirmation()
+                        ->color('danger')
+                        ->icon('heroicon-o-trash')
+                        ->action(function ($record) {
+                            // Delete the record
+                            if ($record->delete()) {
+                                Notification::make()
+                                    ->title('Delete record ' . $record->id . ' successfully')
+                                    ->success()
+                                    ->send();
+                            }
+                        }),
+                    //add action to show details
+                    Action::make('details')
+                        ->label('Details')
+                        ->color('info')
+                        ->icon('heroicon-o-eye')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            return route('customers.show', $record->id);
+                        }),
+
+
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        //
+                    ]),
+                ]);
+
+        }
+
+        else {
+            return $table
+
+            ->query(
+                Customer::query()
+                    ->where('entity_id', auth()->user()->entity_id)
+                    // ->where('department_id', auth()->user()->department_id)
+                    // ->orderBy('created_at', 'desc')
+               
+
+
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('FirstName')
                     ->searchable(),
@@ -35,7 +130,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('PType')
                     ->label('Patient Type')
                     ->searchable(),
-                    CheckboxColumn::make('PInsured')
+                CheckboxColumn::make('PInsured')
                     ->label('Is Insured?')
                     ->sortable()
                     ->alignCenter()
@@ -80,7 +175,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                                 ->send();
                         }
                     }),
-                    //add action to show details
+                //add action to show details
                 Action::make('details')
                     ->label('Details')
                     ->color('info')
@@ -97,6 +192,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                     //
                 ]),
             ]);
+        }
     }
 
     public function render(): View

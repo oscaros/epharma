@@ -21,8 +21,101 @@ class ListCustomerSales extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        return $table
-            ->query(Sale::query())
+
+        if (auth()->user()->role_id == 1) {
+
+            return $table
+
+                ->query(
+                    Sale::query()
+
+
+                )
+                ->columns([
+                    Tables\Columns\TextColumn::make('amount')
+                        ->numeric()
+                        ->sortable(),
+                    // Tables\Columns\TextColumn::make('user_id')
+                    //     ->numeric()
+                    //     ->sortable(),
+                    // Tables\Columns\TextColumn::make('entity_id')
+                    //     ->numeric()
+                    //     ->sortable(),
+                    // Tables\Columns\TextColumn::make('type')
+                    //     ->searchable(),
+                    Tables\Columns\TextColumn::make('phone_number')
+                        ->searchable(),
+                    // Tables\Columns\TextColumn::make('payment_mode')
+                    //     ->searchable(),
+                    Tables\Columns\TextColumn::make('payment_method')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('reference')
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('status')
+                        ->searchable(),
+                    // Tables\Columns\TextColumn::make('order_tracking_id')
+                    //     ->searchable(),
+                    // Tables\Columns\TextColumn::make('OrderNotificationType')
+                    //     ->searchable(),
+                    // Tables\Columns\TextColumn::make('deleted_at')
+                    //     ->dateTime()
+                    //     ->sortable()
+                    //     ->toggleable(isToggledHiddenByDefault: true),
+                    //fetch customer name from customers table
+
+                    Tables\Columns\TextColumn::make('customers.FirstName')
+                        ->label('Patient Name')
+                        ->sortable()
+                        ->searchable(),
+
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+
+
+                ])
+                ->filters([
+                    //
+                ])
+                ->actions([
+                    //
+                    Action::make('view')
+                        ->label('View Details')
+                        ->color('primary')
+                        ->icon('heroicon-o-eye')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            //return record
+                            $sale = Sale::find($record->id);
+
+                            // dd($sale);
+            
+                            return route('sale-items.index', $sale->customer_id);
+                        }),
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        //
+                    ]),
+                ]);
+        }
+        else {
+            return $table
+
+            ->query(
+                Sale::query()
+                    ->where('entity_id', auth()->user()->entity_id)
+                    // ->where('department_id', auth()->user()->department_id)
+                    // ->orderBy('created_at', 'desc')
+               
+
+
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('amount')
                     ->numeric()
@@ -54,7 +147,7 @@ class ListCustomerSales extends Component implements HasForms, HasTable
                 //     ->sortable()
                 //     ->toggleable(isToggledHiddenByDefault: true),
                 //fetch customer name from customers table
-                
+
                 Tables\Columns\TextColumn::make('customers.FirstName')
                     ->label('Patient Name')
                     ->sortable()
@@ -68,8 +161,8 @@ class ListCustomerSales extends Component implements HasForms, HasTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                
-                
+
+
             ])
             ->filters([
                 //
@@ -77,24 +170,25 @@ class ListCustomerSales extends Component implements HasForms, HasTable
             ->actions([
                 //
                 Action::make('view')
-                ->label('View Details')
-                ->color('primary')
-                ->icon('heroicon-o-eye')
-                ->url(function ($record) {
-                    // Return the URL for the clicked record
-                    //return record
-                    $sale = Sale::find($record->id);
+                    ->label('View Details')
+                    ->color('primary')
+                    ->icon('heroicon-o-eye')
+                    ->url(function ($record) {
+                        // Return the URL for the clicked record
+                        //return record
+                        $sale = Sale::find($record->id);
 
-                    // dd($sale);
-
-                    return route('sale-items.index', $sale->customer_id);
-                }),
+                        // dd($sale);
+        
+                        return route('sale-items.index', $sale->customer_id);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     //
                 ]),
             ]);
+        }
     }
 
     public function render(): View

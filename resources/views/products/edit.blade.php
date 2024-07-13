@@ -31,16 +31,30 @@
                             <input type="number" class="form-input mt-1 block w-full" id="quantity" name="Quantity" value="{{ $product->Quantity }}" required>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="new_quantity" class="block text-sm font-medium text-gray-700">New Stock/Quantity:</label>
-                            <input type="number" class="form-input mt-1 block w-full" id="new_quantity" name="new_quantity" value="" required>
-                        </div>
+                      
 
-                        {{-- expiry date --}}
-                        <div class="mb-4">
-                            <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date:</label>
-                            <input type="date" class="form-input mt-1 block w-full" id="expiry_date" name="expiry_date" value="{{ $product->expiry_date }}" required>
-                        </div>
+
+                        {{-- Insured --}}
+                <div class="col-span-1">
+                    <label for="Insured" class="block text-sm font-medium text-gray-700">Insured?</label>
+                    <input type="hidden" name="Insured" id="Insured" value="0"> <!-- Hidden input to ensure a value is always sent -->
+                    <input type="checkbox" id="Insured" name="Insured" value="{{ $product->Insured }}" class="form-checkbox mt-1 block">
+                </div>
+
+
+
+                <!-- department select field with Select2 -->
+                <div class="mb-3">
+                    <label for="department_id" class="block text-sm font-medium text-gray-700">Service Point</label>
+                    <select class="form-select w-full rounded-md" id="department_id" name="department_id" required>
+                        <option value="" selected disabled>Select Service Point</option>
+                        @foreach($departments as $department)
+                        <option value="{{ $product->department_id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                       
 
                         
                        

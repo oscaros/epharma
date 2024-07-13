@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Entity;
 use App\Traits\AuditTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,18 @@ class CustomerController extends Controller
             return redirect()->back()->with('error', 'Customer not found.');
         }
     }
+    public function scanProcess2(Request $request)
+{
+    $phone = $request->input('phone');
+    $customer = Customer::where('Phone', $phone)->first();
+
+    if ($customer) {
+        return response()->json(['redirect_url' => route('sale-items.index', ['customer_id' => $customer->id])]);
+    } else {
+        return response()->json(['error' => 'Customer not found.'], 404);
+    }
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -80,7 +93,11 @@ class CustomerController extends Controller
                 'Address' => $request->Address,
                 'NIN' => $request->NIN,
                 'PInsured' => $request->PInsured,
-                'PType' => $request->PType
+                'PType' => $request->PType,
+                // 'entity_id' => $request->entity_id
+                //use auth
+                'entity_id' => auth()->user()->entity_id
+                
             ];
 
             // dd($data);
@@ -126,7 +143,11 @@ class CustomerController extends Controller
     {
         try {
             $customer = Customer::findOrFail($id);
-            return response()->json($customer);
+            //return entity with $customer->entity_id as its id
+            $entity = Entity::find($customer->entity_id);
+            // dd($entity);
+            // return response()->json($customer);
+            return view('customers.show', compact('customer', 'entity'));
         } catch (\Exception $e) {
             return response()->json(['error' => 'Customer not found'], 500);
         }
