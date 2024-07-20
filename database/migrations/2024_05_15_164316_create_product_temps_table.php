@@ -60,10 +60,10 @@ return new class extends Migration
             // Vendor ID
             $table->unsignedBigInteger('VendorID')->nullable();
             // Product price
-            $table->decimal('Price', 10, 2);
+            $table->decimal('Price', 10, 2)->nullable();
             // Product quantity
-            $table->integer('Quantity');
-            $table->integer('NewQuantity');
+            $table->integer('Quantity')->nullable()->default(0);
+            // $table->integer('NewQuantity')->nullable()->default(0);
             // Product status
             $table->enum('Status', [0, 1, 2])->default(0);
             // User ID who added the product

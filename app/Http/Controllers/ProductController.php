@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Product;
+use App\Models\ProductTemp;
 use App\Traits\AuditTrait;
 use Illuminate\Http\Request;
 
@@ -85,11 +86,26 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
+            $departments = Department::all();
+            // return response()->json($product);
+            return view('products.show', compact('product', 'departments'));
+        } catch (\Exception $e) {
+            // return response()->json(['error' => 'Product not found'], 500);
+            return redirect()->back()->with('error', 'Product not found');
+        }
+    }
+
+
+    public function showDetails($id)
+    {
+        try {
+            $product = Product::findOrFail($id);
             return response()->json($product);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Product not found'], 500);
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -98,7 +114,8 @@ class ProductController extends Controller
     {
         //
         $product = Product::find($id);
-        return view('products.edit', compact('product'));
+        $departments = Department::all();
+        return view('products.edit', compact('product', 'departments'));
     }
 
     /**
@@ -106,48 +123,48 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
         try {
-            //code...
             $request->validate([
                 'ProductName' => 'required',
-               
             ]);
+
             $product = Product::find($id);
 
             if (!$product) {
                 return redirect()->back()->with('error', 'Product not found');
             }
-            $old_quantity = $product->Quantity;
-            $new_quantity = $request->new_quantity;
-            $quantity = $old_quantity + $new_quantity;
-            $type = $request->type;
 
-           
+            $quantity = $product->Quantity;
+            // $new_quantity = $request->new_quantity;
+            // $quantity = $old_quantity + $new_quantity;
+            // $type = $request->type;
+            $serial = $product->serial_number;
 
             $data = [
                 'ProductName' => $request->ProductName,
                 'Price' => $request->Price,
-                'Quantity' => $quantity,
-                'type' => $type,
-                // 'serial_number' => $request->serial_number,
-                'expiry_date' => $request->expiry_date,
+                'Insured' => $request->Insured,
+                'serial_number' => $serial,
+                // 'Quantity' => $quantity,
+                // 'Type' => $type,
                 'entity_id' => auth()->user()->entity_id,
-
-               
+                'department_id' => $request->department_id,
+                'status' => '0', // Set status to 0 during update
             ];
 
-           
+            // dd($data);
 
-            $product->update($data);
-            $this->createAudit($request,  "Updated Medication : {$product->name}", 'Update');
+            $product->updateOrCreate(['id' => $product->id], $data);
+
+            ProductTemp::updateOrCreate(['id' => $product->id], $data);
+
+            $this->createAudit($request,  "Updated Medication : {$product->ProductName}", 'Update');
             return redirect()->route('products.index')->with('success', 'Medication updated successfully.');
         } catch (\Throwable $th) {
-            //throw $th;
             return redirect()->back()->with('error', $th->getMessage());
-            // return redirect()->back()->with('error', 'An error occurred while trying to update product');
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

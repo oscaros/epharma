@@ -71,6 +71,7 @@ class Product extends Model
         // Entity ID
         'Type',
         'Insured',
+        'Status',
 
         'entity_id',
         // Department ID

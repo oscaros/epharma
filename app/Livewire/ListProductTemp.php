@@ -55,22 +55,23 @@ class ListProductTemp extends Component implements HasForms, HasTable
                         ->sortable()
                         ->copyable()
                         ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('NewQuantity')
-                        ->numeric()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
+                    // Tables\Columns\TextColumn::make('NewQuantity')
+                    //     ->numeric()
+                    //     ->sortable()
+                    //     ->copyable()
+                    //     ->toggleable(isToggledHiddenByDefault: false),
                     Tables\Columns\TextColumn::make('serial_number')
                         ->searchable()
                         ->copyable()
                         ->sortable()
                         ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('expiry_date')
-                        ->dateTime()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('status')
+                    // Tables\Columns\TextColumn::make('expiry_date')
+                    //     ->dateTime()
+                    //     ->sortable()
+                    //     ->copyable()
+                    //     ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\TextColumn::make('Status')
+                    
                         ->searchable()
                         ->sortable()
                         ->copyable()

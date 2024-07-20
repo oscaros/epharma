@@ -12,7 +12,7 @@
                 <p class="text-lg"><strong>NIN:</strong> {{ $customer->NIN }}</p>
                 <p class="text-lg"><strong>Patient Type:</strong> {{ $customer->PType == 1 ? 'Inpatient' : 'Outpatient' }}</p>
                 <p class="text-lg"><strong>Insured:</strong>
-                    <input type="checkbox" disabled {{ $customer->PInsured ? 'checked' : '' }} class="form-checkbox h-5 w-5 text-blue-600">
+                    <strong disabled  class="text-lg h-5 w-5 text-blue-600">{{ $customer->PInsured ? 'Yes' : 'No' }} </strong>
                 </p>
             </div>
             <div class="flex flex-col items-center justify-center">

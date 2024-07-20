@@ -23,7 +23,11 @@
             <!-- Logo -->
             <a class="block" href="{{ route('dashboard') }}">
 
-                <h2 class="text-2xl font-bold text-white">KashTre</h2>
+                
+                <div class="flex justify-center mb-1">
+                    {{-- <h2 class="text-2xl font-bold text-white">KashTre</h2> --}}
+                    <img src="{{ asset('images/KashTre Main Logo.png') }}" alt="KashTre Logo" class="h-14">
+                </div>
 
             </a>
         </div>
@@ -119,7 +123,7 @@
                                     </li>
 
                                     {{-- if user is not super admin, hide roles --}}
-                                    @if (Auth::user()->role_id == 1)
+                                    {{-- @if (Auth::user()->role_id == 1) --}}
                                         <li class="mb-1 last:mb-0">
                                             <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
                                                 href="{{ route('roles.index') }}">
@@ -128,7 +132,7 @@
                                                     Roles</span>
                                             </a>
                                         </li>
-                                    @endif
+                                    {{-- @endif --}}
 
                                 </ul>
                             </div>
@@ -264,7 +268,7 @@
 
 
                     {{-- @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? [])) --}}
-                    @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
+                    @if (in_array('Customers', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <!-- products-->
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['customers'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['customers']) ? 1 : 0 }} }">

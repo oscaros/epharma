@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Filament\Exports\AdvanceExporter;
+use App\Filament\Exports\ProductExporter;
 use App\Filament\Imports\ProductImporter;
 use App\Models\Product;
 
@@ -14,6 +15,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
 use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -148,12 +150,10 @@ class ListProducts extends Component implements HasForms, HasTable
 
             ->headerActions([
                 ExportAction::make()
-                    ->exporter(AdvanceExporter::class),
+                    ->exporter(ProductExporter::class),
 
-
-                ImportAction::make()
-                    ->importer(ProductImporter::class)
-
+                    ImportAction::make()
+                ->importer(ProductImporter::class)
             ])
 
             ->actions([
@@ -190,9 +190,8 @@ class ListProducts extends Component implements HasForms, HasTable
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    //
-                ]),
+                ExportBulkAction::make()
+                    ->exporter(ProductExporter::class)
             ]);
 
         }
@@ -203,7 +202,7 @@ class ListProducts extends Component implements HasForms, HasTable
             ->query(
                 Product::query()
                     ->where('entity_id', auth()->user()->entity_id)
-                    // ->where('department_id', auth()->user()->department_id)
+                    ->where('department_id', auth()->user()->department_id)
                     // ->orderBy('created_at', 'desc')
                
             )
@@ -283,19 +282,16 @@ class ListProducts extends Component implements HasForms, HasTable
 
             ->headerActions([
                 ExportAction::make()
-                    ->exporter(AdvanceExporter::class),
-
-
-                ImportAction::make()
-                    ->importer(ProductImporter::class)
-
+                    ->exporter(ProductExporter::class),
+                    ImportAction::make()
+                ->importer(ProductImporter::class)
             ])
 
             ->actions([
                 Action::make('sale')
                     ->label('Add to Cart')
                     ->color('primary')
-                    ->icon('heroicon-o-shopping-cart')
+                    ->icon('heroicon-o-minus-circle')
                     ->url(function ($record) {
                         // Return the URL for the clicked record
                         return route('sales.show', $record->id);
@@ -324,9 +320,8 @@ class ListProducts extends Component implements HasForms, HasTable
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    //
-                ]),
+                ExportBulkAction::make()
+                    ->exporter(ProductExporter::class)
             ]);
         }
     }

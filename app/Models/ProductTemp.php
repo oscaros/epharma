@@ -82,6 +82,10 @@ class ProductTemp extends Model
         'serial_number',
         // expiry date as dateTime
         'expiry_date',
+        //department
+        'department_id',
+        'Insured',
+    
         
     ];
 }

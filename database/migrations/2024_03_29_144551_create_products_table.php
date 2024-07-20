@@ -91,11 +91,11 @@ return new class extends Migration
             // $table->foreign('edit_approved_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamp('EditApprovedOn')->nullable();
             // Foreign key constraint for vendor ID
-            $table->foreign('VendorID')->references('id')->on('vendors')->onDelete('cascade');
-            // Foreign key constraint for added by user ID
-            $table->foreign('AddedBy')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('VendorID')->references('id')->on('vendors')->onDelete('cascade')->nullable();
+                        // Foreign key constraint for added by user ID
+            $table->foreign('AddedBy')->references('id')->on('users')->onDelete('cascade')->nullable();
             // Foreign key constraint for approved by user ID
-            $table->foreign('ApprovedBy')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('ApprovedBy')->references('id')->on('users')->onDelete('cascade')->nullable();
             // Product serial number (auto-generated random number)
             $table->string('serial_number')->unique(); // Assuming serial number should be unique
           

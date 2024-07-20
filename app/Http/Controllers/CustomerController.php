@@ -143,13 +143,16 @@ class CustomerController extends Controller
     {
         try {
             $customer = Customer::findOrFail($id);
+            // dd($customer);
             //return entity with $customer->entity_id as its id
             $entity = Entity::find($customer->entity_id);
+            
             // dd($entity);
             // return response()->json($customer);
             return view('customers.show', compact('customer', 'entity'));
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Customer not found'], 500);
+            // return response()->json(['error' => 'Customer not found'], 500);
+             return redirect()->route('customers.index')->with('error', 'Patient not found.');
         }
     }
 

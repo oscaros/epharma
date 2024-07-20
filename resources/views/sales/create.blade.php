@@ -1,66 +1,90 @@
 @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-    <x-app-layout>
-        <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
-            <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                <div class="form-group mt-4 mb-4">
-                    <br>
-                    <select class="form-control" id="customer_id" name="customer_id">
-                        <option value="">Select Patient</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}" data-insured="{{ $customer->PInsured }}">{{ $customer->FirstName }}</option>
-                        @endforeach
-                    </select>
-                    <div class="flex justify-center my-4" class="hidden">
-                        <video id="preview" class="w-full h-10 max-w-md"></video>
-                    </div>
-                    <div id="scanForm">
-                        @csrf
-                        <div class="flex justify-left my-4">
-                            <input type="text" name="phone" id="phone" placeholder="Scan Number" class="border rounded px-4 py-2">
-                            <button type="button" id="submitScan" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-2">Submit</button>
-                        </div>
-                    </div>
-                    <div class="flex justify-end my-4 mr-5">
-                        <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;" />
-                        <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600" id="scanButton" type="button">Scan QR Code with Camera</button>
-                        <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden">
-                        <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
+<x-app-layout>
+    <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
+        <div class="px-4 sm:px-6 lg:px-8 py-0 w-full max-w-9xl mx-auto">
+            <div class="form-group ">
+                <br>
+                <select class="form-control" id="customer_id" name="customer_id">
+                    <option value="">Select Patient</option>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer->id }}" data-insured="{{ $customer->PInsured }}">{{ $customer->FirstName }}</option>
+                    @endforeach
+                </select>
+                <div class="flex justify-center my-4 hidden">
+                    <video id="preview" class="w-full h-10 max-w-md"></video>
+                </div>
+                <div id="scanForm">
+                    @csrf
+                    <div class="flex justify-left my-4">
+                        <input type="text" name="phone" id="phone" placeholder="Scan Number" class="border rounded px-4 py-2">
+                        <button type="button" id="submitScan" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-2">Submit</button>
                     </div>
                 </div>
-                <h1 class="text-lg font-semibold mb-6">Prescribe Item</h1>
-                <div style="display: flex; justify-content: space-between;">
-                    <div style="width: 50%;" id="table">
-                        @livewire('list-sale-products')
-                    </div>
-                    <div id="receipt" style="border: 1px solid #ccc; padding: 10px; width: 45%; margin-left: 20px; border-radius: 10px; background-color: #f9f9f9;">
-                        <h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>
-                        @csrf
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr style="background-color: #007bff; color: white;">
-                                    <th style="border: 1px solid #ccc; padding: 8px;">Product</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;">Quantity</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;">Price</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;">Total</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <div id="grandTotal" name="grandTotal" style="margin-top: 10px; font-weight: bold;">Grand Total: UGX {{ $grandTotal }}</div>
-                        <input type="hidden" id="grandTotalInput" name="grandTotal" style="margin-top: 10px; font-weight: bold;" readonly value="{{ $grandTotal }}">
-                        <input type="hidden" id="productIds" name="productIds">
-                        <input type="hidden" id="productQuantities" name="productQuantities">
-                        <input type="hidden" id="productPrices" name="productPrices">
-                        <input type="hidden" id="productNames" name="productNames">
-                        <div style="margin-top: 10px; display: flex; justify-content: space-between;">
-                            <button type="button" onclick="previewReceipt()" class="btn btn-primary" style="color: white; background-color: darkgrey; padding: 8px; border-radius: 50px; margin-top: 10px;">Preview</button>
-                        </div>
+                <div class="flex justify-end my-0 mr-5">
+                    <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;" />
+                    <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600" id="scanButton" style="margin-right: 10px;" type="button">Scan QR Code with Camera</button>
+                    <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+                <h1 class="text-lg font-semibold mb-6">Prescription Status</h1> 
+  
+                {{-- <div class="flex justify-end my-4">
+                  <a class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" href="{{ route('sales.create') }}">Make New Prescription</a>
+              </div> --}}
+                {{-- @livewire('list-sale-items', ['filter' => request()->query('filter', 'all')]) --}}
+                @livewire('list-sale-items', ['customer_id' => request()->query('customer_id')])  
+                
+            </div>
+
+
+
+
+
+
+
+
+
+            <h1 class="text-lg font-semibold mb-6">Prescribe Item</h1>
+            <div class="flex flex-col lg:flex-row lg:justify-between">
+                <div class="w-full lg:w-1/2" id="table">
+                    @livewire('list-sale-products')
+                </div>
+                <div id="receipt" class="border border-gray-300 p-4 mt-4 lg:mt-0 lg:w-1/2 lg:ml-4 rounded bg-gray-100">
+                    <h3 class="font-bold text-center bg-blue-500 text-white p-2 rounded">Receipt</h3>
+                    @csrf
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-blue-500 text-white">
+                                <th class="border border-gray-300 p-2">Product</th>
+                                <th class="border border-gray-300 p-2">Quantity</th>
+                                <th class="border border-gray-300 p-2">Price</th>
+                                <th class="border border-gray-300 p-2">Total</th>
+                                <th class="border border-gray-300 p-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="grandTotal" name="grandTotal" class="mt-4 font-bold">Grand Total: UGX {{ $grandTotal }}</div>
+                    <input type="hidden" id="grandTotalInput" name="grandTotal" readonly value="{{ $grandTotal }}">
+                    <input type="hidden" id="productIds" name="productIds">
+                    <input type="hidden" id="productQuantities" name="productQuantities">
+                    <input type="hidden" id="productPrices" name="productPrices">
+                    <input type="hidden" id="productNames" name="productNames">
+                    <div class="mt-4 flex justify-between">
+                        <button type="button" onclick="previewReceipt()" class="btn btn-primary text-white bg-gray-700 p-2 rounded-full mt-2">Preview</button>
                     </div>
                 </div>
             </div>
-        </form>
-    </x-app-layout>
+        </div>
+    </form>
+</x-app-layout>
 @else
     <h1 class="text-lg font-semibold mb-6">You do not have permission to view this page</h1>
 @endif

@@ -1,5 +1,8 @@
 <x-authentication-layout>
-    <h1 class="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-6"> ✨ {{ __('KashTre') }}</h1>
+    <div class="flex justify-center mb-6">
+        <img src="{{ asset('images/KashTre Main Logo.png') }}" alt="KashTre Logo" class="h-24">
+    </div>
+    {{-- <h1 class="text-3xl text-slate-800 dark:text-slate-100 font-bold mb-6"> ✨ {{ __('KashTre') }}</h1> --}}
     {{-- <h1 class="text-3xl text-center text-slate-800 dark:text-slate-100 font-bold mb-6">{{ __('Sign In') }}</h1> --}}
    
     {{-- <p class="text-slate-600 dark:text-slate-400 mb-6 text-center">{{ __('Login ') }}</p> --}}

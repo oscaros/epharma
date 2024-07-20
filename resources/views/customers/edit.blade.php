@@ -40,6 +40,13 @@
                                 <input type="text" class="form-input mt-1 block w-full rounded-md" id="address"
                                     name="address" rows="3" required value="{{ $customer->Address }}">
                             </div>
+
+                            <div class="col-span-1">
+                                <label for="Insured" class="block text-sm font-medium text-gray-700">Insured?</label>
+                                <input type="hidden" name="PInsured" id="PInsured" value="0"> <!-- Hidden input to ensure a value is always sent -->
+                                <input type="checkbox" id="PInsured" name="PInsured" value="{{ $customer->PInsured }}" class="form-checkbox mt-1 block">
+                            </div>
+            
                         
                             <div class= "col-span-2 ">
                                 <!-- Add other fields as needed -->

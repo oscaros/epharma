@@ -42,4 +42,10 @@ class Entity extends Model
         return $this->hasMany(Customer::class);
     }
 
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class, 'entity_id');
+    }
+
 }

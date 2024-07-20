@@ -89,12 +89,7 @@ class ListSaleItems extends Component implements HasForms, HasTable
             else {
                 return $table
     
-                ->query(
-                    $query
-                   
-    
-    
-                )
+                ->query($query)
                 ->columns([
                     Tables\Columns\TextColumn::make('products.ProductName')
                         ->label('Medicine Name')

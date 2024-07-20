@@ -63,17 +63,33 @@ class EntityController extends Controller
                 
             ]);
 
-           
+            // if (auth()->user()->role_id == 1) {
 
-            $data = [
-                'EntityName' => $request->EntityName,
-                'Email' => $request->email,
-                'Phone' => $request->phone,
-                'Address' => $request->address,
-                // 'CreatedBy' => auth()->user()->id,
 
-               
-            ];
+
+                $data = [
+                    'EntityName' => $request->EntityName,
+                    'Email' => $request->email,
+                    'Phone' => $request->phone,
+                    'Address' => $request->address,
+                    // 'CreatedBy' => auth()->user()->id,
+
+
+                ];
+            // }
+
+            // else {
+            //     $data = [
+            //         'EntityName' => auth()->user()->entity->EntityName,
+            //         'Email' => $request->email,
+            //         'Phone' => $request->phone,
+            //         'Address' => $request->address,
+            //         // 'CreatedBy' => auth()->user()->id,
+
+
+            //     ];
+
+            // }
 
            
 
@@ -137,10 +153,10 @@ class EntityController extends Controller
            
 
             $data = [
-                'EntityName' => $request->name,
-                'Email' => $request->email,
-                'Phone' => $request->phone,
-                'Address' => $request->address,
+                'EntityName' => $request->EntityName,
+                'Email' => $request->Email,
+                'Phone' => $request->Phone,
+                'Address' => $request->Address,
                 'UpdatedBy' => auth()->user()->id,
                
             ];

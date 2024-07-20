@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Department;
+
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -12,6 +14,7 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\Action;
 
 class ListDepartment extends Component implements HasForms, HasTable
 {
@@ -36,11 +39,11 @@ class ListDepartment extends Component implements HasForms, HasTable
                         ->sortable()
                         ->searchable(),
                     Tables\Columns\TextColumn::make('code')
-                        ->label('Service Point Code')
+                        ->label('Room Number')
                         ->sortable()
                         ->searchable(),
                     Tables\Columns\TextColumn::make('entity.EntityName')
-                        ->label('Pharmacy Name')
+                        ->label('Business Name')
                         ->searchable()
                         ->numeric()
                         ->sortable(),
@@ -58,6 +61,31 @@ class ListDepartment extends Component implements HasForms, HasTable
                 ])
                 ->actions([
                     //
+                    Action::make('edit')
+                        ->label('Edit')
+                        ->color('warning')
+                        ->icon('heroicon-o-pencil')
+                        ->url(function ($record) {
+                            // Return the URL for the clicked record
+                            // return view('livewire.edit-department', ['id' => $record->id]);
+                            return route('departments.edit', $record->id);
+                    }),
+                Action::make('delete')
+                    ->label('Delete')
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->action(function ($record) {
+                        // Delete the record
+                        if ($record->delete()) {
+                            Notification::make()
+                                ->title('Delete record ' . $record->id . ' successfully')
+                                ->success()
+                                ->send();
+                        }
+                    }),
+
+
                 ])
                 ->bulkActions([
                     Tables\Actions\BulkActionGroup::make([
