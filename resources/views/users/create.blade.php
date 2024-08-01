@@ -57,7 +57,8 @@
                             </select>
                         </div>
 
-
+                        {{-- add check if role == 1 --}}
+                        @if(auth()->user()->role_id == 1)
 
                         <!-- entity select field with Select2 -->
                         <div class="mb-3">
@@ -69,6 +70,8 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        @endif
 
 
 

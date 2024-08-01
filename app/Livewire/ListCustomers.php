@@ -66,6 +66,17 @@ class ListCustomers extends Component implements HasForms, HasTable
                 ])
                 ->actions([
                     //edit and delete actions
+                     //add action to show details
+                     Action::make('details')
+                     ->label('Details')
+                     ->color('info')
+                     ->icon('heroicon-o-eye')
+                     ->url(function ($record) {
+                         // Return the URL for the clicked record
+                         return route('customers.show', $record->id);
+                     }),
+
+
                     Action::make('edit')
                         ->label('Edit')
                         ->color('warning')
@@ -88,15 +99,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                                     ->send();
                             }
                         }),
-                    //add action to show details
-                    Action::make('details')
-                        ->label('Details')
-                        ->color('info')
-                        ->icon('heroicon-o-eye')
-                        ->url(function ($record) {
-                            // Return the URL for the clicked record
-                            return route('customers.show', $record->id);
-                        }),
+                   
 
 
                 ])
@@ -152,6 +155,17 @@ class ListCustomers extends Component implements HasForms, HasTable
                 //
             ])
             ->actions([
+
+                 //add action to show details
+                 Action::make('details')
+                 ->label('Details')
+                 ->color('info')
+                 ->icon('heroicon-o-eye')
+                 ->url(function ($record) {
+                     // Return the URL for the clicked record
+                     return route('customers.show', $record->id);
+                 }),
+                 
                 //edit and delete actions
                 Action::make('edit')
                     ->label('Edit')
@@ -175,15 +189,7 @@ class ListCustomers extends Component implements HasForms, HasTable
                                 ->send();
                         }
                     }),
-                //add action to show details
-                Action::make('details')
-                    ->label('Details')
-                    ->color('info')
-                    ->icon('heroicon-o-eye')
-                    ->url(function ($record) {
-                        // Return the URL for the clicked record
-                        return route('customers.show', $record->id);
-                    }),
+               
 
 
             ])

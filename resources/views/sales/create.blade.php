@@ -181,8 +181,8 @@
                                 LastName: lname,
                                 Phone: phone,
                                 Email: email,
-                                PInsured: pInsured,
-                                entity_id: {{ auth()->user()->entity_id }}
+                                PInsured: pInsured
+                                // entity_id: {{ auth()->user()->entity_id }}
                             }
                         }).done((response) => {
                             console.log('Customer created:', response);

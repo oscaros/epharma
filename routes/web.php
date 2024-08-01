@@ -67,11 +67,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('audit-logs', AuditLogController::class);
     Route::resource('reports', ReportController::class);
 
-//     Route::get('/report', [ReportController::class, 'index'])->name('reports');
-// Route::post('/report/data', [ReportController::class, 'fetchData'])->name('report.data');
+
 
 Route::get('/report', [ReportController::class, 'index'])->name('reports');
 Route::post('/report/data', [ReportController::class, 'fetchData'])->name('report.data');
+
 
 
 

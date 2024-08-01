@@ -21,11 +21,34 @@
                                     Please provide a description.
                                 </div>
                             </div>
+
+                            {{-- add drop down to select entities --}}
+                            {{-- if role == 1 --}}
+                           
+                            
+                            @if(auth()->user()->role_id == 1)
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-700">Entities</label>
+                                <select name="entity" id="entity" class="form-input mt-1 block w-full">
+                                    @foreach ($entities as $entity)
+                                    {{-- <option value="{{ $entity }}">{{ $entity }}</option> --}}
+                                    <option value="{{ $entity->id }}">{{ $entity->EntityName }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            @endif
+
+
                             <div class="col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">Permissions</label>
                                 <!--permissions-->
                                 <ul>
                                     @foreach ($roles as $key => $value)
+                                    {{-- check value == Entities --}}
+                                    {{-- @if($value == "Entities" || $roles[$key] == "Entities" && auth()->user()->role_id == 1) --}}
+                                 
+
                                     <li style="padding-left: 20px;"> <!-- Adjust padding as needed -->
                                         <input type="checkbox" name="permissions_menu[]" id="" value="{{ $key }}" <?= in_array($key, $permissions) ? "checked" : "" ?>>
                                         <span class="font-bold text-lg">{{ $key }}</span>

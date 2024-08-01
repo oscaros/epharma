@@ -26,8 +26,8 @@
                 @endif
             </div>
         </div>
-        <div class="text-center mt-8">
-            <button onclick="window.print()" class="bg-blue-500 text-white px-8 py-3 rounded-md hover:bg-blue-600 transition duration-300">Print</button>
+        <div class="text-center mt-8 ">
+            <button onclick="window.print()" class="bg-blue-500 text-white px-8 py-3 rounded-md hover:bg-blue-600 transition duration-300 print">Print</button>
         </div>
     </div>
 
@@ -35,6 +35,7 @@
         @media print {
             body * {
                 visibility: hidden;
+                /* margin: 2%; */
             }
             .container, .container * {
                 visibility: visible;
@@ -46,6 +47,9 @@
                 width: 100%;
                 padding: 0;
                 margin: 0;
+            }
+            .print {
+                display: none;
             }
         }
     </style>

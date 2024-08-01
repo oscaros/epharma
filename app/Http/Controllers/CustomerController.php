@@ -78,7 +78,7 @@ class CustomerController extends Controller
                 'FirstName' => 'required',
                 // 'LastName' => 'required',
                 'Email' => 'required|Email|unique:customers,Email',
-                'Phone' => 'required',
+                'Phone' => 'required|Phone|unique:customers,Phone',
                 'LastName' => 'required',
                 'PInsured' => 'required',
                 // 'Address' => 'required',

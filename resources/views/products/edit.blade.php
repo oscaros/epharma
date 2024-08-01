@@ -26,10 +26,10 @@
                             <label for="price" class="block text-sm font-medium text-gray-700">Price:</label>
                             <input type="text" class="form-input mt-1 block w-full" id="price" name="Price" value="{{ $product->Price }}" required>
                         </div>
-                        <div class="mb-4">
+                        {{-- <div class="mb-4">
                             <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity:</label>
                             <input type="number" class="form-input mt-1 block w-full" id="quantity" name="Quantity" value="{{ $product->Quantity }}" required>
-                        </div>
+                        </div> --}}
 
                       
 

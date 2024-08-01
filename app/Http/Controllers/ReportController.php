@@ -17,24 +17,33 @@ class ReportController extends Controller
 
     public function fetchData(Request $request)
     {
-        $startDate = Carbon::parse($request->input('start_date'));
-        $endDate = Carbon::parse($request->input('end_date'));
+        try {
+            // Retrieve and parse dates
+            $startDate = Carbon::parse($request->input('start_date'));
+            $endDate = Carbon::parse($request->input('end_date'));
+    
+            // Query data
+            $sales = Sale::whereBetween('created_at', [$startDate, $endDate])->get();
+            $customers = Customer::whereBetween('created_at', [$startDate, $endDate])->get();
+            $products = Product::all();
+    
+            // Format data for charts
+            $salesData = $this->formatSalesData($sales);
+            $customerData = $this->formatCustomerData($customers);
+            $productData = $this->formatProductData($products);
 
-        $sales = Sale::whereBetween('created_at', [$startDate, $endDate])->get();
-        $customers = Customer::whereBetween('created_at', [$startDate, $endDate])->get();
-        $products = Product::all();
-
-        // Format data for charts
-        $salesData = $this->formatSalesData($sales);
-        $customerData = $this->formatCustomerData($customers);
-        $productData = $this->formatProductData($products);
-
-        return response()->json([
-            'sales' => $salesData,
-            'customers' => $customerData,
-            'products' => $productData,
-        ]);
+            // dd('sales data', $salesData);
+    
+            return response()->json([
+                'sales' => $salesData,
+                'customers' => $customerData,
+                'products' => $productData,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Data retrieval failed.'], 500);
+        }
     }
+    
 
     private function formatSalesData($sales)
     {

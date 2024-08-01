@@ -76,21 +76,7 @@
                         placeholder="Enter brand name">
                 </div>
 
-                {{-- Drug Class --}}
-                {{-- <div class="col-span-1" id="drug_class">
-                    <label for="drug_class" class="block text-sm font-medium text-gray-700">Drug Class<span
-                            class="text-danger">*</span></label>
-                    <input type="text" class="form-input mt-1 block w-full" id="drug_class" name="drug_class" 
-                        placeholder="Enter drug class">
-                </div> --}}
-
-                {{-- Expiry Date --}}
-                {{-- <div class="col-span-1" id="expiry_date">
-                    <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                    <input type="date" class="form-input mt-1 block w-full" id="expiry_date" name="expiry_date"
-                        placeholder="Enter expiry date">
-                </div> --}}
-
+              
                
 
                 {{-- Submit Button --}}
@@ -131,54 +117,36 @@
 
 
 <script>
-    // Function to show or hide fields based on the selected type
     function toggleFields() {
         var type = document.getElementById('type').value;
         var productName = document.getElementById('ProductName');
         var price = document.getElementById('Price');
         var quantity = document.getElementById('Quantity');
         var brand = document.getElementById('brand');
-        // var drugClass = document.getElementById('drug_class');
-        // var expiryDate = document.getElementById('expiry_date');
-
+     
         if (type === 'Drug') {
-            // Show all fields
+            // Enable all fields for Drug
             productName.disabled = false;
             price.disabled = false;
             quantity.disabled = false;
             brand.disabled = false;
-            drugClass.disabled = false;
-            expiryDate.disabled = false;
-
 
             document.getElementById('quantity').style.display = 'block';
             document.getElementById('brand').style.display = 'block';
-            // document.getElementById('drug_class').style.display = 'block';
-            // document.getElementById('expiry_date').style.display = 'block';
-
-
-            document.getElementById('ProductName').innerHTML = 'Drug Name *';
+            document.getElementById('ProductName').innerHTML = 'Drug Name <span class="text-danger">*</span>';
             document.getElementById('drug').innerHTML = 'Add Drug';
-            document.getElementById('price').innerHTML = 'Drug Price *';
+            document.getElementById('price').innerHTML = 'Drug Price <span class="text-danger">*</span>';
             document.getElementById('button').innerHTML = 'Add Drug';
 
-
-
         } else if (type === 'Service') {
-            // Disable some fields for service type
+            // Enable relevant fields for Service, hide others
             productName.disabled = false;
-            //display none for price
+            price.disabled = false;
+            quantity.disabled = true;  // Disable quantity
+            brand.disabled = true;     // Disable brand
+
             document.getElementById('quantity').style.display = 'none';
             document.getElementById('brand').style.display = 'none';
-            // document.getElementById('drug_class').style.display = 'none';
-            // document.getElementById('expiry_date').style.display = 'none';
-
-            price.disabled = false;
-            // quantity.disabled = true;
-            // brand.disabled = true;
-            // drugClass.disabled = true;
-            // expiryDate.disabled = true;
-            //change inner html for product to service
             document.getElementById('ProductName').innerHTML = 'Service Name';
             document.getElementById('drug').innerHTML = 'Add Service';
             document.getElementById('price').innerHTML = 'Service Price';
@@ -186,37 +154,19 @@
         }
     }
 
-    // Add event listener to the type select
     document.getElementById('type').addEventListener('change', toggleFields);
 
-    //add price input converter
     document.addEventListener('DOMContentLoaded', function() {
-        // Get the balance input element
         var balanceInput = document.getElementById('Price');
-        // Get the hidden input for raw balance
         var rawBalanceInput = document.getElementById('raw_price');
 
-        // Add event listener for input event
         balanceInput.addEventListener('input', function() {
-            // Get the current value of the balance input and remove non-numeric characters
             var balanceValue = balanceInput.value.replace(/[^\d.]/g, '');
-
-            // Parse the numeric value
             var parsedBalance = parseFloat(balanceValue);
-
-            // Set the raw numeric value to the hidden input
             rawBalanceInput.value = parsedBalance;
-
-            // Format the balance value (assuming you want to format it as a currency)
-            var formattedBalance =
-                parsedBalance.toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'UGX'
-                });
-
-            // Set the formatted value back to the input field
+            var formattedBalance = parsedBalance.toLocaleString('en-US', { style: 'currency', currency: 'UGX' });
             balanceInput.value = formattedBalance;
         });
     });
-
 </script>
+

@@ -23,7 +23,7 @@
             <!-- Logo -->
             <a class="block" href="{{ route('dashboard') }}">
 
-                
+
                 <div class="flex justify-center mb-1">
                     {{-- <h2 class="text-2xl font-bold text-white">KashTre</h2> --}}
                     <img src="{{ asset('images/KashTre Main Logo.png') }}" alt="KashTre Logo" class="h-14">
@@ -73,7 +73,6 @@
 
 
                     @if (in_array('Staff', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-
                         <!-- Users -->
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['users', 'roles'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['users', 'roles']) ? 1 : 0 }} }">
@@ -122,17 +121,16 @@
                                         </a>
                                     </li>
 
-                                    {{-- if user is not super admin, hide roles --}}
-                                    {{-- @if (Auth::user()->role_id == 1) --}}
-                                        <li class="mb-1 last:mb-0">
-                                            <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
-                                                href="{{ route('roles.index') }}">
-                                                <span
-                                                    class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                    Roles</span>
-                                            </a>
-                                        </li>
-                                    {{-- @endif --}}
+                                    
+                                    <li class="mb-1 last:mb-0">
+                                        <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
+                                            href="{{ route('roles.index') }}">
+                                            <span
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
+                                                Roles</span>
+                                        </a>
+                                    </li>
+                              
 
                                 </ul>
                             </div>
@@ -202,7 +200,7 @@
 
 
 
-                    
+
                     <!-- departments -->
                     @if (in_array('Departments', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['departments'])) {{ 'bg-slate-900' }} @endif"
@@ -226,7 +224,8 @@
                                         </svg>
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Service Points</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Service
+                                            Points</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -251,6 +250,17 @@
                                     </li>
 
 
+                                    <li class="mb-1 last:mb-0">
+                                        <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
+                                            href="{{ route('roles.index') }}">
+                                            <span
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
+                                                Roles</span>
+                                        </a>
+                                    </li>
+                              
+
+
                                 </ul>
                             </div>
                         </li>
@@ -260,7 +270,7 @@
 
 
 
-                                       
+
 
 
 
@@ -273,7 +283,8 @@
                         <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(1), ['customers'])) {{ 'bg-slate-900' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['customers']) ? 1 : 0 }} }">
                             <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(1), ['customers'])) {{ 'hover:text-slate-200' }} @endif"
-                                href="#0" @click.prevent="sidebarExpanded ? open = !open : sidebarExpanded = true">
+                                href="#0"
+                                @click.prevent="sidebarExpanded ? open = !open : sidebarExpanded = true">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
 
@@ -335,8 +346,8 @@
 
 
 
-                    
-                    
+
+
 
 
 
@@ -368,7 +379,8 @@
                                         </svg>
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Drugs and Services</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Drugs
+                                            and Services</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -388,8 +400,8 @@
                                             href="{{ route('products.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                            Drugs and Services</span>
-                                             </a>
+                                                Drugs and Services</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -403,7 +415,7 @@
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pending
                                                 Drugs and Services</span>
-                                             </a>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -443,7 +455,8 @@
 
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe & Sale</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe
+                                            & Sale</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -471,7 +484,8 @@
                                         <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('sales.create')) {{ '!text-indigo-500' }} @endif"
                                             href="{{ route('sales.create') }}">
                                             <span
-                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe Drug/Service</span>
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe
+                                                Drug/Service</span>
                                         </a>
                                     </li>
 
@@ -597,7 +611,7 @@
 
 
 
-                    
+
 
 
 

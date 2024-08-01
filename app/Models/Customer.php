@@ -17,7 +17,9 @@ class Customer extends Model
         'Address',
         'NIN',
         'PInsured',
-        'PType'
+        'PType',
+        'entity_id'
+
         
 
     ];

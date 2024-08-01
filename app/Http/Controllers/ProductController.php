@@ -149,12 +149,14 @@ class ProductController extends Controller
                 // 'Type' => $type,
                 'entity_id' => auth()->user()->entity_id,
                 'department_id' => $request->department_id,
-                'status' => '0', // Set status to 0 during update
+                'Status' => '0', // Set status to 0 during update
+                'AddedBy' => auth()->user()->id,
             ];
 
             // dd($data);
 
             $product->updateOrCreate(['id' => $product->id], $data);
+            // Product::updateOrCreate(['id' => $product->id], $data);
 
             ProductTemp::updateOrCreate(['id' => $product->id], $data);
 

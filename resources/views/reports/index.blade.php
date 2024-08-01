@@ -12,8 +12,20 @@
                         <label for="reportDate" class="block text-sm font-medium text-gray-700">Select Date Range:</label>
                         <input type="text" class="form-input mt-1 block w-full" id="dateRange" name="dateRange">
                     </div>
+
+                    {{-- add select with options sales, customers --}}
+                    <div class="mb-3">
+                        <label for="reportType" class="block text-sm font-medium text-gray-700">Select Report
+                            Type:</label>
+                        <select class="form-select w-full rounded-md" id="reportType" name="reportType">
+                            <option value="sales">Sales</option>
+                            <option value="customers">Customers</option>
+                            <option value="products">Products</option>
+                        </select>
+                    </div>
                     <!-- Button for generating report -->
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate Report</button>
+                    <button type="submit"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate Report</button>
                 </form>
             </div>
         </div>
@@ -37,7 +49,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> <!-- Date Adapter for Chart.js -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             flatpickr('#dateRange', {
                 mode: 'range',
                 dateFormat: 'Y-m-d',
@@ -127,7 +139,7 @@
             // Fetch default data for the previous day
             fetchReportData(getPreviousDay(), getPreviousDay());
 
-            document.getElementById('reportForm').addEventListener('submit', function (e) {
+            document.getElementById('reportForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const dateRange = document.getElementById('dateRange').value;
                 const [startDate, endDate] = dateRange.split(' to ');
@@ -137,23 +149,29 @@
 
             function fetchReportData(startDate, endDate) {
                 fetch('{{ route('report.data') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        start_date: startDate,
-                        end_date: endDate
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            start_date: startDate,
+                            end_date: endDate
+                        })
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    updateChart(salesChart, data.sales);
-                    updateChart(customersChart, data.customers);
-                    updateChart(productsChart, data.products);
-                })
-                .catch(error => console.error('Error:', error));
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        updateChart(salesChart, data.sales);
+                        updateChart(customersChart, data.customers);
+                        updateChart(productsChart, data.products);
+                    })
+                    .catch(error => console.error('Error:', error));
+
             }
 
             function updateChart(chart, data) {

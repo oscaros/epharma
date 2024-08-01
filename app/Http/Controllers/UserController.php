@@ -42,8 +42,22 @@ class UserController extends Controller
     {
         try {
             $roles = Role::all();
-            $entities = Entity::all();
+            // $entities = Entity::all();
             $departments = Department::all();
+            //if role == 1 return entities in compact else dont
+            // dd($roles);
+            // dd($departments);
+            // dd($branches);
+            if(auth()->user()->role_id == 1){
+                $entities = Entity::all();
+                // $entities = Entity::where('id', auth()->user()->entity_id)->get();
+            }else{
+            // if(auth()->user()->role_id == 2){
+                $entities = Entity::where('id', auth()->user()->entity_id)->get();
+            }
+            // if(auth()->user()->role_id == 3){
+            // }
+            // }
             // dd($entities);          
             return view('users.create', compact('roles', 'entities', 'departments'));
         } catch (\Throwable $th) {
@@ -62,36 +76,73 @@ class UserController extends Controller
 
         try {
 
-            // Validate the request data
-            $request->validate([
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                //ensure phone is unique
+            if (auth()->user()->role_id == 1) {
 
-                // 'phone_number' => 'required',
-                'phone_number' => 'required|unique:users,phone_number',
-                'role_id' => 'required',
-                'entity_id' => 'required',
-          
+                // Validate the request data
+                $request->validate([
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'email' => 'required|email|unique:users,email',
+                    //ensure phone is unique
 
-            ]);
+                    // 'phone_number' => 'required',
+                    'phone_number' => 'required|unique:users,phone_number',
+                    'role_id' => 'required',
+                    'entity_id' => 'required',
+
+
+                ]);
+            }
+
+            else {
+
+                 // Validate the request data
+                 $request->validate([
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'email' => 'required|email|unique:users,email',
+                    //ensure phone is unique
+
+                    // 'phone_number' => 'required',
+                    'phone_number' => 'required|unique:users,phone_number',
+                    'role_id' => 'required',
+                    // 'entity_id' => 'required',
+
+
+                ]);
+
+            }
 
             $password = Str::random(8);
             $role =  Role::find($request->role_id)->name;
             $name = $request->first_name . ' ' . $request->last_name;
 
-         
-            $data = [
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number,
-                'password' => Hash::make($password),
-                'role_id' => $request->role_id,
-                'department_id' => $request->department_id,
-             
-                'entity_id' => $request->entity_id,
-            ];
+
+            if (auth()->user()->role_id == 1) {
+
+
+                $data = [
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                    'password' => Hash::make($password),
+                    'role_id' => $request->role_id,
+                    'department_id' => $request->department_id,
+
+                    'entity_id' => $request->entity_id,
+                ];
+
+            } else {
+                $data = [
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                    'password' => Hash::make($password),
+                    'role_id' => $request->role_id,
+                    'department_id' => $request->department_id,
+                    'entity_id' => auth()->user()->entity_id,
+                ];
+            }
 
        
             try {

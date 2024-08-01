@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Filament\Exports\AdvanceExporter;
+use App\Filament\Exports\ProductExporter;
 use App\Filament\Imports\ProductImporter;
 use App\Models\Product;
 use App\Models\ProductTemp;
@@ -13,6 +14,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
@@ -25,6 +27,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
+
 
 class ListProductTemp extends Component implements HasForms, HasTable
 {
@@ -40,6 +43,7 @@ class ListProductTemp extends Component implements HasForms, HasTable
                 )
                 ->columns([
                     Tables\Columns\TextColumn::make('ProductName')
+                        ->label('Item Name')
                         ->searchable()
                         ->sortable()
                         ->copyable()
@@ -50,11 +54,11 @@ class ListProductTemp extends Component implements HasForms, HasTable
                         ->sortable()
                         ->copyable()
                         ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('Quantity')
-                        ->numeric()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
+                    // Tables\Columns\TextColumn::make('Quantity')
+                    //     ->numeric()
+                    //     ->sortable()
+                    //     ->copyable()
+                    //     ->toggleable(isToggledHiddenByDefault: false),
                     // Tables\Columns\TextColumn::make('NewQuantity')
                     //     ->numeric()
                     //     ->sortable()
@@ -70,12 +74,18 @@ class ListProductTemp extends Component implements HasForms, HasTable
                     //     ->sortable()
                     //     ->copyable()
                     //     ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('Status')
-                    
-                        ->searchable()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
+                    // Tables\Columns\TextColumn::make('Status')
+                    // //is Status == 1 show Approved
+                    //     ->label('Status')
+
+                        
+                    //     ->searchable()
+                    //     ->sortable()
+                    //     ->copyable()
+                    //     ->toggleable(isToggledHiddenByDefault: false),
+                    Tables\Columns\ViewColumn::make('status')
+                    ->view('tables.columns.status-switcher')
+                    ,
                     Tables\Columns\TextColumn::make('updated_at')
                         ->dateTime()
                         ->sortable()
@@ -119,11 +129,54 @@ class ListProductTemp extends Component implements HasForms, HasTable
                 ])
                 ->headerActions([
                     ExportAction::make()
-                        ->exporter(AdvanceExporter::class),
+                        ->exporter(ProductExporter::class),
                     ImportAction::make()
                         ->importer(ProductImporter::class)
                 ])
                 ->actions([
+                
+
+                        Action::make('approve')
+                        // add color
+                        ->color('success')
+                        ->icon('heroicon-o-check')
+                        ->requiresConfirmation()
+
+                        ->modalHeading('Approve Item ')
+                        ->modalSubheading("Are you sure you'd like to approve this item? This will activate the item.")
+                        ->modalButton('Yes, Approve it')
+                        ->modalHidden(fn(): bool => auth()->user()->role_id !== 1 || auth()->user()->role_id !== 2)
+                        ->action(function (ProductTemp $record) {
+                            $record->approve();
+                     
+                            // $this->refreshFormData([
+                            //     'Status',
+                            // ]);
+                        }),
+
+
+                        
+                        Action::make('Reject')
+                        // add color
+                        
+                        ->color('danger')
+                        ->icon('heroicon-o-x-mark')
+                        ->requiresConfirmation(true)
+
+                        ->modalHeading('Reject Item ')
+                        ->modalSubheading("Are you sure you'd like to reject this item? This will de-activate the item.")
+                        ->modalButton('Yes, Reject it')
+                        ->modalHidden(fn(): bool => auth()->user()->role_id !== 1 || auth()->user()->role_id !== 2)
+                        ->action(function ($record) {
+                            $record->reject();
+                     
+                            // $this->refreshFormData([
+                            //     'Status',
+                            // ]);
+                        }),
+
+
+
                     // action view
                     Action::make('view')
                         ->label('View')

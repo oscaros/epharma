@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -88,4 +89,46 @@ class ProductTemp extends Model
     
         
     ];
+
+
+    public function approve ()
+    {
+        $this->Status = '1';
+        $this->ApprovedBy = auth()->id();
+        $this->ApprovedOn = Carbon::now();
+        //update record in products table as well
+
+        
+
+
+        $this->save();
+        //retrieve saved record
+
+        $product = ProductTemp::where('serial_number', $this->serial_number)->first();
+        $data = [
+            'ProductName' => $product->ProductName,
+            'Price' => $product->Price,
+            'Quantity' => $product->Quantity,
+            'serial_number' => $product->serial_number,
+            'entity_id' => auth()->user()->entity_id,
+            'AddedBy' => auth()->id(),
+            // 'AddedOn' => Carbon::now(),
+            'ApprovedBy' => auth()->id(),
+            'ApprovedOn' => Carbon::now(),
+            'status' => '1',
+            
+            'Insured' => $product->Insured,
+
+        ];
+        //update or create record in product
+        Product::updateOrCreate(['id' => $product->id], $data);
+
+
+    }
+
+    public function reject ()
+    {
+        $this->Status = '0';
+        $this->save();
+    }
 }

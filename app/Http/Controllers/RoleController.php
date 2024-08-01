@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entity;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Traits\AccessTrait;
@@ -30,13 +31,60 @@ class RoleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
+    // public function create()
+    // {
 
-        $roles = $this->getAccessControl();
-        $permissions = array();
-        return view('roles.create', compact('roles', 'permissions'));
+    //     $roles = $this->getAccessControl();
+    //     $permissions = array();
+    //     dd($roles);
+    //     $entities = Entity::all();
+    //     if(auth()->user()->role_id == 1){
+    //         $entities = Entity::all();
+    //     }
+    //     else {
+    //         $entities = Entity::where('id', auth()->user()->entity_id)->get();
+    //     }
+
+
+    //     return view('roles.create', compact('roles', 'permissions', 'entities'));
+    // }
+
+
+    public function create()
+{
+    $roles = $this->getAccessControl();
+
+    // Filter out the 'Entities' related permissions if the user is not an admin
+    if (auth()->user()->role_id != 1) {
+        unset($roles['Entities']);
     }
+
+    $permissions = [];
+    $entities = Entity::all();
+
+    if (auth()->user()->role_id != 1) {
+        $entities = Entity::where('id', auth()->user()->entity_id)->get();
+    }
+
+    return view('roles.create', compact('roles', 'permissions', 'entities'));
+}
+
+public function edit(Role $role)
+{
+    $permissions = json_decode($role->permissions, true);
+    if ($permissions == null) {
+        $permissions = [];
+    }
+    $roles = $this->getAccessControl();
+
+    // Filter out the 'Entities' related permissions if the user is not an admin
+    if (auth()->user()->role_id != 1) {
+        unset($roles['Entities']);
+    }
+
+    return view('roles.edit', compact('roles', 'permissions', 'role'));
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,22 +92,49 @@ class RoleController extends Controller
     public function store(Request $request)
     {
 
+        if(auth()->user()->role_id == 1){
+
         $request->validate([
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
+            'name' => 'required|string|unique:roles,name',
             'permissions_menu' => 'required',
+            'entity_id' => 'required',
         ]);
+
+        }
+        else {
+            $request->validate([
+                // 'name' => 'required|string|max:255',
+                'name' => 'required|string|unique:roles,name',
+                'permissions_menu' => 'required',
+            ]);
+        }
 
         try {
 
-            // DB::beginTransaction();
-            $role = Role::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'permissions' => json_encode($request->permissions_menu),
-                'user_id' => auth()->user()->id,
-                'entity_id' => auth()->user()->entity->id,
-                
-            ]);
+
+            if (auth()->user()->role_id == 1) {
+
+                // DB::beginTransaction();
+                $role = Role::create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'permissions' => json_encode($request->permissions_menu),
+                    'user_id' => auth()->user()->id,
+                    'entity_id' => $request->entity_id,
+
+                ]);
+            }
+
+            else {
+                $role = Role::create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'permissions' => json_encode($request->permissions_menu),
+                    'user_id' => auth()->user()->id,
+                    'entity_id' => auth()->user()->entity->id,
+                ]);
+            }
             $this->createAudit($request, 'Created Role', 'Create', $role->getTable(), $role->id);
             return redirect()->route('roles.index')->with('success', 'Role created successfully.');
         } catch (\Throwable $th) {
@@ -87,15 +162,15 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
-    {
-        $permissions =  json_decode($role->permissions);
-        if ($permissions == NULL) {
-            $permissions = array();
-        }
-        $roles = $this->getAccessControl();
-        return view('roles.edit', compact('roles', 'permissions', 'role'));
-    }
+    // public function edit(Role $role)
+    // {
+    //     $permissions =  json_decode($role->permissions);
+    //     if ($permissions == NULL) {
+    //         $permissions = array();
+    //     }
+    //     $roles = $this->getAccessControl();
+    //     return view('roles.edit', compact('roles', 'permissions', 'role'));
+    // }
 
     /**
      * Update the specified resource in storage.
