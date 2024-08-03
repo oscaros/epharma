@@ -48,352 +48,59 @@ class ListSaleProducts extends Component implements HasForms, HasTable
         $this->updateGrandTotal();
     }
 
+    // public function table(Table $table): Table
+    // {
+    //     if (auth()->user()->role_id == 1) {
+    //         return $table
+    //             ->query(Product::query())
+
     public function table(Table $table): Table
     {
-        if (auth()->user()->role_id == 1) {
-            return $table
-                ->query(Product::query())
-                ->columns([
-                    Tables\Columns\TextColumn::make('ProductName')
-                        ->label('Item')
-                        ->sortable()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('Price')
-                        ->money('UGX')
-                        ->sortable()
-                        ->searchable(),
-                    // Tables\Columns\TextColumn::make('Quantity')
-                    //     ->numeric()
-                    //     ->sortable()
-                    //     ->searchable(),
-                    // Tables\Columns\TextColumn::make('serial_number')
-                    //     ->searchable(),
-                    // Tables\Columns\TextColumn::make('expiry_date')
-                    //     ->date()
-                    //     ->sortable(),
-                    // add field to manually enter quantity of product to sell
-                    InputColumn::make('Quantity to Sell')
-                        ->label('Quantity'),
-                    CheckboxColumn::make('Insured')
-                        ->label('Covered?')
-                        ->sortable()
-                        ->alignCenter()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                ])
-                ->filters([
-                    //
-                ])
-                ->actions([
-                    // Action::make('edit')
-                    //     ->label('Edit')
-                    //     ->color('warning')
-                    //     ->icon('heroicon-o-pencil')
-                    //     ->url(function ($record) {
-                    //         // Return the URL for the clicked record
-                    //         return route('products.edit', $record->id);
-                    //     }),
-                    // Action::make('delete')
-                    //     ->label('Delete')
-                    //     ->requiresConfirmation()
-                    //     ->color('danger')
-                    //     ->icon('heroicon-o-trash')
-                    //     ->action(function ($record) {
-                    //         // Delete the record
-                    //         if ($record->delete()) {
-                    //             Notification::make()
-                    //                 ->title('Delete record ' . $record->id . ' successfully')
-                    //                 ->success()
-                    //                 ->send();
-                    //         }
-                    //     }),
-                    // Add action to save the grand total
-                    // Action::make('save')
-                    //     ->label('Confirm Sale')
-                    //     ->color('success')
-                    //     ->icon('heroicon-o-check-circle')
-                    //     ->requiresConfirmation()
-                    //     ->action(function () {
-                    //         $this->saveGrandTotal();
-                    //     })
-                    // ->fillForm(fn(Product $record): array => [
-                    //     'ProductName' => $record->ProductName,
-                    //     'Quantity' => $record->Quantity,
-                    //     'Price' => $record->Price,
-                    //     'serial_number' => $record->serial_number,
-                    //     'expiry_date' => $record->expiry_date,
-                    // ])
-                    // ->form([
-                    //     TextInput::make('ProductName')
-                    //         ->label('Product Name')
-                    //         ->default(function (Product $record) {
-                    //             return $record->ProductName;
-                    //         })
-                    //     ->required(),
-                    // TextInput::make('Quantity')
-                    //     ->label('Available Stock')
-                    //     //put field data of selected product in the form
-                    //     ->default(function (Product $record) {
-                    //         return $record->Quantity;
-                    //     })
-                    //     ->required(),
-                    // TextInput::make('Price')
-                    //     ->default(function (Product $record) {
-                    //                     return $record->Price;
-                    //                 })
-                    //                 ->label('Price')
-                    //                 ->required(),
-                    //             TextInput::make('serial_number')
-                    //                 ->default(function (Product $record) {
-                    //                     return $record->serial_number;
-                    //                 })
-                    //                 ->label('Serial Number')
-                    //                 ->required(),
-                    //             TextInput::make('expiry_date')
-                    //                 ->default(function (Product $record) {
-                    //                     return $record->expiry_date;
-                    //                 })
-                    //                 ->label('Expiry Date')
-                    //                 ->required(),
-                    //             // Add a field for the quantity to be sold
-                    //         ])
-                ])
-                ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([])
-                ])
-                ->searchable();
-        } 
+        $user = auth()->user();
 
-
-        elseif (auth()->user()->role_id == 4 )
-        {
-            return $table
+        return $table
             ->query(Product::query()
-                ->where('entity_id', auth()->user()->entity_id))
-                // Product::query()
-                // ->where('entity_id', auth()->user()->entity_id)
-                // ->where('department_id', auth()->user()->department_id)
+                ->when($user->role_id == 4, function ($query) use ($user) {
+                    // Filter products by entity_id for role_id 4
+                    $query->where('entity_id', $user->entity_id);
+                })
+                // ->where('Status', 0)
+                ->when($user->role_id != 1, function ($query) use ($user) {
+                    // Filter products by department_id for other roles
+                    $query->whereHas('departments', function ($query) use ($user) {
+                        $query->where('department_id', $user->department_id);
+                    });
+                }))
+
+
             ->columns([
                 Tables\Columns\TextColumn::make('ProductName')
-                ->label('Item')
+                    ->label('Item')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('Price')
-                    ->money('UGX')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('Quantity')
-                    ->numeric()
-                    ->sortable()
-                    ->searchable(),
-                // Tables\Columns\TextColumn::make('serial_number')
+                // Tables\Columns\TextColumn::make('Price')
+                //     ->money('UGX')
+                //     ->sortable()
                 //     ->searchable(),
-                // Tables\Columns\TextColumn::make('expiry_date')
-                //     ->date()
-                //     ->sortable(),
                 // add field to manually enter quantity of product to sell
-                InputColumn::make('Quantity to Sell')
-                    ->label('Quantity to Sell')
+                InputColumn::make('Quantity')
+                    ->label('Quantity To Sell'),
+                CheckboxColumn::make('Insured')
+                    ->label('Covered?')
+                    ->sortable()
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                // Action::make('edit')
-                //     ->label('Edit')
-                //     ->color('warning')
-                //     ->icon('heroicon-o-pencil')
-                //     ->url(function ($record) {
-                //         // Return the URL for the clicked record
-                //         return route('products.edit', $record->id);
-                //     }),
-                // Action::make('delete')
-                //     ->label('Delete')
-                //     ->requiresConfirmation()
-                //     ->color('danger')
-                //     ->icon('heroicon-o-trash')
-                //     ->action(function ($record) {
-                //         // Delete the record
-                //         if ($record->delete()) {
-                //             Notification::make()
-                //                 ->title('Delete record ' . $record->id . ' successfully')
-                //                 ->success()
-                //                 ->send();
-                //         }
-                //     }),
-                // Add action to save the grand total
-                // Action::make('save')
-                //     ->label('Confirm Sale')
-                //     ->color('success')
-                //     ->icon('heroicon-o-check-circle')
-                //     ->requiresConfirmation()
-                //     ->action(function () {
-                //         $this->saveGrandTotal();
-                //     })
-                    // ->fillForm(fn(Product $record): array => [
-                    //     'ProductName' => $record->ProductName,
-                    //     'Quantity' => $record->Quantity,
-                    //     'Price' => $record->Price,
-                    //     'serial_number' => $record->serial_number,
-                    //     'expiry_date' => $record->expiry_date,
-                    // ])
-                    // ->form([
-                    //     TextInput::make('ProductName')
-                    //         ->label('Product Name')
-                    //         ->default(function (Product $record) {
-                    //             return $record->ProductName;
-                    //         })
-                    //         ->required(),
-                    //     TextInput::make('Quantity')
-                    //         ->label('Available Stock')
-                    //         // put field data of selected product in the form
-                    //         ->default(function (Product $record) {
-                    //             return $record->Quantity;
-                    //         })
-                    //         ->required(),
-                    //     TextInput::make('Price')
-                    //         ->default(function (Product $record) {
-                    //             return $record->Price;
-                    //         })
-                    //         ->label('Price')
-                    //         ->required(),
-                    //     TextInput::make('serial_number')
-                    //         ->default(function (Product $record) {
-                    //             return $record->serial_number;
-                    //         })
-                    //         ->label('Serial Number')
-                    //         ->required(),
-                    //     TextInput::make('expiry_date')
-                    //         ->default(function (Product $record) {
-                    //             return $record->expiry_date;
-                    //         })
-                    //         ->label('Expiry Date')
-                    //         ->required(),
-                        // Add a field for the quantity to be sold
-                    // ])
+              
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([])
             ])
             ->searchable();
-    }
-        
-        
-        
-        else 
-        
-        {
-            
-
-            return $table
-                ->query(Product::query()
-                    ->where('entity_id', auth()->user()->entity_id))
-                    // Product::query()
-                    // ->where('entity_id', auth()->user()->entity_id)
-                    ->where('department_id', auth()->user()->department_id)
-                ->columns([
-                    Tables\Columns\TextColumn::make('ProductName')
-                    ->label('Item')
-                        ->sortable()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('Price')
-                        ->money('UGX')
-                        ->sortable()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('Quantity')
-                        ->numeric()
-                        ->sortable()
-                        ->searchable(),
-                    // Tables\Columns\TextColumn::make('serial_number')
-                    //     ->searchable(),
-                    // Tables\Columns\TextColumn::make('expiry_date')
-                    //     ->date()
-                    //     ->sortable(),
-                    // add field to manually enter quantity of product to sell
-                    InputColumn::make('Quantity to Sell')
-                        ->label('Quantity to Sell')
-                ])
-                ->filters([
-                    //
-                ])
-                ->actions([
-                    // Action::make('edit')
-                    //     ->label('Edit')
-                    //     ->color('warning')
-                    //     ->icon('heroicon-o-pencil')
-                    //     ->url(function ($record) {
-                    //         // Return the URL for the clicked record
-                    //         return route('products.edit', $record->id);
-                    //     }),
-                    // Action::make('delete')
-                    //     ->label('Delete')
-                    //     ->requiresConfirmation()
-                    //     ->color('danger')
-                    //     ->icon('heroicon-o-trash')
-                    //     ->action(function ($record) {
-                    //         // Delete the record
-                    //         if ($record->delete()) {
-                    //             Notification::make()
-                    //                 ->title('Delete record ' . $record->id . ' successfully')
-                    //                 ->success()
-                    //                 ->send();
-                    //         }
-                    //     }),
-                    // Add action to save the grand total
-                    // Action::make('save')
-                    //     ->label('Confirm Sale')
-                    //     ->color('success')
-                    //     ->icon('heroicon-o-check-circle')
-                    //     ->requiresConfirmation()
-                    //     ->action(function () {
-                    //         $this->saveGrandTotal();
-                    //     })
-                        // ->fillForm(fn(Product $record): array => [
-                        //     'ProductName' => $record->ProductName,
-                        //     'Quantity' => $record->Quantity,
-                        //     'Price' => $record->Price,
-                        //     'serial_number' => $record->serial_number,
-                        //     'expiry_date' => $record->expiry_date,
-                        // ])
-                        // ->form([
-                        //     TextInput::make('ProductName')
-                        //         ->label('Product Name')
-                        //         ->default(function (Product $record) {
-                        //             return $record->ProductName;
-                        //         })
-                        //         ->required(),
-                        //     TextInput::make('Quantity')
-                        //         ->label('Available Stock')
-                        //         // put field data of selected product in the form
-                        //         ->default(function (Product $record) {
-                        //             return $record->Quantity;
-                        //         })
-                        //         ->required(),
-                        //     TextInput::make('Price')
-                        //         ->default(function (Product $record) {
-                        //             return $record->Price;
-                        //         })
-                        //         ->label('Price')
-                        //         ->required(),
-                        //     TextInput::make('serial_number')
-                        //         ->default(function (Product $record) {
-                        //             return $record->serial_number;
-                        //         })
-                        //         ->label('Serial Number')
-                        //         ->required(),
-                        //     TextInput::make('expiry_date')
-                        //         ->default(function (Product $record) {
-                        //             return $record->expiry_date;
-                        //         })
-                        //         ->label('Expiry Date')
-                        //         ->required(),
-                            // Add a field for the quantity to be sold
-                        // ])
-                ])
-                ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([])
-                ])
-                ->searchable();
-        }
     }
 
     public function render(): View

@@ -51,7 +51,7 @@
 
 
 
-                <h1 class="text-lg font-semibold mb-6">Prescribe Medication</h1>
+                <h1 class="text-lg font-semibold mb-6">Select Medication</h1>
                 {{-- @livewire('list-sales', ['filter' => request()->query('filter', 'all')]) --}}
 
                 <div style="display: flex; justify-content: space-between;">
@@ -100,7 +100,7 @@
                         <div style="margin-top: 10px; display: flex; justify-content: space-between;">
                             <button type="submit" class="btn btn-primary"
                                 style="color: white; background-color: rgb(24, 24, 61); padding: 8px; border-radius: 50px; margin-top: 10px">Confirm
-                                Prescription</button>
+                                Selection</button>
                         </div>
 
 

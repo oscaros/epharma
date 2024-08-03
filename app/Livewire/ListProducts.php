@@ -53,7 +53,11 @@ class ListProducts extends Component implements HasForms, HasTable
             return $table
            
             ->query(
-                Product::query()
+                Product::query(
+                    
+                )
+                // ->where('Status', 0)
+               
                   
                
             )

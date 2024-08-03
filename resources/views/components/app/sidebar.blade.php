@@ -332,7 +332,7 @@
                                             href="{{ route('customer-sales.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                                Patient Prescriptions</span>
+                                                Patient Services and Products</span>
                                         </a>
                                     </li>
 
@@ -455,7 +455,7 @@
 
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Select
                                             & Sale</span>
                                     </div>
                                     <!-- Icon -->
@@ -476,7 +476,7 @@
                                             href="{{ route('sales.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                Prescriptions</span>
+                                                Selections</span>
                                         </a>
                                     </li>
 
@@ -484,7 +484,7 @@
                                         <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('sales.create')) {{ '!text-indigo-500' }} @endif"
                                             href="{{ route('sales.create') }}">
                                             <span
-                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Prescribe
+                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Select
                                                 Drug/Service</span>
                                         </a>
                                     </li>

@@ -37,6 +37,10 @@ return [
     'AT' => [
         'AppName' => env("AT_APP_NAME"),
         'apiKey' => env("AT_API_KEY")
-    ]
+    ],
+    'yopay' => [
+        'username' => env('YO_PAYMENTS_USERNAME'),
+        'password' => env('YO_PAYMENTS_PASSWORD'),
+    ],
 
 ];

@@ -65,6 +65,27 @@ class ListCustomers extends Component implements HasForms, HasTable
                     //
                 ])
                 ->actions([
+
+                    Action::make('new_visit')
+                    ->label('New Visit')
+                    ->color('success')
+                    ->icon('heroicon-o-plus')
+                    ->action(function ($record) {
+                        $record->NewVisit = true;
+                        $record->save();
+
+                        Notification::make()
+                            ->title('New Visit registered for ' . $record->FirstName)
+                            ->success()
+                            ->send();
+                            $this->redirectRoute('customers.show', $record->id);
+                    })
+                    // ->url(function ($record) {
+                    //     // Return the URL for the clicked record
+                    //     return route('sales.create');
+                    // })
+                    
+                    ,
                     //edit and delete actions
                      //add action to show details
                      Action::make('details')
@@ -156,6 +177,26 @@ class ListCustomers extends Component implements HasForms, HasTable
             ])
             ->actions([
 
+                Action::make('new_visit')
+                ->label('New Visit')
+                ->color('success')
+                ->icon('heroicon-o-plus')
+                ->action(function ($record) {
+                    $record->NewVisit = true;
+                    $record->save();
+
+                    Notification::make()
+                        ->title('New Visit registered for ' . $record->FirstName)
+                        ->success()
+                        ->send();
+                        $this->redirectRoute('customers.show', $record->id);
+                })
+                // ->url(function ($record) {
+                //     // Return the URL for the clicked record
+                //     return route('sales.create');
+                // }),
+                ,
+
                  //add action to show details
                  Action::make('details')
                  ->label('Details')
@@ -200,6 +241,8 @@ class ListCustomers extends Component implements HasForms, HasTable
             ]);
         }
     }
+
+  
 
     public function render(): View
     {

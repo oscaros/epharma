@@ -16,9 +16,14 @@ class Department extends Model
         return $this->belongsTo(Entity::class);
     }
 
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class);
+    // }
+
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'department_product');
     }
 
     public function users()

@@ -1,69 +1,132 @@
 @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
-<x-app-layout>
-    <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
-        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <div class="form-group mt-0 mb-0">
-                <br>
-                <div class="flex flex-wrap items-center space-x-4 mb-4">
-                    <select class="form-control mb-0" id="customer_id" name="customer_id">
+    <x-app-layout>
+        <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
+            <div class="px-4 sm:px-6 lg:px-8 py-0 w-full max-w-9xl mx-auto">
+                <div class="form-group ">
+                    <br>
+
+
+                    <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id" onchange="fetchSalesItems(this.value); ">
                         <option value="">Select Patient</option>
                         @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}" data-insured="{{ $customer->PInsured }}">{{ $customer->FirstName }}</option>
+                            <option value="{{ $customer->id }}">{{ $customer->FirstName }} {{ $customer->LastName }}
+                            </option>
                         @endforeach
                     </select>
-                    <div class="flex justify-center hidden">
-                        <video id="preview" class="w-full h-10 max-w-md"></video>
-                    </div>
-                    <div id="scanForm" class="flex items-center space-x-4">
-                        @csrf
-                        <input type="text" name="phone" id="phone" placeholder="Scan Number" class="border rounded px-4 py-2">
-                        <button type="button" id="submitScan" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
-                    </div>
-                    <div class="flex items-center space-x-4 mt-4 lg:mt-0">
-                        <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" />
-                        <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" id="scanButton" type="button">Scan QR Code with Camera</button>
-                        <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden">
-                        <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
-                    </div>
-                </div>
-            </div>
-            <h1 class="text-lg font-semibold mb-6">Prescribe Item</h1>
-            <div class="flex flex-col lg:flex-row lg:justify-between">
-                <div class="w-full lg:w-1/2 mb-4 lg:mb-0" id="table">
-                    @livewire('list-sale-products')
-                </div>
-                <div id="receipt" class="border border-gray-300 p-4 mt-4 lg:mt-0 lg:w-1/2 lg:ml-4 rounded bg-gray-100">
-                    <h3 class="font-bold text-center bg-blue-500 text-white p-2 rounded">Receipt</h3>
-                    @csrf
-                    <table class="w-full border-collapse">
+
+
+                  
+                    
+                    <table id="sales_items_table" class="table border border-gray-300 w-full mt-4 rounded flex py-2 justify-center px-2 mb-10">
                         <thead>
-                            <tr class="bg-blue-500 text-white">
-                                <th class="border border-gray-300 p-2">Product</th>
-                                <th class="border border-gray-300 p-2">Quantity</th>
-                                <th class="border border-gray-300 p-2">Price</th>
-                                <th class="border border-gray-300 p-2">Total</th>
-                                <th class="border border-gray-300 p-2">Action</th>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Partial</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            <!-- Sales items will be displayed here -->
+                        </tbody>
                     </table>
-                    <div id="grandTotal" name="grandTotal" class="mt-4 font-bold">Grand Total: UGX {{ $grandTotal }}</div>
-                    <input type="hidden" id="grandTotalInput" name="grandTotal" readonly value="{{ $grandTotal }}">
-                    <input type="hidden" id="productIds" name="productIds">
-                    <input type="hidden" id="productQuantities" name="productQuantities">
-                    <input type="hidden" id="productPrices" name="productPrices">
-                    <input type="hidden" id="productNames" name="productNames">
-                    <div class="mt-4 flex justify-between">
-                        <button type="button" onclick="previewReceipt()" class="btn btn-primary text-white bg-gray-700 p-2 rounded-full mt-2">Preview</button>
+                    
+
+
+
+
+                    <div class="flex justify-center my-4 hidden">
+                        <video id="preview" class="w-full h-10 max-w-md"></video>
+                    </div>
+
+                    <div id="scanForm">
+                        @csrf
+
+
+
+                        <div class="flex justify-end my-0 mr-5">
+                            <div class="mr-10">
+                                <input type="text" name="phone" id="phone" placeholder="Scan Number"
+                                    class="border rounded px-4 py-2"  onchange="fetchSalesItems(this.value); ">
+                                <button type="button" id="submitScan"
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-1">Submit</button>
+                            </div>
+
+                            <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;" onchange="fetchSalesItems(this.value); "/>
+                            <button class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-600"
+                                id="scanQrButton" type="button">Scan QR Code</button>
+
+                                <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
+                                <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600" id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
+
+
+
+                            {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
+               --}}
+                        </div>
+
+
+                    </div>
+                    {{-- <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+                <h1 class="text-lg font-semibold mb-6">Selection Status</h1>
+              @livewire('list-sale-items', ['customer_id' => request()->query('customer_id')])
+            </div> --}}
+
+                    {{-- @if ($selectedCustomerId)
+                        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+                            <h1 class="text-lg font-semibold mb-6">Selection Status</h1>
+                            @livewire('list-sale-items', ['customer_id' => $selectedCustomerId])
+                        </div>
+                    @endif --}}
+
+
+                    {{-- <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+                        @livewire('list-sale-items', ['customer_id' => $selectedCustomerId])
+
+                    </div> --}}
+
+
+                    <h1 class="text-lg font-semibold mb-6">Select Item</h1>
+                    <div class="flex flex-col lg:flex-row lg:justify-between">
+                        <div class="w-full lg:w-1/2" id="table">
+                            @livewire('list-sale-products')
+                        </div>
+                        <div id="receipt"
+                            class="border border-gray-300 p-4 mt-4 lg:mt-0 lg:w-1/2 lg:ml-4 rounded bg-gray-100">
+                            <h3 class="font-bold text-center bg-blue-500 text-white p-2 rounded">Receipt</h3>
+                            @csrf
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="bg-blue-500 text-white">
+                                        <th class="border border-gray-300 p-2">Product</th>
+                                        <th class="border border-gray-300 p-2">Quantity</th>
+                                        <th class="border border-gray-300 p-2">Price</th>
+                                        <th class="border border-gray-300 p-2">Total</th>
+                                        <th class="border border-gray-300 p-2">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <div id="grandTotal" name="grandTotal" class="mt-4 font-bold">Grand Total: UGX
+                                {{ $grandTotal }}</div>
+                            <input type="hidden" id="grandTotalInput" name="grandTotal" readonly
+                                value="{{ $grandTotal }}">
+                            <input type="hidden" id="productIds" name="productIds">
+                            <input type="hidden" id="productQuantities" name="productQuantities">
+                            <input type="hidden" id="productPrices" name="productPrices">
+                            <input type="hidden" id="productNames" name="productNames">
+                            <div class="mt-4 flex justify-between">
+                                <button type="button" onclick="previewReceipt()"
+                                    class="btn btn-primary text-white bg-gray-700 p-2 rounded-full mt-2">Preview</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </form>
-</x-app-layout>
-
-
-
+        </form>
+    </x-app-layout>
 @else
     <h1 class="text-lg font-semibold mb-6">You do not have permission to view this page</h1>
 @endif
@@ -74,7 +137,28 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<style>
+    #sales_items_table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    #sales_items_table th, #sales_items_table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    #sales_items_table th {
+        background-color: #f2f2f2;
+    }
+</style>
 
 <script>
     function printReceipt() {
@@ -126,7 +210,8 @@
                 Swal.fire({
                     title: 'Add Customer?',
                     html: '<label for="swal-input1" class="block mb-1">Customer First Name</label>' +
-                        '<input id="swal-input1" class="swal2-input mb-2" placeholder="Customer First Name" value="' + selectedData.text + '" readonly>' +
+                        '<input id="swal-input1" class="swal2-input mb-2" placeholder="Customer First Name" value="' +
+                        selectedData.text + '" readonly>' +
                         '<label for="swal-input2" class="block mb-1">Customer Last Name</label>' +
                         '<input id="swal-input2" class="swal2-input mb-2" placeholder="Customer Last Name">' +
                         '<label for="swal-input3" class="block mb-1">Phone Number</label>' +
@@ -160,14 +245,15 @@
                                 LastName: lname,
                                 Phone: phone,
                                 Email: email,
-                                PInsured: pInsured,
-                                entity_id: {{ auth()->user()->entity_id }}
+                                PInsured: pInsured
+                                // entity_id: {{ auth()->user()->entity_id }}
                             }
                         }).done((response) => {
                             console.log('Customer created:', response);
                             return response;
                         }).fail((jqXHR, textStatus, errorThrown) => {
-                            Swal.showValidationMessage(`Request failed: ${textStatus}`);
+                            Swal.showValidationMessage(
+                                `Request failed: ${textStatus}`);
                         });
                     },
                     allowOutsideClick: () => !Swal.isLoading()
@@ -181,9 +267,15 @@
                             success: function(response) {
                                 $('#customer_id').empty();
                                 $.each(response.data, function(index, customer) {
-                                    $('#customer_id').append('<option value="' + customer.id + '" data-insured="' + customer.PInsured + '">' + customer.FirstName + '</option>');
+                                    $('#customer_id').append(
+                                        '<option value="' + customer
+                                        .id + '" data-insured="' +
+                                        customer.PInsured + '">' +
+                                        customer.FirstName + '</option>'
+                                    );
                                 });
-                                $('#customer_id').val(result.value.data.id).trigger('change');
+                                $('#customer_id').val(result.value.data.id).trigger(
+                                    'change');
                             },
                             error: function(xhr, status, error) {
                                 console.error(error);
@@ -235,12 +327,16 @@
                 let productPrice = value.price;
                 let productTotal = productPrice * value.quantity;
 
-                receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ? '#f2f2f2' : '#ffffff') + ';">';
+                receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ?
+                    '#f2f2f2' : '#ffffff') + ';">';
                 receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity +
+                    '</td>';
                 receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice + '</td>';
                 receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;"><button type="button" style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' + key + '\')">Remove</button></td>';
+                receiptContent +=
+                    '<td style="border: 1px solid #ccc; padding: 8px;"><button type="button" style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' +
+                    key + '\')">Remove</button></td>';
                 receiptContent += '</tr>';
 
                 productIds.push(key);
@@ -249,7 +345,9 @@
                 grandTotal += productTotal;
             }
 
-            receiptContent += '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td></tr>';
+            receiptContent +=
+                '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' +
+                grandTotal + '</td></tr>';
 
             $('#receipt table tbody').html(receiptContent);
             $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
@@ -285,12 +383,17 @@
                 });
 
                 fetchCustomerInsuranceStatus(customerId).then(customerInsured => {
+
                     fetchProductInsuranceStatus(productId).then(productInsured => {
-                        var productPrice = (productInsured == 1 && customerInsured == 1) ? 0 : price;
+                        var productPrice = (productInsured == 1 &&
+                            customerInsured == 1) ? 0 : price;
                         var total = productPrice * quantity;
 
                         // Ensure the values are fetched correctly
-                        console.log(`Customer Insured: ${customerInsured}, Product Insured: ${productInsured}, Price: ${productPrice}`);
+                        //  console('Fetching Product Data:', productId);
+                        console.log(
+                            `Customer Insured: ${customerInsured}, Product Insured: ${productInsured}, Price: ${productPrice}`
+                        );
 
                         cart[productId] = {
                             name: productName,
@@ -329,9 +432,10 @@
         }
 
         function fetchProductInsuranceStatus(productId) {
+
             return new Promise((resolve, reject) => {
                 $.ajax({
-                    url: `/products/${productId}`,
+                    url: `/productData/${productId}`,
                     method: 'GET',
                     success: function(product) {
                         resolve(product.Insured);
@@ -350,7 +454,8 @@
         }
 
         window.previewReceipt = function() {
-            let receiptContent = '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
+            let receiptContent =
+                '<h3 style="font-weight: bold; text-align: center; background-color: #007bff; color: white; padding: 10px; border-radius: 5px;">Receipt</h3>';
             receiptContent += '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
             receiptContent += '<thead style="background-color: #007bff; color: white;">';
             receiptContent += '<tr>';
@@ -366,27 +471,34 @@
                 let productPrice = value.price;
                 let productTotal = productPrice * value.quantity;
                 receiptContent += '<tr>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal + '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name +
+                    '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity +
+                    '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice +
+                    '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal +
+                    '</td>';
                 receiptContent += '</tr>';
             }
 
             receiptContent += '<tr>';
-            receiptContent += '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal + '</td>';
+            receiptContent +=
+                '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal +
+                '</td>';
             receiptContent += '</tr>';
 
             receiptContent += '</tbody>';
             receiptContent += '</table>';
-            receiptContent += '<button onclick="printReceipt()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-4">Print</button>';
+            receiptContent +=
+                '<button onclick="printReceipt()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-4">Print</button>';
 
             Swal.fire({
                 title: 'Receipt Preview',
                 html: receiptContent,
                 showCancelButton: true,
-                confirmButtonText: 'Confirm Prescription',
+                confirmButtonText: 'Confirm Selection',
                 cancelButtonText: 'Close',
                 confirmButtonColor: '#007bff',
                 cancelButtonColor: '#d33',
@@ -440,7 +552,9 @@
                 success: function(response) {
                     const customer = response;
                     console.log('Fetched Customer Data:', customer);
-                    $('#customer_id').append(`<option value="${customer.id}" selected>${customer.FirstName}</option>`).trigger('change');
+                    $('#customer_id').append(
+                        `<option value="${customer.id}" selected>${customer.FirstName}</option>`
+                    ).trigger('change');
                     $('#customer-icon').attr('src', `/storage/${customer.qr_code_path}`);
                 },
                 error: function(xhr, status, error) {
@@ -449,6 +563,65 @@
                 }
             });
         }
+
+        // $('#submitScan').click(function() {
+        //     var phone = $('#phone').val();
+        //     if (phone) {
+        //         Swal.fire({
+        //             title: 'Processing...',
+        //             text: 'Please wait while we process your request.',
+        //             allowOutsideClick: false,
+        //             didOpen: () => {
+        //                 Swal.showLoading();
+        //             }
+        //         });
+        //         $.post("{{ route('customers.scanProcess2') }}", {
+        //             _token: '{{ csrf_token() }}',
+        //             phone: phone
+        //         }).done(function(response) {
+        //             Swal.close();
+        //             window.location.href = response.redirect_url;
+        //         }).fail(function(error) {
+        //             Swal.fire('Error', 'Unable to process scan. Please try again.', 'error');
+        //         });
+        //     }
+        // });
+
+
+
+        // $('#submitScan').click(function() {
+        //     var phone = $('#phone').val();
+        //     if (phone) {
+        //         Swal.fire({
+        //             title: 'Processing...',
+        //             text: 'Please wait while we process your request.',
+        //             allowOutsideClick: false,
+        //             didOpen: () => {
+        //                 Swal.showLoading();
+        //             }
+        //         });
+        //         $.post("{{ route('customers.scanProcess2') }}", {
+        //             _token: '{{ csrf_token() }}',
+        //             phone: phone
+        //         }).done(function(response) {
+        //             Swal.close();
+        //             if (response.customer) {
+        //                 // Update the DOM with customer details
+        //                 $('#customer_id').val(response.customer.id).trigger(
+        //                 'change'); // Update the select input
+        //                 // Optionally update other parts of the page
+        //                 updateSaleItemsList(response.customer
+        //                 .id); // You might need to write this function
+        //             } else {
+        //                 Swal.fire('Error', response.error || 'Customer not found.', 'error');
+        //             }
+        //         }).fail(function(xhr, status, error) {
+        //             Swal.fire('Error', 'Unable to process scan. Please try again.', 'error');
+        //         });
+        //     }
+        // });
+
+
 
         $('#submitScan').click(function() {
             var phone = $('#phone').val();
@@ -466,12 +639,44 @@
                     phone: phone
                 }).done(function(response) {
                     Swal.close();
-                    window.location.href = response.redirect_url;
-                }).fail(function(error) {
+                    if (response.customer && response.customer.id) {
+                        // Access the customer ID from the response
+                        var customerId = response.customer.id;
+
+                        // Use Livewire to set the customer ID or update the DOM directly
+                        Livewire.emit('setCustomerId', customerId);
+
+                        // Optionally update other parts of the page
+                        // Update select input with the new customer ID and trigger change
+                        $('#customer_id').val(customerId).trigger('change');
+
+                        // If you have additional fields to update based on the customer, do it here
+                        // Example: Update customer details displayed on the page
+                        $('#customer-details').html(`
+                    Name: ${response.customer.FirstName} ${response.customer.LastName}<br>
+                    Phone: ${response.customer.Phone}<br>
+                    Email: ${response.customer.Email}
+                `);
+
+                    } else {
+                        Swal.fire('Error', 'Customer not found or invalid response.', 'error');
+                    }
+                }).fail(function(xhr, status, error) {
                     Swal.fire('Error', 'Unable to process scan. Please try again.', 'error');
                 });
             }
         });
+
+
+
+        function updateSaleItemsList(customerId) {
+            // This function could use AJAX to fetch and display sale items related to the customer
+            $.get('/path-to-fetch-sale-items/' + customerId, function(data) {
+                // Assume data contains HTML to display
+                $('#sale-items-container').html(data);
+            });
+        }
+
 
         $(document).on('keypress', function(e) {
             if (e.which == 13 && !$(e.target).is('textarea') && !$(e.target).is('button')) {
@@ -522,3 +727,67 @@
         }
     });
 </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const transactionReference = "{{ session('transactionReference') }}";
+        if (transactionReference) {
+            const intervalId = setInterval(checkPaymentStatus, 30000);
+        }
+
+        function checkPaymentStatus() {
+            fetch(`/check-payment-status/${transactionReference}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'PENDING') {
+                        alert(`Payment status updated: ${data.status}`);
+                        location.reload(); // Reload the page or update the UI as needed
+                        clearInterval(intervalId); // Stop checking once status changes
+                    }
+                })
+                .catch(error => console.error('Error checking payment status:', error));
+        }
+    });
+</script>
+
+
+
+<script>
+  // JavaScript to fetch and display sales items
+  function fetchSalesItems(customerId) {
+    if (!customerId) {
+        $('#sales_items_table tbody').empty(); // Clear the table if no customer is selected
+        return;
+    }
+
+    $.ajax({
+        url: `/sales-items/${customerId}`,
+        type: 'GET',
+        success: function(data) {
+            $('#sales_items_table tbody').empty();
+            data.forEach(item => {
+                const total = item.Quantity * item.Price;
+                const row = `
+                    <tr>
+                        <td>${item.ProductName}</td>
+                        <td>${item.Quantity}</td>
+                        <td>${item.Price}</td>
+                        <td>${total}</td>
+                        <td>${item.Status ? 'Full' : 'Not Full'}</td>
+                        <td>${item.Partial ? 'Yes' : 'No'}</td>
+                    </tr>
+                `;
+                $('#sales_items_table tbody').append(row);
+            });
+        },
+        error: function(error) {
+            console.error('Error fetching sales items:', error);
+            alert('Failed to fetch sales items.');
+        }
+    });
+}
+
+
+    </script>
+    

@@ -33,7 +33,7 @@
         </div> --}}
 
         <div class="bg-gray-200 rounded-lg shadow-md p-6 cursor-pointer">
-            <h3 class="text-xl font-semibold mb-4">Total Prescriptions</h3>
+            <h3 class="text-xl font-semibold mb-4">Total Selections</h3>
             <p class="text-2xl font-bold">{{ number_format($totalSales) }}</p>
         </div>
         

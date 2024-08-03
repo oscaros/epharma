@@ -54,7 +54,7 @@
                         <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalSalesAmount, 2) }}</span>
                     </li>
                     <li class="flex justify-between items-center py-3">
-                        <span>Closing Prescriptions Made</span>
+                        <span>Closing Selections Made</span>
                         <span class="bg-blue-500 text-black px-3 py-1 rounded">{{ number_format($totalSales, 2) }}</span>
                     </li>
                 </ul>

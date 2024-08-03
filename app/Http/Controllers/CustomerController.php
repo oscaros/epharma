@@ -44,18 +44,33 @@ class CustomerController extends Controller
             return redirect()->back()->with('error', 'Customer not found.');
         }
     }
-    public function scanProcess2(Request $request)
-{
-    $phone = $request->input('phone');
-    $customer = Customer::where('Phone', $phone)->first();
 
-    if ($customer) {
-        return response()->json(['redirect_url' => route('sale-items.index', ['customer_id' => $customer->id])]);
-    } else {
-        return response()->json(['error' => 'Customer not found.'], 404);
+    public function getCustomerIdByPhone(Request $request)
+    {
+        $phone = $request->phone;
+        $customer = Customer::where('Phone', $phone)->first();
+
+        if ($customer) {
+            return response()->json(['customerId' => $customer->id]);
+        } else {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
     }
-}
 
+    public function scanProcess2(Request $request)
+    {
+        // return response()->json(['response', $request->all()]);
+        $phone = $request->input('phone');
+        $customer = Customer::where('Phone', $phone)->first();
+        // dd($customer);
+
+        if ($customer) {
+            // Return customer data and potentially other related data
+            return response()->json(['customer' => $customer]);
+        } else {
+            return response()->json(['error' => 'Customer not found.'], 404);
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -78,7 +93,7 @@ class CustomerController extends Controller
                 'FirstName' => 'required',
                 // 'LastName' => 'required',
                 'Email' => 'required|Email|unique:customers,Email',
-                'Phone' => 'required|Phone|unique:customers,Phone',
+                'Phone' => 'required|string|unique:customers,Phone',
                 'LastName' => 'required',
                 'PInsured' => 'required',
                 // 'Address' => 'required',
@@ -94,10 +109,10 @@ class CustomerController extends Controller
                 'NIN' => $request->NIN,
                 'PInsured' => $request->PInsured,
                 'PType' => $request->PType,
+                'NewVisit' => false,  // Explicitly setting NewVisit to false
                 // 'entity_id' => $request->entity_id
-                //use auth
+                // use auth
                 'entity_id' => auth()->user()->entity_id
-                
             ];
 
             // dd($data);
@@ -139,20 +154,20 @@ class CustomerController extends Controller
     //     return view('customers.show', compact('customer'));
     // }
 
-     public function show($id)
+    public function show($id)
     {
         try {
             $customer = Customer::findOrFail($id);
             // dd($customer);
-            //return entity with $customer->entity_id as its id
+            // return entity with $customer->entity_id as its id
             $entity = Entity::find($customer->entity_id);
-            
+
             // dd($entity);
             // return response()->json($customer);
             return view('customers.show', compact('customer', 'entity'));
         } catch (\Exception $e) {
             // return response()->json(['error' => 'Customer not found'], 500);
-             return redirect()->route('customers.index')->with('error', 'Patient not found.');
+            return redirect()->route('customers.index')->with('error', 'Patient not found.');
         }
     }
 
@@ -177,11 +192,11 @@ class CustomerController extends Controller
     {
         //
         try {
-            //code...
+            // code...
             $customer = Customer::find($id);
             return view('customers.edit', compact('customer'));
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             return redirect()->back()->with('error', 'An error occurred while trying to edit customer');
         }
     }
@@ -194,13 +209,9 @@ class CustomerController extends Controller
         //
 
         try {
-            //code...
-            $request->validate([
-                
-               
-            ]);
+            // code...
+            $request->validate([]);
             $customer = Customer::find($id);
-           
 
             $data = [
                 // 'Name' => $request->name,
@@ -208,28 +219,22 @@ class CustomerController extends Controller
                 'Phone' => $request->phone,
                 'Address' => $request->address,
                 'UpdatedBy' => auth()->user()->id,
-               
             ];
 
-           
-
             $customer->update($data);
-            $this->createAudit($request,  "Updated Patient with ID: {$customer->id}", 'Update', $customer->id, null);
+            $this->createAudit($request, "Updated Patient with ID: {$customer->id}", 'Update', $customer->id, null);
             return redirect()->route('customers.index')->with('success', 'Patient Details updated successfully.');
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
-
-
     public function getCustomerDetails($id)
-{
-    $customer = Customer::findOrFail($id);
-    return response()->json($customer);
-}
-
+    {
+        $customer = Customer::findOrFail($id);
+        return response()->json($customer);
+    }
 
     /**
      * Remove the specified resource from storage.

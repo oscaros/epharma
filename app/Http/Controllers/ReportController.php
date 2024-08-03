@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Sale;
-use Carbon\Carbon;
+// use Carbon\Carbon;
+// use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ReportController extends Controller
 {
@@ -17,10 +19,35 @@ class ReportController extends Controller
 
     public function fetchData(Request $request)
     {
+
+        // dd('called out');
+        \Log::info('Request received', $request->all());
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'report_type' => 'required|in:sales,customers,products'
+        ]);
+    
+        $startDate = Carbon::parse($request->input('start_date'));
+        $endDate = Carbon::parse($request->input('end_date'));
+        $reportType = $request->input('report_type');
+    
+        // Log the parsed date to see if it's working correctly
+        \Log::info('Parsed Date', ['start_date' => $startDate]);
+        \Log::info('Parsed Date', ['end_date' => $endDate]);
+
+
+
+       
         try {
-            $startDate = Carbon::parse($request->input('start_date'));
-            $endDate = Carbon::parse($request->input('end_date'));
-            $reportType = $request->input('report_type');
+
+            // dd('called in');
+
+
+          
+            // $startDate = Carbon::parse($request->input('start_date'));
+            // $endDate = Carbon::parse($request->input('end_date'));
+            // $reportType = $request->input('report_type');
     
             $sales = $reportType === 'sales' ? Sale::whereBetween('created_at', [$startDate, $endDate])->get() : [];
             $customers = $reportType === 'customers' ? Customer::whereBetween('created_at', [$startDate, $endDate])->get() : [];
@@ -29,6 +56,8 @@ class ReportController extends Controller
             $salesData = $this->formatSalesData($sales);
             $customerData = $this->formatCustomerData($customers);
             $productData = $this->formatProductData($products);
+
+            //  dd('called');
     
             return response()->json([
                 'sales' => $salesData,
@@ -36,8 +65,38 @@ class ReportController extends Controller
                 'products' => $productData,
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Data retrieval failed.'], 500);
+
+            // dd($e->getTraceAsString());
+            \Log::error('Error fetching report data: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Data retrieval failed: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function Test(Request $request){
+
+        // dd($request->all());
+        // $startDate = Carbon::parse($request->input('start_date'));
+
+        \Log::info('Request received', $request->all());
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date'
+        ]);
+    
+        $startDate = Carbon::parse($request->input('start_date'));
+        $endDate = Carbon::parse($request->input('end_date'));
+    
+        // Log the parsed date to see if it's working correctly
+        \Log::info('Parsed Date', ['start_date' => $startDate]);
+        \Log::info('Parsed Date', ['end_date' => $endDate]);
+
+        
+
+       
+
+        return response()->json(['success' => true, 'message' => 'Success']);
     }
     
     

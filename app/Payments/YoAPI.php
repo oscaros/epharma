@@ -15,7 +15,7 @@ class YoAPI
      * Path to the log file
      * @var string
      */
-    private $log_file_path = 'C://Users/supportteam/Desktop/yoapi_log.log'; // Set the path to your log file
+    // private $log_file_path = 'C://Users/supportteam/Desktop/yoapi_log.log'; // Set the path to your log file
 
     // ... [Other methods]
 
@@ -24,10 +24,10 @@ class YoAPI
      * @param string $message
      * @return void
      */
-    private function log_message($message)
-    {
-        file_put_contents($this->log_file_path, $message.PHP_EOL, FILE_APPEND);
-    }
+    // private function log_message($message)
+    // {
+    //     file_put_contents($this->log_file_path, $message.PHP_EOL, FILE_APPEND);
+    // }
     /**
      * The Yo! Payments API Username
      * Required.
@@ -554,7 +554,7 @@ class YoAPI
         $xml .= '</AutoCreate>';
 
         // Log the XML request
-        $this->log_message("XML Request: " . $xml);
+        // $this->log_message("XML Request: " . $xml);
 
         $xml_response = $this->get_xml_response($xml);
 

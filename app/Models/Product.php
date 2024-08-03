@@ -92,8 +92,14 @@ class Product extends Model
         return $this->belongsTo(Entity::class);
     }
 
-    public function department()
+    // public function department()
+    // {
+    //     return $this->belongsTo(Department::class);
+    // }
+
+
+    public function departments()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Department::class, 'department_product');
     }
 }

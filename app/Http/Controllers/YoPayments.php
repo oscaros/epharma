@@ -8,6 +8,7 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Payments\YoAPI;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
@@ -22,6 +23,9 @@ class YoPayments extends Controller
             $customer_id = $request->customer_id;
 
             $customer = Customer::find($customer_id);
+            if (!$customer) {
+                throw new \Exception('Customer not found');
+            }
 
             // Modify phone number: remove leading 0 and append 256
             $phone = $customer->Phone;
@@ -45,7 +49,7 @@ class YoPayments extends Controller
                 'payment_mode' => 'yo pay',
                 'OrderNotificationType' => 'yo pay',
                 'order_tracking_id' => Str::uuid(),
-                'type' => 'Wholesale',
+                'type' => 'Deposit',
                 'payment_method' => 'yo pay',
                 'customer_id' => $customer_id,
             ]);
@@ -63,28 +67,73 @@ class YoPayments extends Controller
                 }
             }
 
-            $callback_url = 'https://epharma.rapharm.shop/finishPayment';
-            $cancel_url = 'https://epharma.rapharm.shop/cancelPayment';
+            // $username = config('yopay.username'); // Load from config or env
+            // $password = config('yopay.password'); // Load from config or env
+
+            $username = '100589248779';
+            $password = 'bVXo-BDBw-KF5x-JSAS-9tm0-jORW-rYqX-7EGn';
+
+            // dd($password);
+
+            $YoPayments = new YoAPI($username, $password);
+            // $YoPayments->set_instant_notification_url(route('payment.notification')); // Define this route
+            $YoPayments->set_instant_notification_url('https://webhook.site/396126eb-cc9b-4c57-a7a9-58f43d2b7935');
+            // $YoPayments->set_external_reference($sale->reference);
+            $YoPayments->set_external_reference(time());
+
+            $res = $YoPayments->ac_deposit_funds($phone, $grandTotal, $description);
+
+            // dd($res);
+            // dd($res['Status']);
+
+            // $transactionReference = $res['TransactionReference'] ?? null;
+            // if ($transactionReference) {
+            //     $sale->update(['reference' => $transactionReference]);
+            // } else {
+            //     Log::error('YoPayments: Missing TransactionReference', ['response' => $res]);
+            //     throw new \Exception('Payment initiation failed. Please try again.');
+            // }
+
+            dd($res['Status']);
+
+            // Flash a success message
+            
+
+            // session()->flash('transactionReference', $transactionReference);
+            session()->flash('success', 'Payment request sent successfully!');
+
+            return redirect()->route('sales.create');
+        } catch (\Exception $e) {
+            Log::error('YoPayments: makePayment error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function checkPaymentStatus($transactionReference)
+    {
+        try {
+            // $username = config('yopay.username'); // Load from config or env
+            // $password = config('yopay.password'); // Load from config or env
 
             $username = '100589248779';
             $password = 'bVXo-BDBw-KF5x-JSAS-9tm0-jORW-rYqX-7EGn';
 
             $YoPayments = new YoAPI($username, $password);
-            $YoPayments->set_instant_notification_url('https://webhook.site/396126eb-cc9b-4c57-a7a9-58f43d2b7935');
-            $YoPayments->set_external_reference(time());
+            $statusCheck = $YoPayments->ac_transaction_check_status($transactionReference);
 
-            $res = $YoPayments->ac_deposit_funds($phone, $grandTotal, $description);
+            $sale = Sale::where('reference', $transactionReference)->first();
+            if ($sale) {
+                $sale->update(['status' => $statusCheck['TransactionStatus']]);
+            } else {
+                Log::warning('Sale not found for transaction reference', ['reference' => $transactionReference]);
+            }
 
-            // Flash a success message
-            session()->flash('success', 'Payment made successfully!');
-
-            // Redirect to the index page
-            return redirect()->route('sales.index');
-        } catch (Exception $e) {
-            return response()->json($e->getMessage());
+            return response()->json(['status' => $statusCheck['TransactionStatus']]);
+        } catch (\Exception $e) {
+            Log::error('YoPayments: checkPaymentStatus error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
     /**
      * Display a listing of the resource.

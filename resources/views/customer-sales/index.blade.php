@@ -6,7 +6,7 @@
   @if (in_array('Sales', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
       <x-app-layout>
           <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-              <h1 class="text-lg font-semibold mb-6">Patient Prescriptions</h1>
+              <h1 class="text-lg font-semibold mb-6">Patient Selections</h1>
 
 
               <div class="flex justify-center my-4" class="hidden">

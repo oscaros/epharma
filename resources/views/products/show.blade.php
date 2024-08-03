@@ -32,10 +32,23 @@
                         <p id="insured" class="mt-1 block w-full">{{ $product->Insured ? 'Yes' : 'No' }}</p>
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="department_id" class="block text-sm font-medium text-gray-700">Service Point:</label>
                         <p id="department_id" class="mt-1 block w-full">{{ $departments->firstWhere('id', $product->department_id)->name }}</p>
-                    </div>
+                    </div> --}}
+
+
+                    <!-- Example Blade view -->
+@foreach($products as $product)
+<p>{{ $product->ProductName }}</p>
+<p>Service Points:</p>
+<ul>
+    @foreach($product->departments as $department)
+        <li>{{ $department->name }}</li>
+    @endforeach
+</ul>
+@endforeach
+
                 </div>
             </div>
         </div>

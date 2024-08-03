@@ -24,11 +24,13 @@
                     </div>
                     <!-- Button for generating report -->
                     <button type="submit"
-                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate Report</button>
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate Report 1
+                    </button>
                 </form>
             </div>
             <!-- Button for exporting CSV -->
-            <button id="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mt-4">Export CSV</button>
+            <button id="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mt-4">Export
+                CSV</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -60,14 +62,51 @@
 
             const salesChart = new Chart(document.getElementById('salesChart'), {
                 type: 'line',
-                data: { labels: [], datasets: [{ label: 'Sales', data: [], borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 }] },
-                options: { responsive: true, scales: { x: { type: 'time', time: { unit: 'day' } } } }
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        }
+                    }
+                }
             });
 
             const customersChart = new Chart(document.getElementById('customersChart'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Customers', data: [], backgroundColor: 'rgba(54, 162, 235, 0.2)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 1 }] },
-                options: { responsive: true, scales: { x: { type: 'time', time: { unit: 'day' } } } }
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Customers',
+                        data: [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        }
+                    }
+                }
             });
 
             const productsChart = new Chart(document.getElementById('productsChart'), {
@@ -104,10 +143,16 @@
             fetchReportData(getPreviousDay(), getToday(), 'sales');
 
             document.getElementById('reportForm').addEventListener('submit', function(e) {
+
+                console.log('form submitted');
+
+
                 e.preventDefault();
                 const dateRange = document.getElementById('dateRange').value;
                 const [startDate, endDate] = dateRange.split(' to ');
                 const reportType = document.getElementById('reportType').value;
+
+                console.log(startDate, endDate, reportType);
 
                 fetchReportData(startDate, endDate, reportType);
             });
@@ -116,7 +161,10 @@
                 exportToCSV();
             });
 
-            function fetchReportData(startDate, endDate, reportType) {
+
+
+
+          function fetchReportData(startDate, endDate, reportType) {
                 fetch('{{ route('report.data') }}', {
                         method: 'POST',
                         headers: {
@@ -133,6 +181,7 @@
                         if (!response.ok) {
                             throw new Error('Network response was not ok ' + response.statusText);
                         }
+                        console.log('Response', response);
                         return response.json();
                     })
                     .then(data => {

@@ -20,11 +20,17 @@
                     <div class="mb-4">
                         <h3 class="text-2xl font-semibold mb-2 text-gray-800">QR Code:</h3>
                         <div class="p-4 bg-gray-100 rounded-lg">
-                            <img src="{{ asset('storage/' . $customer->qr_code_path) }}" alt="QR Code" class="w-48 h-48">
+                            {{-- <img src="{{ asset('storage/'.$customer->qr_code_path) }}" alt="QR Code" class="w-48 h-48" onerror="this.onerror=null;this.src='{{ asset('images/01.png') }}';"> --}}
+                            <img src="{{ url('storage/' . $customer->qr_code_path) }}" alt="QR Code" class="w-48 h-48">
+
                         </div>
                     </div>
+                @else
+                    <p>QR Code not available.</p>
                 @endif
             </div>
+            
+            
         </div>
         <div class="text-center mt-8 ">
             <button onclick="window.print()" class="bg-blue-500 text-white px-8 py-3 rounded-md hover:bg-blue-600 transition duration-300 print">Print</button>

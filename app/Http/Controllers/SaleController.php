@@ -53,11 +53,13 @@ class SaleController extends Controller
         //
         if (auth()->user()->role_id == 1) {
             $customers = Customer::all();
-            return view('sales.create', compact('customers'), ['grandTotal' => $this->grandTotal]);
+            $selectedCustomerId = null; // Default value when no customer is selected
+            return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
         }
         else {
             $customers = Customer::query()->where('entity_id', auth()->user()->entity_id)->get();
-            return view('sales.create', compact('customers'), ['grandTotal' => $this->grandTotal]);
+            $selectedCustomerId = null; // Default value when no customer is selected
+            return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
 
         }
     }
@@ -199,6 +201,9 @@ class SaleController extends Controller
     {
         //
     }
+
+
+    
 
     /**
      * Remove the specified resource from storage.

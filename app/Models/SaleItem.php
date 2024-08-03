@@ -28,9 +28,16 @@ class SaleItem extends Model
         return $this->belongsTo(Sale::class, 'SaleID', 'id'); // Correct foreign key and local key
     }
 
-    public function products()
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class, 'id', 'ProductID');
+    // }
+
+    public function product()
     {
-        return $this->hasMany(Product::class, 'id', 'ProductID');
+        return $this->belongsTo(Product::class, 'ProductID', 'id'); // This should be a belongsTo relationship
     }
+
+
 
 }

@@ -81,6 +81,30 @@ class SaleItemController extends Controller
         //
     }
 
+
+
+    public function fetchByCustomer($customerId)
+    {
+        $salesItems = SaleItem::with(['product', 'sale'])
+            ->whereHas('sale', function($query) use ($customerId) {
+                $query->where('customer_id', $customerId);
+            })
+            ->where('created_at', '>=', now()->subDay())
+            ->get()
+            ->map(function ($item) {
+                // Enrich the data with product name directly
+                $item->ProductName = $item->product ? $item->product->ProductName : 'N/A';
+                return $item;
+            });
+    
+        return response()->json($salesItems);
+    }
+
+
+ 
+
+
+
     /**
      * Remove the specified resource from storage.
      */
