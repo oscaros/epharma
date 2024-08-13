@@ -48,11 +48,7 @@ class ListSaleProducts extends Component implements HasForms, HasTable
         $this->updateGrandTotal();
     }
 
-    // public function table(Table $table): Table
-    // {
-    //     if (auth()->user()->role_id == 1) {
-    //         return $table
-    //             ->query(Product::query())
+   
 
     public function table(Table $table): Table
     {
@@ -60,12 +56,12 @@ class ListSaleProducts extends Component implements HasForms, HasTable
 
         return $table
             ->query(Product::query()
-                ->when($user->role_id == 4, function ($query) use ($user) {
-                    // Filter products by entity_id for role_id 4
-                    $query->where('entity_id', $user->entity_id);
-                })
-                // ->where('Status', 0)
-                ->when($user->role_id != 1, function ($query) use ($user) {
+                // ->when($user->role_id == 4, function ($query) use ($user) {
+                //     // Filter products by entity_id for role_id 4
+                //     $query->where('entity_id', $user->entity_id);
+                // })
+               
+                ->when($user->is_admin != 1, function ($query) use ($user) {
                     $query->where('entity_id', $user->entity_id);
                     // Filter products by department_id for other roles
                     $query->whereHas('departments', function ($query) use ($user) {
@@ -79,11 +75,7 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                     ->label('Item')
                     ->sortable()
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('Price')
-                //     ->money('UGX')
-                //     ->sortable()
-                //     ->searchable(),
-                // add field to manually enter quantity of product to sell
+                
                 InputColumn::make('Quantity')
                     ->label('Quantity To Sell'),
                 CheckboxColumn::make('Insured')

@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function create()
     {
         $user = auth()->user();
-    
+
         if ($user->role_id == 1) {
             // If the user has a role of 1, return all departments
             $departments = Department::all();
@@ -32,10 +32,9 @@ class ProductController extends Controller
             // Otherwise, return departments where the entity_id matches the user's entity_id
             $departments = Department::where('entity_id', $user->entity_id)->get();
         }
-    
+
         return view('products.create', compact('departments'));
     }
-    
 
     public function store(Request $request)
     {
@@ -72,12 +71,13 @@ class ProductController extends Controller
 
             $recipient = auth()->user();
 
-            Notification::make()
-                ->title('Saved successfully')
-                ->sendToDatabase($recipient);
+            // Notification::make()
+            //     ->title('Item'. $product->ProductName . ' added successfully')
+            //     ->sendToDatabase($recipient);
 
             Notification::make()
-                ->title('Saved successfully')
+                ->title('Item' . $product->ProductName . ' added successfully')
+                ->sendToDatabase($recipient)
                 ->success()
                 ->body('Item addition has been succesfull.')
                 ->actions([
@@ -88,7 +88,7 @@ class ProductController extends Controller
                 ->send();
 
             $this->createAudit($request, 'Created Drug/Service with name - ' . $product->ProductName, 'CREATE');
-            return redirect()->route('products.index')->with('success', 'Product added successfully.');
+            return redirect()->route('products.index')->with('success', 'Item added successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -157,7 +157,7 @@ class ProductController extends Controller
             ProductTemp::updateOrCreate(['id' => $product->id], $data);
 
             $this->createAudit($request, "Updated Product: {$product->ProductName}", 'UPDATE');
-            return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+            return redirect()->route('products.index')->with('success', 'Item updated successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -165,14 +165,14 @@ class ProductController extends Controller
 
     public function productData($id)
     {
-        Log::info("Attempting to fetch product with ID: {$id}");
+        Log::info("Attempting to fetch item with ID: {$id}");
         try {
             $product = Product::findOrFail($id);
-            Log::info('Product found: ' . json_encode($product));
+            Log::info('Item found: ' . json_encode($product));
             return response()->json($product);
         } catch (\Exception $e) {
             Log::error("Failed to fetch product with ID: {$id} - " . $e->getMessage());
-            return response()->json(['error' => 'Product not found'], 404);
+            return response()->json(['error' => 'Item not found'], 404);
         }
     }
 

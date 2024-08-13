@@ -49,7 +49,7 @@ class SaleController extends Controller
         );
     }
 
-    public function create()
+   public function create()
     {
         //
         if (auth()->user()->role_id == 1) {
@@ -63,7 +63,6 @@ class SaleController extends Controller
             return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
         }
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -93,16 +92,16 @@ class SaleController extends Controller
 
             $status = config('status.payment_status.pending');
 
-            // $customer_name = $request->input('customer_name');
+            $customer_name = $request->input('customer_name');
             $cashier = User::find(auth()->id());
-            // $phone_number =  $request->input('phone_number');
-            // $phone_number = preg_replace('/^0/','254',$phone_number);
-            $phone_number = '0756741414';
-            $amount = '5000';
+            $phone_number =  $request->input('phone_number');
+            $phone_number = preg_replace('/^0/','256',$phone_number);
+            // $phone_number = '0756741414';
+            // $amount = '5000';
             $reference = Str::uuid();
             // $customer_id = $request->input('customer_id');
-            // $customer_id = $request->customer_id;
-            $customer_id = 1;
+            $customer_id = $request->customer_id;
+            // $customer_id = 1;
 
             $description = 'Payment of ' . $grandTotal . ' for reference number: ' . $reference;
 
@@ -117,13 +116,13 @@ class SaleController extends Controller
                 'status' => $status,
                 'description' => $description,
                 'phone_number' => $phone_number,
-                'payment_mode' => 'pesapal',
-                'OrderNotificationType' => 'pesapal',
+                'payment_mode' => 'Yo Pay',
+                'OrderNotificationType' => 'SMS',
                 'order_tracking_id' => $reference,
                 'type' => 'Wholesale',
-                'payment_method' => 'Pesapal',
+                'payment_method' => 'Yo Pay',
                 'customer_id' => $customer_id,
-                // 'product_id' => json_encode($productId)
+               
             ]);
 
             // dd($customer_id);
@@ -132,13 +131,14 @@ class SaleController extends Controller
 
             $recipient = auth()->user();
 
-            Notification::make()
-                ->title('Selection saved successfully')
-                ->sendToDatabase($recipient);
+        
+                
 
 
                 Notification::make()
+
                 ->title('Selection successfull')
+                ->sendToDatabase($recipient)
                 ->success()
                 ->body('Items selctions confirmed succesfully.')
                 ->actions([
