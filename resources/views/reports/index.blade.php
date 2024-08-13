@@ -14,8 +14,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="reportType" class="block text-sm font-medium text-gray-700">Select Report
-                            Type:</label>
+                        <label for="reportType" class="block text-sm font-medium text-gray-700">Select Report Type:</label>
                         <select class="form-select w-full rounded-md" id="reportType" name="reportType">
                             <option value="sales">Sales</option>
                             <option value="customers">Customers</option>
@@ -23,14 +22,11 @@
                         </select>
                     </div>
                     <!-- Button for generating report -->
-                    <button type="submit"
-                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate Report 1
-                    </button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate Report</button>
                 </form>
             </div>
             <!-- Button for exporting CSV -->
-            <button id="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mt-4">Export
-                CSV</button>
+            <button id="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mt-4">Export CSV</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -41,7 +37,7 @@
                 <canvas id="customersChart"></canvas>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <canvas id="productsChart"></canvas>
             </div>
@@ -143,10 +139,7 @@
             fetchReportData(getPreviousDay(), getToday(), 'sales');
 
             document.getElementById('reportForm').addEventListener('submit', function(e) {
-
                 console.log('form submitted');
-
-
                 e.preventDefault();
                 const dateRange = document.getElementById('dateRange').value;
                 const [startDate, endDate] = dateRange.split(' to ');
@@ -161,39 +154,36 @@
                 exportToCSV();
             });
 
-
-
-
-          function fetchReportData(startDate, endDate, reportType) {
+            function fetchReportData(startDate, endDate, reportType) {
                 fetch('{{ route('report.data') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            start_date: startDate,
-                            end_date: endDate,
-                            report_type: reportType
-                        })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        start_date: startDate,
+                        end_date: endDate,
+                        report_type: reportType
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok ' + response.statusText);
-                        }
-                        console.log('Response', response);
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (reportType === 'sales') {
-                            updateChart(salesChart, data.sales);
-                        } else if (reportType === 'customers') {
-                            updateChart(customersChart, data.customers);
-                        } else if (reportType === 'products') {
-                            updateChart(productsChart, data.products);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    console.log('Response', response);
+                    return response.json();
+                })
+                .then(data => {
+                    if (reportType === 'sales') {
+                        updateChart(salesChart, data.sales);
+                    } else if (reportType === 'customers') {
+                        updateChart(customersChart, data.customers);
+                    } else if (reportType === 'products') {
+                        updateChart(productsChart, data.products);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             }
 
             function updateChart(chart, data) {
@@ -203,29 +193,39 @@
             }
 
             function exportToCSV() {
-                const csvData = [];
+                const dateRange = document.getElementById('dateRange').value;
+                const [startDate, endDate] = dateRange.split(' to ');
                 const reportType = document.getElementById('reportType').value;
-                let chartData;
 
-                if (reportType === 'sales') {
-                    chartData = salesChart.data;
-                } else if (reportType === 'customers') {
-                    chartData = customersChart.data;
-                } else if (reportType === 'products') {
-                    chartData = productsChart.data;
-                }
-
-                for (let i = 0; i < chartData.labels.length; i++) {
-                    csvData.push([chartData.labels[i], chartData.datasets[0].data[i]]);
-                }
-
-                const csvContent = "data:text/csv;charset=utf-8," + csvData.map(e => e.join(",")).join("\n");
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", "report.csv");
-                document.body.appendChild(link);
-                link.click();
+                fetch('{{ route('report.export.csv') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        start_date: startDate,
+                        end_date: endDate,
+                        report_type: reportType
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `${reportType}_report_${startDate.replace(/-/g, '')}_to_${endDate.replace(/-/g, '')}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error:', error));
             }
 
             function getPreviousDay() {

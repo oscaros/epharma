@@ -74,8 +74,7 @@ class Product extends Model
         'Status',
 
         'entity_id',
-        // Department ID
-        'department_id',
+       
         // User ID who approved edit
         'edit_approved_by',
         // Timestamp when edit was approved

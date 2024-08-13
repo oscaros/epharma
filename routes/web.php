@@ -113,6 +113,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/get-customer-id', [CustomerController::class, 'getCustomerIdByPhone'])->name('get-customer-id');
 
+
+    Route::get('/testget', [CustomerController::class, 'getCustomerIdByPhone'])->name('testget');
+
     Route::get('/fetch-sales-items/{customerId}', [SaleItemController::class, 'fetchByCustomer'])->name('fetch-sales-items');
+
+
+
+    Route::post('/export-csv', [ReportController::class, 'exportCSV'])->name('report.export.csv');
+
 
 });

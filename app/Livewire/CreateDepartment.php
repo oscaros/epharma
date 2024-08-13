@@ -29,90 +29,73 @@ class CreateDepartment extends Component implements HasForms
         $this->form->fill();
     }
 
-    
-
     public function form(Form $form): Form
     {
-
         if (auth()->user()->role_id == 1) {
             return $form
                 ->schema([
-                    // Forms\Components\TextInput::make('name')
-                    // // ->unique()->where('name', '!=', 'N/A')
-                    //     ->required()
-                    //     ->maxLength(255),
                     Forms\Components\TextInput::make('name')
                         ->label('Service Point')
-                        // ->searchable()
-                        // ->options(Department::all()->pluck('name', 'id')->toArray())
                         ->required(),
-                    // ->maxLength(255),
                     Forms\Components\TextInput::make('code')
                         ->label('Room Number (Optional)'),
-                    // ->required()
-                    // ->maxLength(255),
-
-                    Forms\Components\Select::make('entity_id') // Change to Select
+                    Forms\Components\Select::make('entity_id')
                         ->label('Business')
                         ->searchable()
                         ->required()
-                        ->options($this->entities), // Set options for Select
+                        ->options($this->entities),
                 ])
                 ->statePath('data')
                 ->model(Department::class);
-
-        }
-        else {
+        } else {
             return $form
-            ->schema([
-                // Forms\Components\TextInput::make('name')
-                // // ->unique()->where('name', '!=', 'N/A')
-                //     ->required()
-                //     ->maxLength(255),
-                Forms\Components\TextInput::make('name')
-                    ->label('Service Point')
-                    // ->searchable()
-                    // ->options(Department::all()->pluck('name', 'id')->toArray())
-                    ->required(),
-                // ->maxLength(255),
-                Forms\Components\TextInput::make('code')
-                    ->label('Room Number (Optional)'),
-                // ->required()
-                // ->maxLength(255),
-
-                // Forms\Components\Select::make('entity_id') // Change to Select
-                //     ->label('Business')
-                //     ->searchable()
-                //     ->required()
-                //     ->options($this->entities), // Set options for Select
-            ])
-            ->statePath('data')
-            ->model(Department::class);
-
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Service Point')
+                        ->required(),
+                    Forms\Components\TextInput::make('code')
+                        ->label('Room Number (Optional)'),
+                ])
+                ->statePath('data')
+                ->model(Department::class);
         }
     }
 
-   public function create(): void
-{
-    // $data = $this->form->getState();
-    $data = $this->form->getState();
+    public function create(): void
+    {
+        $data = $this->form->getState();
 
         // If the user is not an admin, set the entity_id to the user's entity_id
-        // if (auth()->user()->role_id != 1) {
+        if (auth()->user()->role_id != 1) {
             $data['entity_id'] = auth()->user()->entity_id;
-        // }
+        }
 
-    $record = Department::create($data);
+        try {
+            // Check if name or code already exists for the given entity_id
+            $exists = Department::where('entity_id', $data['entity_id'])
+                ->where(function ($query) use ($data) {
+                    $query->where('name', $data['name'])
+                          ->orWhere('code', $data['code']);
+                })
+                ->exists();
 
-    $this->form->model($record)->saveRelationships();
+            if ($exists) {
+                session()->flash('error', 'Service Point with the same name or room number already exists in your business');
+                $this->redirectRoute('departments.create'); // Replace 'departments.index' with your actual route name
+            } else {
+                $record = Department::create($data);
+                $this->form->model($record)->saveRelationships();
 
-    // Flash a success message
-    session()->flash('success', 'Department created successfully!');
+                // Flash a success message
+                session()->flash('success', 'Service Point created successfully!');
 
-    // Redirect to the index page
-    $this->redirectRoute('departments.index'); // Replace 'departments.index' with your actual route name
-}
-
+                // Redirect to the index page
+                $this->redirectRoute('departments.index'); // Replace 'departments.index' with your actual route name
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while creating the department.');
+        }
+    }
 
     public function render(): View
     {

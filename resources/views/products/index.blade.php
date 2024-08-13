@@ -4,7 +4,7 @@
 
           @if (in_array('Products', json_decode(optional(Auth::user()->role)->permissions, true) ?? []))
               <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                  <h1 class="text-lg font-semibold mb-6">Manage Drugs/Services</h1>
+                  <h1 class="text-lg font-semibold mb-6">Manage Items/Services</h1>
                   @livewire('list-products', ['filter' => request()->query('filter', 'all')])
               </div>
           @endif

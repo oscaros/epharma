@@ -16,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         DatabaseNotifications::trigger('filament.notifications.database-notifications-trigger');
+        
     }
 
     /**
@@ -32,5 +33,11 @@ class AppServiceProvider extends ServiceProvider
             'success' => Color::Green,
             'warning' => Color::Amber,
         ]);
+
+   
+        DatabaseNotifications::pollingInterval('30s');
     }
+
+
+
 }

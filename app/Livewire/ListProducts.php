@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 
 
+
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 
@@ -63,7 +64,7 @@ class ListProducts extends Component implements HasForms, HasTable
             )
             ->columns([
                 Tables\Columns\TextColumn::make('ProductName')
-                ->label("Name")
+                ->label("Item Name")
                     ->searchable()
                     ->sortable()
                     ->copyable()
@@ -100,11 +101,7 @@ class ListProducts extends Component implements HasForms, HasTable
                     ->copyable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                // Tables\Columns\TextColumn::make('expiry_date')
-                //     ->dateTime()
-                //     ->sortable()
-                //     ->copyable()
-                //     ->toggleable(isToggledHiddenByDefault: false),
+          
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -154,10 +151,13 @@ class ListProducts extends Component implements HasForms, HasTable
 
             ->headerActions([
                 ExportAction::make()
+                    ->label('Export Items')
                     ->exporter(ProductExporter::class),
 
                     ImportAction::make()
+                    ->label('Import Items')
                 ->importer(ProductImporter::class)
+
             ])
 
             ->actions([
@@ -200,18 +200,20 @@ class ListProducts extends Component implements HasForms, HasTable
 
         }
 
-        else {
+        else if (auth()->user()->is_admin == 1) {
+
             return $table
-           
+
             ->query(
                 Product::query()
                     ->where('entity_id', auth()->user()->entity_id)
-                    ->where('department_id', auth()->user()->department_id)
-                    // ->orderBy('created_at', 'desc')
-               
+                    // ->whereHas('departments', function (Builder $query) {
+                    //     $query->where('department_id', auth()->user()->department_id);
+                    // })
             )
             ->columns([
                 Tables\Columns\TextColumn::make('ProductName')
+                ->label('Item Name')
                     ->searchable()
                     ->sortable()
                     ->copyable()
@@ -232,11 +234,7 @@ class ListProducts extends Component implements HasForms, HasTable
                     ->copyable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('expiry_date')
-                    ->dateTime()
-                    ->sortable()
-                    ->copyable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+              
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -286,45 +284,180 @@ class ListProducts extends Component implements HasForms, HasTable
 
             ->headerActions([
                 ExportAction::make()
+                    ->label('Export Items')
                     ->exporter(ProductExporter::class),
                     ImportAction::make()
+                    ->label('Import Items')
                 ->importer(ProductImporter::class)
             ])
 
             ->actions([
-                Action::make('sale')
-                    ->label('Add to Cart')
-                    ->color('primary')
-                    ->icon('heroicon-o-minus-circle')
-                    ->url(function ($record) {
-                        // Return the URL for the clicked record
-                        return route('sales.show', $record->id);
-                    }),
-                Action::make('edit')
-                    ->label('Edit')
-                    ->color('warning')
-                    ->icon('heroicon-o-pencil')
-                    ->url(function ($record) {
-                        // Return the URL for the clicked record
-                        return route('products.edit', $record->id);
-                    }),
-                Action::make('delete')
-                    ->label('Delete')
-                    ->requiresConfirmation()
-                    ->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->action(function ($record) {
-                        // Delete the record
-                        if ($record->delete()) {
-                            Notification::make()
-                                ->title('Delete record ' . $record->id . ' successfully')
-                                ->success()
-                                ->send();
-                        }
-                    }),
-            ])
+                //action view
+                Action::make('view')
+                 ->label('View')
+                 ->color('primary')
+                 ->icon('heroicon-o-eye')
+                 ->url(function ($record) {
+                     // Return the URL for the clicked record
+                     return route('products.show', $record->id);
+                 }),
+                 Action::make('edit')
+                     ->label('Edit')
+                     ->color('warning')
+                     ->icon('heroicon-o-pencil')
+                     ->url(function ($record) {
+                         // Return the URL for the clicked record
+                         return route('products.edit', $record->id);
+                     }),
+                 Action::make('delete')
+                     ->label('Delete')
+                     ->requiresConfirmation()
+                     ->color('danger')
+                     ->icon('heroicon-o-trash')
+                     ->action(function ($record) {
+                         // Delete the record
+                         if ($record->delete()) {
+                             Notification::make()
+                                 ->title('Delete record ' . $record->id . ' successfully')
+                                 ->success()
+                                 ->send();
+                         }
+                     }),
+             ])
             ->bulkActions([
                 ExportBulkAction::make()
+                    ->label('Export Items')
+                    ->exporter(ProductExporter::class)
+            ]);
+            
+        }
+
+        else {
+            return $table
+           
+            ->query(
+                Product::query()
+                    ->where('entity_id', auth()->user()->entity_id)
+                    ->whereHas('departments', function (Builder $query) {
+                        $query->where('department_id', auth()->user()->department_id);
+                    })
+            )
+            ->columns([
+                Tables\Columns\TextColumn::make('ProductName')
+                ->label('Item Name')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('Price')
+                    ->money("UGX")
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('Quantity')
+                    ->numeric()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('serial_number')
+                    ->searchable()
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+             
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->label('From'),
+                        DatePicker::make('created_until')
+                            ->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['from'] ?? null) {
+                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                                ->removeField('from');
+                        }
+
+                        if ($data['until'] ?? null) {
+                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                                ->removeField('until');
+                        }
+
+                        return $indicators;
+                    }),
+            ])
+
+            ->headerActions([
+                ExportAction::make()
+                    ->label('Export Items')
+                    ->exporter(ProductExporter::class),
+                    ImportAction::make()
+                    ->label('Import Items')
+                ->importer(ProductImporter::class)
+            ])
+
+            ->actions([
+                //action view
+                Action::make('view')
+                 ->label('View')
+                 ->color('primary')
+                 ->icon('heroicon-o-eye')
+                 ->url(function ($record) {
+                     // Return the URL for the clicked record
+                     return route('products.show', $record->id);
+                 }),
+                 Action::make('edit')
+                     ->label('Edit')
+                     ->color('warning')
+                     ->icon('heroicon-o-pencil')
+                     ->url(function ($record) {
+                         // Return the URL for the clicked record
+                         return route('products.edit', $record->id);
+                     }),
+                 Action::make('delete')
+                     ->label('Delete')
+                     ->requiresConfirmation()
+                     ->color('danger')
+                     ->icon('heroicon-o-trash')
+                     ->action(function ($record) {
+                         // Delete the record
+                         if ($record->delete()) {
+                             Notification::make()
+                                 ->title('Delete record ' . $record->id . ' successfully')
+                                 ->success()
+                                 ->send();
+                         }
+                     }),
+             ])
+            ->bulkActions([
+                ExportBulkAction::make()
+                    ->label('Export Items')
                     ->exporter(ProductExporter::class)
             ]);
         }

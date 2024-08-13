@@ -28,10 +28,11 @@
             <!-- Header: Right side -->
             <div class="flex items-center space-x-3">
                    @livewire('database-notifications')
-            {{-- <livewire:filament.notifications.database-notifications-trigger /> --}}
+   
+
 
                 <!-- Dark mode toggle -->
-                <x-theme-toggle />                
+                <x-theme-toggle />
 
                 <!-- Divider -->
                 <hr class="w-px h-6 bg-slate-200 dark:bg-slate-700 border-none" />

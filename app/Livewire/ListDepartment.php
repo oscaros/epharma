@@ -34,6 +34,10 @@ class ListDepartment extends Component implements HasForms, HasTable
 
                 )
                 ->columns([
+                    Tables\Columns\TextColumn::make('id')
+                    ->label('Service Point ID')
+                    ->sortable()
+                    ->searchable(),
                     Tables\Columns\TextColumn::make('name')
                         ->label('Service Point Name')
                         ->sortable()
@@ -107,6 +111,10 @@ class ListDepartment extends Component implements HasForms, HasTable
 
             )
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                ->label('Service Point ID')
+                ->sortable()
+                ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Service Point Name')
                     ->sortable()

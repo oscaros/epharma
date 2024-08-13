@@ -8,6 +8,8 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\User;
 use App\Payments\Pesapal;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -16,9 +18,10 @@ class SaleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public $grandTotal = 0;
 
-     public $grandTotal = 0;
-     public $cart = [];
+    public $cart = [];
+
     public function index()
     {
         //
@@ -37,30 +40,27 @@ class SaleController extends Controller
     {
         $customers = Customer::all();
 
-
         return view(
             'livewire.list-sale-products',
             compact('customers'),
             [
                 'grandTotal' => $this->grandTotal,
             ]
-
-
         );
     }
+
     public function create()
     {
         //
         if (auth()->user()->role_id == 1) {
-            $customers = Customer::all();
-            $selectedCustomerId = null; // Default value when no customer is selected
+            // $customers = Customer::all();
+            $customers = Customer::orderBy('updated_at', 'desc')->get();
+            $selectedCustomerId = null;  // Default value when no customer is selected
             return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
-        }
-        else {
+        } else {
             $customers = Customer::query()->where('entity_id', auth()->user()->entity_id)->get();
-            $selectedCustomerId = null; // Default value when no customer is selected
+            $selectedCustomerId = null;  // Default value when no customer is selected
             return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
-
         }
     }
 
@@ -81,11 +81,10 @@ class SaleController extends Controller
             // $productNames = explode(',', $request->productNames);
             // $productPrices = explode(',', $request->productPrices);
 
-             // Ensure $productIds and $quantities are arrays
-             if (!is_array($productIds) || !is_array($quantities)) {
+            // Ensure $productIds and $quantities are arrays
+            if (!is_array($productIds) || !is_array($quantities)) {
                 throw new \Exception('Invalid product data provided.');
             }
-
 
             // Save the sale to the database
             // foreach ($productIds as $key => $productId) {
@@ -104,8 +103,6 @@ class SaleController extends Controller
             // $customer_id = $request->input('customer_id');
             // $customer_id = $request->customer_id;
             $customer_id = 1;
-
-            
 
             $description = 'Payment of ' . $grandTotal . ' for reference number: ' . $reference;
 
@@ -133,12 +130,27 @@ class SaleController extends Controller
 
             // dd($sale);
 
+            $recipient = auth()->user();
+
+            Notification::make()
+                ->title('Selection saved successfully')
+                ->sendToDatabase($recipient);
 
 
+                Notification::make()
+                ->title('Selection successfull')
+                ->success()
+                ->body('Items selctions confirmed succesfully.')
+                ->actions([
+                    Action::make('markAsUnread')
+                        ->button()
+                        ->markAsUnread(),
+                ])
+                ->send();
 
-             // Create Sale Items
-             // Create Sale Items
-             foreach ($productIds as $index => $productId) {
+            // Create Sale Items
+            // Create Sale Items
+            foreach ($productIds as $index => $productId) {
                 $product = Product::find($productId);
                 if ($product) {
                     SaleItem::create([
@@ -201,9 +213,6 @@ class SaleController extends Controller
     {
         //
     }
-
-
-    
 
     /**
      * Remove the specified resource from storage.

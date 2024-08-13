@@ -2,17 +2,58 @@
     <x-app-layout>
         <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
             <div class="px-4 sm:px-6 lg:px-8 py-0 w-full max-w-9xl mx-auto">
+                
+                
+                
                 <div class="form-group ">
                     <br>
 
 
-                    <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id" onchange="fetchSalesItems(this.value); ">
-                        <option value="">Select Patient</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}">{{ $customer->FirstName }} {{ $customer->LastName }}
-                            </option>
-                        @endforeach
-                    </select>
+                      
+                      
+                      <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id" onchange="fetchSalesItems(this.value);">
+    <option value="">Select Patient</option>
+    @foreach ($customers as $customer)
+        <option value="{{ $customer->id }}" data-phone="{{ $customer->Phone }}">
+            {{ $customer->FirstName }} {{ $customer->LastName }} {{ $customer->Phone }}
+        </option>
+    @endforeach
+</select>
+
+<div id="result"></div>
+                
+                    <label class="mr-10" style="margin: 20px;">You can auto search for patient by scanning the QR code on the Patient's Card using a QR/Bar Code Scanner</label>
+                    
+                    
+                     <div class="flex justify-end my-0 mr-5">
+                            <div class="mr-10">
+                                {{-- <input type="text" name="phone" id="phone" placeholder="Scanned Number"
+                                    class="border rounded px-4 py-2"  onchange="fetchSalesItems(this.value); ">
+                                <button type="button" id="submitScan"
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-1">Submit</button> --}}
+
+                             
+                                     <div id="result">Result:</div>
+
+
+                                   
+
+
+                            </div>
+
+                            <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;" onchange="fetchSalesItems(this.value); "/>
+                            <button class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-600"
+                                id="scanQrButton" type="button">Use Scanner</button>
+
+                                <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
+                                <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600" id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
+
+
+
+                            {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
+               --}}
+                        </div>
 
 
                   
@@ -25,7 +66,7 @@
                                 <th>Price</th>
                                 <th>Total</th>
                                 <th>Status</th>
-                                <th>Partial</th>
+                              
                             </tr>
                         </thead>
                         <tbody>
@@ -46,27 +87,7 @@
 
 
 
-                        <div class="flex justify-end my-0 mr-5">
-                            <div class="mr-10">
-                                <input type="text" name="phone" id="phone" placeholder="Scan Number"
-                                    class="border rounded px-4 py-2"  onchange="fetchSalesItems(this.value); ">
-                                <button type="button" id="submitScan"
-                                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-1">Submit</button>
-                            </div>
-
-                            <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;" onchange="fetchSalesItems(this.value); "/>
-                            <button class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-600"
-                                id="scanQrButton" type="button">Scan QR Code</button>
-
-                                <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
-                                <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600" id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
-
-
-
-                            {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
-                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
-               --}}
-                        </div>
+                       
 
 
                     </div>
@@ -120,7 +141,7 @@
                             <input type="hidden" id="productNames" name="productNames">
                             <div class="mt-4 flex justify-between">
                                 <button type="button" onclick="previewReceipt()"
-                                    class="btn btn-primary text-white bg-gray-700 p-2 rounded-full mt-2">Preview</button>
+                                    class="btn btn-primary text-white bg-black p-2 rounded-full mt-2" style="background-color: black;">Preview</button>
                             </div>
                         </div>
                     </div>
@@ -368,7 +389,7 @@
 
                 var customerId = $('#customer_id').val();
                 if (!customerId) {
-                    Swal.fire('Error', 'Please select a customer before adding products.', 'error');
+                    Swal.fire('Error', 'Please select a Patient before adding items.', 'error');
                     $(input).val('');
                     return;
                 }
@@ -564,62 +585,7 @@
             });
         }
 
-        // $('#submitScan').click(function() {
-        //     var phone = $('#phone').val();
-        //     if (phone) {
-        //         Swal.fire({
-        //             title: 'Processing...',
-        //             text: 'Please wait while we process your request.',
-        //             allowOutsideClick: false,
-        //             didOpen: () => {
-        //                 Swal.showLoading();
-        //             }
-        //         });
-        //         $.post("{{ route('customers.scanProcess2') }}", {
-        //             _token: '{{ csrf_token() }}',
-        //             phone: phone
-        //         }).done(function(response) {
-        //             Swal.close();
-        //             window.location.href = response.redirect_url;
-        //         }).fail(function(error) {
-        //             Swal.fire('Error', 'Unable to process scan. Please try again.', 'error');
-        //         });
-        //     }
-        // });
 
-
-
-        // $('#submitScan').click(function() {
-        //     var phone = $('#phone').val();
-        //     if (phone) {
-        //         Swal.fire({
-        //             title: 'Processing...',
-        //             text: 'Please wait while we process your request.',
-        //             allowOutsideClick: false,
-        //             didOpen: () => {
-        //                 Swal.showLoading();
-        //             }
-        //         });
-        //         $.post("{{ route('customers.scanProcess2') }}", {
-        //             _token: '{{ csrf_token() }}',
-        //             phone: phone
-        //         }).done(function(response) {
-        //             Swal.close();
-        //             if (response.customer) {
-        //                 // Update the DOM with customer details
-        //                 $('#customer_id').val(response.customer.id).trigger(
-        //                 'change'); // Update the select input
-        //                 // Optionally update other parts of the page
-        //                 updateSaleItemsList(response.customer
-        //                 .id); // You might need to write this function
-        //             } else {
-        //                 Swal.fire('Error', response.error || 'Customer not found.', 'error');
-        //             }
-        //         }).fail(function(xhr, status, error) {
-        //             Swal.fire('Error', 'Unable to process scan. Please try again.', 'error');
-        //         });
-        //     }
-        // });
 
 
 
@@ -754,6 +720,70 @@
 
 
 <script>
+
+
+// Function to fetch customer ID from phone number and then load sale items
+function fetchCustomerAndSalesItems(phoneNumber) {
+    $.ajax({
+        url: '/get-customer-id',  // Endpoint that returns customer ID from phone number
+        method: 'GET',
+        data: { phone: phoneNumber },
+        success: function(response) {
+            if(response.customerId) {
+                fetchSalesItems(response.customerId);
+            } else {
+                console.error('No customer found with that phone number.');
+                alert('No customer found.');
+            }
+        },
+        error: function(error) {
+            console.error('Error fetching customer ID:', error);
+            alert('Error fetching customer information.');
+        }
+    });
+}
+
+
+
+function fetchCustomerAndSalesItemsScan(phoneNumber) {
+    const selectElement = document.getElementById('customer_id');
+    const options = selectElement.options;
+
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].dataset.phone === phoneNumber) {
+            selectElement.value = options[i].value;
+            fetchSalesItems(options[i].value);
+            break;
+        }
+    }
+}
+
+// Function to fetch and display sale items by customer ID
+function fetchSalesItems(customerId) {
+    $.ajax({
+        url: '/fetch-sales-items/' + customerId, // Endpoint that returns the sale items for the customer
+        method: 'GET',
+        success: function(data) {
+            // Assuming data contains HTML of sale items table
+            $('#sale-items-container').html(data);
+        },
+        error: function(error) {
+            console.error('Error fetching sales items:', error);
+            alert('Error fetching sales items.');
+        }
+    });
+}
+
+// Event handler for the submit button
+$('#submitScan').click(function() {
+    var phoneNumber = $('#phone').val(); // Get the phone number from input
+    fetchCustomerAndSalesItems(phoneNumber); // Fetch customer ID and sales items
+});
+
+
+
+
+
   // JavaScript to fetch and display sales items
   function fetchSalesItems(customerId) {
     if (!customerId) {
@@ -768,14 +798,15 @@
             $('#sales_items_table tbody').empty();
             data.forEach(item => {
                 const total = item.Quantity * item.Price;
+                //   const partial = item.Partial;
                 const row = `
                     <tr>
                         <td>${item.ProductName}</td>
                         <td>${item.Quantity}</td>
                         <td>${item.Price}</td>
                         <td>${total}</td>
-                        <td>${item.Status ? 'Full' : 'Not Full'}</td>
-                        <td>${item.Partial ? 'Yes' : 'No'}</td>
+                     <td>${item.Status ? 'Fully Offered' : item.Partial ? 'Partially Offered' : 'Not Offered'}</td>
+                       
                     </tr>
                 `;
                 $('#sales_items_table tbody').append(row);
@@ -790,4 +821,27 @@
 
 
     </script>
+    
+    
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    let inputBuffer = '';
+
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            // Output the scanned QR code to the console
+            console.log('Scanned QR Code:', inputBuffer);
+            // Display the result in the #result div
+            document.getElementById('result').textContent = inputBuffer;
+            fetchCustomerAndSalesItems(inputBuffer);
+
+            // Clear the buffer for the next scan
+            inputBuffer = '';
+        } else {
+            // Append the key to the buffer
+            inputBuffer += e.key;
+        }
+    });
+});
+</script>
     

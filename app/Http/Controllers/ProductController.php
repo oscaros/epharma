@@ -6,6 +6,8 @@ use App\Models\Department;
 use App\Models\Product;
 use App\Models\ProductTemp;
 use App\Traits\AuditTrait;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
@@ -21,9 +23,19 @@ class ProductController extends Controller
 
     public function create()
     {
-        $departments = Department::all();
+        $user = auth()->user();
+    
+        if ($user->role_id == 1) {
+            // If the user has a role of 1, return all departments
+            $departments = Department::all();
+        } else {
+            // Otherwise, return departments where the entity_id matches the user's entity_id
+            $departments = Department::where('entity_id', $user->entity_id)->get();
+        }
+    
         return view('products.create', compact('departments'));
     }
+    
 
     public function store(Request $request)
     {
@@ -57,6 +69,23 @@ class ProductController extends Controller
 
             $product = Product::create($productData);
             $product->departments()->attach($request->departments);
+
+            $recipient = auth()->user();
+
+            Notification::make()
+                ->title('Saved successfully')
+                ->sendToDatabase($recipient);
+
+            Notification::make()
+                ->title('Saved successfully')
+                ->success()
+                ->body('Item addition has been succesfull.')
+                ->actions([
+                    Action::make('markAsUnread')
+                        ->button()
+                        ->markAsUnread(),
+                ])
+                ->send();
 
             $this->createAudit($request, 'Created Drug/Service with name - ' . $product->ProductName, 'CREATE');
             return redirect()->route('products.index')->with('success', 'Product added successfully.');

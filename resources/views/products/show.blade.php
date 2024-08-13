@@ -1,19 +1,20 @@
 <x-app-layout :assets="$assets ?? []">
-    <!-- Product Details Page -->
+    <!-- Item Details Page -->
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="col-span-1 lg:col-span-2">
                 <div class="bg-white shadow-md rounded-lg p-6">
                     <div class="mb-6">
-                        <h5 class="text-lg font-semibold">Product Details</h5>
+                        <h5 class="text-lg font-semibold">Item Details</h5>
                     </div>
                     <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-gray-700">Product Name:</label>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Item Name:</label>
                         <p id="name" class="mt-1 block w-full">{{ $product->ProductName }}</p>
                     </div>
 
                     <div class="mb-4">
-                        <label for="serial_number" class="block text-sm font-medium text-gray-700">Serial Number:</label>
+                        <label for="serial_number" class="block text-sm font-medium text-gray-700">Serial
+                            Number:</label>
                         <p id="serial_number" class="mt-1 block w-full">{{ $product->serial_number }}</p>
                     </div>
 
@@ -23,7 +24,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="quantity" class="block text-sm font-medium text-gray-700">Current Stock/Quantity:</label>
+                        <label for="quantity" class="block text-sm font-medium text-gray-700">Current
+                            Stock/Quantity:</label>
                         <p id="quantity" class="mt-1 block w-full">{{ $product->Quantity }}</p>
                     </div>
 
@@ -38,16 +40,7 @@
                     </div> --}}
 
 
-                    <!-- Example Blade view -->
-@foreach($products as $product)
-<p>{{ $product->ProductName }}</p>
-<p>Service Points:</p>
-<ul>
-    @foreach($product->departments as $department)
-        <li>{{ $department->name }}</li>
-    @endforeach
-</ul>
-@endforeach
+
 
                 </div>
             </div>

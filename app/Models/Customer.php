@@ -10,6 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
+        'ClientID',
         'FirstName',
         'LastName',
         'Email',
@@ -18,7 +19,9 @@ class Customer extends Model
         'NIN',
         'PInsured',
         'PType',
-        'entity_id'
+        'entity_id',
+        // 'NewVisit',
+        // 'NewVisitNumber',
 
         
 

@@ -50,7 +50,7 @@ class ListSaleItems extends Component implements HasForms, HasTable
             return $table
                 ->query($query)
                 ->columns([
-                    Tables\Columns\TextColumn::make('products.ProductName')
+                    Tables\Columns\TextColumn::make('product.ProductName')
                         ->label('Medicine Name')
                         ->sortable(),
                     Tables\Columns\TextColumn::make('Quantity')

@@ -29,6 +29,12 @@ class UserController extends Controller
 
 
     public function index() {
+
+    
+ 
+
+
+
         $users = User::where('entity_id', auth()->user()->entity_id)->get();
         return view('users.index', compact('users'));
     }
@@ -54,6 +60,7 @@ class UserController extends Controller
             }else{
             // if(auth()->user()->role_id == 2){
                 $entities = Entity::where('id', auth()->user()->entity_id)->get();
+                $departments = Department::where('entity_id', auth()->user()->entity_id)->get();
             }
             // if(auth()->user()->role_id == 3){
             // }

@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 
+
 class ListProductTemp extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;

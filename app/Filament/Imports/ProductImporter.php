@@ -3,9 +3,11 @@
 namespace App\Filament\Imports;
 
 use App\Models\Product;
+use App\Models\Department;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
+use Filament\Actions\Imports\Exceptions\RowImportFailedException;
 
 class ProductImporter extends Importer
 {
@@ -15,85 +17,69 @@ class ProductImporter extends Importer
     {
         return [
             ImportColumn::make('ProductName')
+                ->label('Item Name')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
-            // ImportColumn::make('Type')
-            //     ->requiredMapping()
-            //     ->rules(['required']),
-            // ImportColumn::make('Status')
-            //     ->requiredMapping()
-            //     ->rules(['required']),
-            // ImportColumn::make('Insured')
-            //     ->requiredMapping()
-            //     ->rules(['required']),
-            // ImportColumn::make('qr_code'),
-            // ImportColumn::make('GenericName')
-            //     ->rules(['max:255']),
-            // ImportColumn::make('DrugClass')
-            //     ->rules(['max:255']),
-            // ImportColumn::make('BrandNames'),
-            // ImportColumn::make('ExpiryDate')
-            //     ->rules(['date']),
-            // ImportColumn::make('ChemicalStructure'),
-            // ImportColumn::make('PharmacologicalClass'),
-            // ImportColumn::make('IndicationsAndUsage'),
-            // ImportColumn::make('DosageInformation'),
-            // ImportColumn::make('MechanismOfAction'),
-            // ImportColumn::make('Pharmacokinetics'),
-            // ImportColumn::make('Contraindications'),
-            // ImportColumn::make('AdverseEffects'),
-            // ImportColumn::make('WarningsAndPrecautions'),
-            // ImportColumn::make('ClinicalTrials'),
-            // ImportColumn::make('RegulatoryInformation'),
-            // ImportColumn::make('StorageAndHandling'),
-            // ImportColumn::make('OverdoseAndTreatment'),
-            // ImportColumn::make('PatientInformation'),
-            // ImportColumn::make('CostAndAvailability'),
-            // ImportColumn::make('TextReferences'),
-            // ImportColumn::make('VendorID')
-            //     ->numeric()
-            //     ->rules(['integer']),
+           
             ImportColumn::make('Price')
+                ->label('Item Price')
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
-            // ImportColumn::make('Quantity')
-            //     ->numeric()
-            //     ->rules(['integer']),
-            // ImportColumn::make('AddedBy')
-            //     ->numeric()
-            //     ->rules(['integer']),
-            // ImportColumn::make('ApprovedBy')
-            //     ->numeric()
-            //     ->rules(['integer']),
-            // ImportColumn::make('ApprovedOn')
-            //     ->rules(['datetime']),
+           
             ImportColumn::make('entity_id')
+                ->label('Business ID')
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
-            // ImportColumn::make('EditApprovedOn')
-            //     ->rules(['datetime']),
+            
             ImportColumn::make('serial_number')
-                ->requiredMapping()
-                ->rules(['required', 'max:255']),
-            // ImportColumn::make('expiry_date')
-            //     ->rules(['date']),
-            ImportColumn::make('department_id')
+                ->label('Serial Number')
+                ->requiredMapping(),
+                // ->rules(['required', 'max:255']),
+            
+            ImportColumn::make('service_point_id')
+                ->label('Service Point Number')
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
         ];
     }
 
+    protected function beforeSave(): void
+    {
+        // Validate service_point_id and store it temporarily
+        $servicePointId = $this->data['service_point_id'];
+        $department = Department::find($servicePointId);
+
+        if (!$department) {
+            throw new RowImportFailedException("No department found with ID [{$servicePointId}].");
+        }
+
+        $this->validatedServicePointId = $servicePointId;
+    }
+
     public function resolveRecord(): ?Product
     {
-        // return Product::firstOrNew([
-        //     // Update existing records, matching them by `$this->data['column_name']`
-        //     'email' => $this->data['email'],
-        // ]);
+        // Process each product individually
+        $product = new Product();
 
-        return new Product();
+        // Set product fields from the CSV data
+        $product->ProductName = $this->data['ProductName'];
+        $product->Price = $this->data['Price'];
+        $product->entity_id = $this->data['entity_id'];
+        $product->serial_number = $this->data['serial_number'];
+
+        // Save the product
+        $product->save();
+
+        return $product;
+    }
+
+    protected function afterSave(): void
+    {
+        // Attach the validated service_point_id to the product
+        $this->record->departments()->attach($this->validatedServicePointId);
     }
 
     public static function getCompletedNotificationBody(Import $import): string

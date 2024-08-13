@@ -24,12 +24,16 @@
 
                         <div class="mb-3">
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <span
+                            class="text-danger">*</span>
                             <input type="email" class="form-input mt-1 block w-full rounded-md" id="email" name="email" placeholder="Enter user email" required>
                         </div>
 
                         {{-- add field phone number --}}
                         <div class="mb-3">
                             <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <span
+                            class="text-danger">*</span>
                             <input type="text" class="form-input mt-1 block w-full rounded-md" id="phone_number" name="phone_number" required placeholder="Enter user phone number">
                         </div>
 

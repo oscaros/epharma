@@ -86,15 +86,17 @@ class YoPayments extends Controller
             // dd($res);
             // dd($res['Status']);
 
-            // $transactionReference = $res['TransactionReference'] ?? null;
-            // if ($transactionReference) {
-            //     $sale->update(['reference' => $transactionReference]);
-            // } else {
-            //     Log::error('YoPayments: Missing TransactionReference', ['response' => $res]);
-            //     throw new \Exception('Payment initiation failed. Please try again.');
-            // }
+            $transactionReference = $res['TransactionReference'] ?? null;
+            if ($transactionReference) {
+                $sale->update(['reference' => $transactionReference]);
+            } else {
+                Log::error('YoPayments: Missing TransactionReference', ['response' => $res]);
+                // throw new \Exception('Payment initiation failed. Please try again.');
+                //display flash foe failure
+                return redirect()->route('sales.create')->with('error', 'Payment initiation failed. Please try again.');
+            }
 
-            dd($res['Status']);
+            // dd($res['Status']);
 
             // Flash a success message
             

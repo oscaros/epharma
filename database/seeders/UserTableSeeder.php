@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
             
                 'email' => 'super@kashtre.com',
                 'password' => bcrypt('password'),
-                'phone_number' => '0772722999',
+                'phone_number' => '0700000000',
                 'email_verified_at' => now(),
                 'role_id' => '1',
                

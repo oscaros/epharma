@@ -250,14 +250,7 @@
                                     </li>
 
 
-                                    <li class="mb-1 last:mb-0">
-                                        <a class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate @if (Route::is('roles.index')) || (Route::is('roles.index')) {{ '!text-indigo-500' }} @endif"
-                                            href="{{ route('roles.index') }}">
-                                            <span
-                                                class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                Roles</span>
-                                        </a>
-                                    </li>
+                                    
                               
 
 
@@ -302,7 +295,7 @@
                                         </svg>
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Patients</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Clients</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -322,7 +315,7 @@
                                             href="{{ route('customers.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                Patients</span>
+                                                Clientts</span>
                                         </a>
                                     </li>
 
@@ -332,7 +325,7 @@
                                             href="{{ route('customer-sales.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                                Patient Services and Products</span>
+                                                Client Services/Items</span>
                                         </a>
                                     </li>
 
@@ -379,8 +372,7 @@
                                         </svg>
 
                                         <span
-                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Drugs
-                                            and Services</span>
+                                            class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Items/Services</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -400,7 +392,7 @@
                                             href="{{ route('products.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Manage
-                                                Drugs and Services</span>
+                                                Items/Services</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -414,7 +406,7 @@
                                             href="{{ route('products_temp.index') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Pending
-                                                Drugs and Services</span>
+                                                Items/Services</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -456,7 +448,7 @@
 
                                         <span
                                             class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Select
-                                            & Sale</span>
+                                            Items</span>
                                     </div>
                                     <!-- Icon -->
                                     <div
@@ -485,7 +477,7 @@
                                             href="{{ route('sales.create') }}">
                                             <span
                                                 class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Select
-                                                Drug/Service</span>
+                                                Item/Service</span>
                                         </a>
                                     </li>
 
