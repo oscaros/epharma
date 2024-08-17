@@ -34,6 +34,13 @@
                             <input type="text" class="form-input mt-1 block w-full rounded-md" id="address" name="address" placeholder="Enter entity address" required>
                         </div>
 
+
+                          {{-- business commission --}}
+                          <div class="mb-3">
+                            <label for="commission" class="block text-sm font-medium text-gray-700">Commission (Optional)</label>
+                            <input type="number" class="form-input mt-1 block w-full rounded-md" id="commission" name="commission" step="0.01" min="0" max="100" placeholder="0.00">
+                        </div>
+
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Entity</button>
                     </form>
                 </div>

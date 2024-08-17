@@ -123,4 +123,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/export-csv', [ReportController::class, 'exportCSV'])->name('report.export.csv');
 
 
+    Route::get('/pending-customers', [CustomerController::class, 'getPendingCustomers'])->name('getPendingCustomers');
+
+
+
 });

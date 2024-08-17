@@ -57,40 +57,41 @@ class ListRoles extends Component implements HasForms, HasTable, HasActions
                 ])
                 ->filters([
                     //
-                    Filter::make('created_at')
-                        ->form([
-                            DatePicker::make('created_from')
-                                ->label('From'),
-                            DatePicker::make('created_until')
-                                ->label('To'),
-                        ])
-                        ->query(function (Builder $query, array $data): Builder {
-                            return $query
-                                ->when(
-                                    $data['created_from'],
-                                    fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                                )
-                                ->when(
-                                    $data['created_until'],
-                                    fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                                );
-                        })
-                        ->indicateUsing(function (array $data): array {
-                            $indicators = [];
+                    // Filter::make('created_at')
+                    //     ->form([
+                    //         DatePicker::make('created_from')
+                    //             ->label('From'),
+                    //         DatePicker::make('created_until')
+                    //             ->label('To'),
+                    //     ])
+                    //     ->query(function (Builder $query, array $data): Builder {
+                    //         return $query
+                    //             ->when(
+                    //                 $data['created_from'],
+                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                    //             )
+                    //             ->when(
+                    //                 $data['created_until'],
+                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                    //             );
+                    //     })
+                    //     ->indicateUsing(function (array $data): array {
+                    //         $indicators = [];
 
-                            if ($data['from'] ?? null) {
-                                $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
-                                    ->removeField('from');
-                            }
+                    //         if ($data['from'] ?? null) {
+                    //             $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                    //                 ->removeField('from');
+                    //         }
 
-                            if ($data['until'] ?? null) {
-                                $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
-                                    ->removeField('until');
-                            }
+                    //         if ($data['until'] ?? null) {
+                    //             $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                    //                 ->removeField('until');
+                    //         }
 
-                            return $indicators;
-                        }),
-                ], FiltersLayout::AboveContent)
+                    //         return $indicators;
+                        // }),
+                // ], FiltersLayout::AboveContent)
+                ])
                 ->actions([
                     //
                     Action::make('edit')

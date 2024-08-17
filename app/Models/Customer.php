@@ -20,8 +20,8 @@ class Customer extends Model
         'PInsured',
         'PType',
         'entity_id',
-        // 'NewVisit',
-        // 'NewVisitNumber',
+        'NewVisit',
+        'NewVisitNumber',
 
         
 

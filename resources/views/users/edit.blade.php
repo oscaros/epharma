@@ -33,6 +33,10 @@
                             </select>
                         </div>
 
+
+                         {{-- add check if role == 1 --}}
+                         @if(auth()->user()->role_id == 1)
+
                         <div class="mb-4">
                             <label for="entity_id" class="block text-sm font-medium text-gray-700">Business:</label>
                             <select class="select2 form-select mt-1 block w-full" id="entity_id" name="entity_id" required>
@@ -42,6 +46,9 @@
                                 @endforeach
                             </select>
                         </div>
+
+
+                        @endif  
 
                         <div class="mb-4">
                             <label for="department_id" class="block text-sm font-medium text-gray-700">Service Point:</label>

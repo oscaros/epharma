@@ -1,21 +1,15 @@
 <?php
-
-// app/Http/Controllers/CustomerController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Entity;
-use App\Models\User; // Make sure to import the User model
-use App\Traits\AuditTrait;
+use App\Models\SaleItem;
+use App\Models\User;  // Make sure to import the User model
 use App\Notifications\NewCustomerNotification;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-// use Filament\Notifications\Notification as FilamentNotification; // Import Filament's Notification class
+use App\Traits\AuditTrait;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
@@ -72,6 +66,22 @@ class CustomerController extends Controller
         }
     }
 
+    public function getPendingCustomers()
+    {
+        $departmentId = auth()->user()->department_id;
+
+        $pendingCustomers = SaleItem::where('Status', 0)
+            ->whereHas('product', function ($query) use ($departmentId) {
+                $query->where('department_id', $departmentId);
+            })
+            ->with(['sale.customer', 'sale.users', 'product'])
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->groupBy('sale.customer_id');
+
+        return response()->json($pendingCustomers);
+    }
+
     public function create()
     {
         return view('customers.create');
@@ -82,11 +92,16 @@ class CustomerController extends Controller
         try {
             $request->validate([
                 'FirstName' => 'required',
-                'Email' => 'required|Email|unique:customers,Email',
-                'Phone' => 'required|string|unique:customers,Phone',
+                'Email' => 'required',
+                'Phone' => 'required',
                 'LastName' => 'required',
                 'PInsured' => 'required',
             ]);
+
+            // Generate a unique ClientID
+            do {
+                $clientId = now()->format('Ymd') . rand(1000, 9999);
+            } while (Customer::where('ClientID', $clientId)->exists());
 
             $data = [
                 'FirstName' => $request->FirstName,
@@ -99,18 +114,10 @@ class CustomerController extends Controller
                 'PType' => $request->PType,
                 'NewVisit' => false,  // Explicitly setting NewVisit to false
                 'entity_id' => auth()->user()->entity_id,
-                'ClientID' => now()->format('YmdHis') . rand(100,999),
-                // 'NewVisitNumber' => random_int(1000, 9999),
+                'ClientID' => $clientId,  // Assign the unique ClientID
             ];
 
             $customer = Customer::create($data);
-
-            // Generate QR code with phone number
-            // $qrCode = QrCode::format('png')->generate($customer->Phone);
-            $qrCode = QrCode::format('png')->generate($customer->ClientID);
-            $fileName = 'qrcodes/' . $customer->id . '.png';
-            Storage::disk('public')->put($fileName, $qrCode);
-            $customer->qr_code_path = $fileName;
             $customer->save();
 
             // Send notification to all users
@@ -119,30 +126,20 @@ class CustomerController extends Controller
                 $user->notify(new NewCustomerNotification($customer));
             }
 
-            // Optionally, send a Filament notification to the current user
-            // FilamentNotification::make()
-            //     ->title('Patient created successfully.')
-            //     ->success()
-            //     ->send();
+            $recipient = auth()->user();
 
-
-                $recipient = auth()->user();
- 
-                Notification::make()
-                    ->title('Patient admitted successfully')
-                    ->sendToDatabase($recipient);
-
-                    Notification::make()
-                    ->title('Patient admitted successfully')
-                    ->success()
-                    ->body('Patient admission has been succesfull.')
-                    ->actions([
-                        Action::make('markAsUnread')
-                            ->button()
-                            ->markAsUnread(),
-                    ])
-                    ->send();
-                
+            Notification::make()
+                ->title('Patient admitted successfully by ' . auth()->user()->name)
+                ->icon('heroicon-o-document-text')
+                ->sendToDatabase($recipient)
+                ->success()
+                ->body('Client ' . $customer->FirstName . ' has been admitted successfully at ' . now() . ' by ' . auth()->user()->name)
+                ->actions([
+                    Action::make('View Client')
+                        ->button()
+                        ->url(route('customers.show', $customer->id), shouldOpenInNewTab: true),
+                ])
+                ->send();
 
             $this->createAudit($request, 'Created New Patient named ' . $customer->FirstName, 'Create');
 
@@ -181,7 +178,7 @@ class CustomerController extends Controller
             $customer = Customer::find($id);
             return view('customers.edit', compact('customer'));
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'An error occurred while trying to edit customer', $th->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while trying to edit customer =' . $th->getMessage());
         }
     }
 
@@ -194,11 +191,15 @@ class CustomerController extends Controller
             $data = [
                 'Phone' => $request->phone,
                 'Address' => $request->address,
+                'NIN' => $request->nin,
+                'PInsured' => $request->p_insured,
+                'PType' => $request->p_type,
+                'Email' => $request->email,
                 'UpdatedBy' => auth()->user()->id,
             ];
 
             $customer->update($data);
-            $this->createAudit($request, "Updated Patient with ID: {$customer->id}", 'Update', $customer->id, null);
+            $this->createAudit($request, "Updated Patient with ID: {$customer->id}", 'Update');
             return redirect()->route('customers.index')->with('success', 'Patient Details updated successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
@@ -213,6 +214,6 @@ class CustomerController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        // works
     }
 }

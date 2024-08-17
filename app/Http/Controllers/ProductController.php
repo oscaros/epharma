@@ -27,10 +27,12 @@ class ProductController extends Controller
 
         if ($user->role_id == 1) {
             // If the user has a role of 1, return all departments
-            $departments = Department::all();
+            $departments = Department::where('is_deleted', 0)->get();
         } else {
             // Otherwise, return departments where the entity_id matches the user's entity_id
-            $departments = Department::where('entity_id', $user->entity_id)->get();
+            $departments = Department::where('entity_id', $user->entity_id)
+                ->where('is_deleted', 0)
+            ->get();
         }
 
         return view('products.create', compact('departments'));
@@ -108,7 +110,16 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $departments = Department::all();
+        $user = auth()->user();
+        if ($user->role_id == 1) {
+            // If the user has a role of 1, return all departments
+            $departments = Department::where('is_deleted', 0)->get();
+        } else {
+            // Otherwise, return departments where the entity_id matches the user's entity_id
+            $departments = Department::where('entity_id', $user->entity_id)
+                ->where('is_deleted', 0)
+            ->get();
+        }
         return view('products.edit', compact('product', 'departments'));
     }
 

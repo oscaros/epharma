@@ -33,6 +33,11 @@
         <div class="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-200 dark:border-slate-700">
             <div class="font-medium text-slate-800 dark:text-slate-100">{{ Auth::user()->name }}</div>
             <div class="text-xs text-slate-500 dark:text-slate-400 italic">{{ Auth::user()->email }}</div>
+            {{-- show logged in user role name from role id --}}
+            <div class="text-xs text-slate-500 dark:text-slate-400 italic">Role: {{ Auth::user()->role->name }}</div>
+          {{-- show department name from deoartment id --}}
+            <div class="text-xs text-slate-500 dark:text-slate-400 italic">Service Point: {{ Auth::user()->department->name }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 italic">Joined: {{ Auth::user()->created_at->diffForHumans() }}</div>
         </div>
         <ul>
             <li>

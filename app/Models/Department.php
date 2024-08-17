@@ -9,7 +9,14 @@ class Department extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'entity_id', 'user_id'];
+    protected $fillable = [
+        'name',
+        'code',
+        'entity_id',
+        'user_id',
+        'is_deleted'
+
+    ];
 
     public function entity()
     {

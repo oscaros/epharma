@@ -33,6 +33,11 @@
                             <input type="text" class="form-input mt-1 block w-full rounded-md" id="Address" name="Address" placeholder="Enter entity address" value="{{ $entity->Address }}">
                         </div>
 
+                        <div class="mb-3">
+                            <label for="address" class="block text-sm font-medium text-gray-700">Commission</label>
+                            <input type="number" class="form-input mt-1 block w-full rounded-md" id="commission" name="commission" step="0.01" min="0" max="100" placeholder="0.00" value="{{ $entity->Commission}}">
+                        </div>
+
 
 
 

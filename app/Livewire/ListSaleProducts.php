@@ -64,9 +64,9 @@ class ListSaleProducts extends Component implements HasForms, HasTable
                 ->when($user->is_admin != 1, function ($query) use ($user) {
                     $query->where('entity_id', $user->entity_id);
                     // Filter products by department_id for other roles
-                    $query->whereHas('departments', function ($query) use ($user) {
-                        $query->where('department_id', $user->department_id);
-                    });
+                    // $query->whereHas('departments', function ($query) use ($user) {
+                    //     $query->where('department_id', $user->department_id);
+                    // });
                 }))
 
 

@@ -15,6 +15,7 @@ class Entity extends Model
         'Email',
         'Phone',
         'Address',
+        'Commission'
         // 'CreatedBy',
         // 'UpdatedBy',
 

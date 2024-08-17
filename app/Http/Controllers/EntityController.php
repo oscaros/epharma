@@ -72,6 +72,7 @@ class EntityController extends Controller
                     'Email' => $request->email,
                     'Phone' => $request->phone,
                     'Address' => $request->address,
+                    'Commission' => $request->commission,
                     // 'CreatedBy' => auth()->user()->id,
 
 
@@ -157,6 +158,7 @@ class EntityController extends Controller
                 'Email' => $request->Email,
                 'Phone' => $request->Phone,
                 'Address' => $request->Address,
+                'Commission' => $request->commission,
                 'UpdatedBy' => auth()->user()->id,
                
             ];

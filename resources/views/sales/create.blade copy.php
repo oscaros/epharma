@@ -2,78 +2,121 @@
     <x-app-layout>
         <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
             <div class="px-4 sm:px-6 lg:px-8 py-0 w-full max-w-9xl mx-auto">
-                
-                
-                
+
+
+
                 <div class="form-group ">
                     <br>
 
 
-                      
-                      
-                      <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id" onchange="fetchSalesItems(this.value);">
-    <option value="">Select Patient</option>
-    @foreach ($customers as $customer)
-        <option value="{{ $customer->id }}" data-phone="{{ $customer->Phone }}">
-            {{ $customer->FirstName }} {{ $customer->LastName }} {{ $customer->Phone }}
-        </option>
-    @endforeach
-</select>
-
-<div id="result"></div>
-                
-                    <label class="mr-10" style="margin: 20px;">You can auto search for patient by scanning the QR code on the Patient's Card using a QR/Bar Code Scanner</label>
-                    
-                    
-                     <div class="flex justify-end my-0 mr-5">
-                            <div class="mr-10">
-                                {{-- <input type="text" name="phone" id="phone" placeholder="Scanned Number"
-                                    class="border rounded px-4 py-2"  onchange="fetchSalesItems(this.value); ">
-                                <button type="button" id="submitScan"
-                                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ml-1">Submit</button> --}}
-
-                             
-                                     <div id="result">Result:</div>
 
 
-                                   
-
-
-                            </div>
-
-                            <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36" height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;" onchange="fetchSalesItems(this.value); "/>
-                            <button class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-600"
-                                id="scanQrButton" type="button">Use Scanner</button>
-
-                                <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
-                                <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600" id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
+                    <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id"
+                        onchange="fetchSalesItems(this.value);">
+                        <option value="">Select Patient</option>
+                        @foreach ($customers as $customer)
+                            <option value="{{ $customer->id }}" data-phone="{{ $customer->Phone }}">
+                                {{ $customer->FirstName }} {{ $customer->LastName }} {{ $customer->Phone }}</option>
+                        @endforeach
+                    </select>
 
 
 
-                            {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
-                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
-               --}}
+                    <label class="mr-10" style="margin: 20px;">Scan the client's card with a QR/Bar Code Scanner to
+                        auto-search their details</label>
+
+                    <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        data-bs-toggle="modal" data-bs-target="#pendingCustomersModal" style="margin: 10px 2px;">Clients Queue
+                    </button>
+
+
+
+
+
+
+
+                    <div class="flex justify-end my-0 mr-5">
+                        <div class="mr-10">
+
+                            <div id="result"></div>
+
+
+
+
+
                         </div>
 
+                        <img class="w-9 h-9 rounded-full" src="{{ asset('images/1.png') }}" width="36"
+                            height="36" alt="User 01" id="customer-icon" style="margin-right: 10px;"
+                            onchange="fetchSalesItems(this.value); " />
+                        <button class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-600"
+                            id="scanQrButton" type="button">Use Scanner</button>
 
-                  
-                    
-                    <table id="sales_items_table" class="table border border-gray-300 w-full mt-4 rounded flex py-2 justify-center px-2 mb-10">
+                        <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden"
+                            onchange="fetchSalesItems(this.value); ">
+                        <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600"
+                            id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
+
+
+
+                        {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
+               --}}
+                    </div>
+
+
+
+
+                    <table id="sales_items_table"
+                        class="table border border-gray-300 w-full mt-4 rounded flex py-2 justify-center px-2 mb-10">
                         <thead>
                             <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
+                                <th>Item Name</th>
+                                {{-- <th>Quantity</th>
                                 <th>Price</th>
-                                <th>Total</th>
+                                <th>Total</th> --}}
                                 <th>Status</th>
-                              
+
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Sales items will be displayed here -->
                         </tbody>
                     </table>
+
+
+                    <div class="modal fade" id="pendingCustomersModal" tabindex="-1" aria-labelledby="pendingCustomersModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="pendingCustomersModalLabel">Pending Customers Queue</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Customer Name</th>
+                                                <th>Customer Number</th>
+                                                <th>Time</th>
+                                                <th>Referred By</th>
+                                                <th>Pending Products</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="pendingCustomersTable">
+                                            <!-- Data will be appended here by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
+
+
 
 
 
@@ -87,27 +130,11 @@
 
 
 
-                       
+
 
 
                     </div>
-                    {{-- <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                <h1 class="text-lg font-semibold mb-6">Selection Status</h1>
-              @livewire('list-sale-items', ['customer_id' => request()->query('customer_id')])
-            </div> --}}
 
-                    {{-- @if ($selectedCustomerId)
-                        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                            <h1 class="text-lg font-semibold mb-6">Selection Status</h1>
-                            @livewire('list-sale-items', ['customer_id' => $selectedCustomerId])
-                        </div>
-                    @endif --}}
-
-
-                    {{-- <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                        @livewire('list-sale-items', ['customer_id' => $selectedCustomerId])
-
-                    </div> --}}
 
 
                     <h1 class="text-lg font-semibold mb-6">Select Item</h1>
@@ -124,8 +151,8 @@
                                     <tr class="bg-blue-500 text-white">
                                         <th class="border border-gray-300 p-2">Product</th>
                                         <th class="border border-gray-300 p-2">Quantity</th>
-                                        <th class="border border-gray-300 p-2">Price</th>
-                                        <th class="border border-gray-300 p-2">Total</th>
+                                        <th class="border border-gray-300 p-2 hidden">Price</th>
+                                        <th class="border border-gray-300 p-2 hidden">Total</th>
                                         <th class="border border-gray-300 p-2">Action</th>
                                     </tr>
                                 </thead>
@@ -141,7 +168,8 @@
                             <input type="hidden" id="productNames" name="productNames">
                             <div class="mt-4 flex justify-between">
                                 <button type="button" onclick="previewReceipt()"
-                                    class="btn btn-primary text-white bg-black p-2 rounded-full mt-2" style="background-color: black;">Preview</button>
+                                    class="btn btn-primary text-white bg-black p-2 rounded-full mt-2"
+                                    style="background-color: black;">Preview</button>
                             </div>
                         </div>
                     </div>
@@ -159,8 +187,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+
 
 
 
@@ -171,15 +203,24 @@
         border-collapse: collapse;
         margin-top: 20px;
     }
-    #sales_items_table th, #sales_items_table td {
+
+    #sales_items_table th,
+    #sales_items_table td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
     }
+
     #sales_items_table th {
         background-color: #f2f2f2;
     }
+
+    .hide-price,
+    .hide-total {
+        display: none;
+    }
 </style>
+
 
 <script>
     function printReceipt() {
@@ -187,9 +228,9 @@
             <div>
                 <h1>Receipt</h1>
                 <p>Customer: ${$('#customer_id option:selected').text()}</p>
-                <p>Phone: ${$('#phone').val()}</p>
+                <p>Date: ${new Date().toLocaleDateString()}</p>
                 <p>Hospital: {{ auth()->user()->entity->EntityName }}</p>
-                <p>Attended by: {{ auth()->user()->name }}</p>
+                <p>Attended To By: {{ auth()->user()->name }}</p>
                 ${$('#receipt').html()}
             </div>
         `;
@@ -351,10 +392,12 @@
                 receiptContent += '<tr style="background-color: ' + (Object.keys(cart).indexOf(key) % 2 == 0 ?
                     '#f2f2f2' : '#ffffff') + ';">';
                 receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.name + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity +
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;" >' + value.quantity +
                     '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice + '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal + '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;" class="hidden">' +
+                    productPrice + '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;" class="hidden">' +
+                    productTotal + '</td>';
                 receiptContent +=
                     '<td style="border: 1px solid #ccc; padding: 8px;"><button type="button" style="padding: 8px; border-radius: 50px; background-color: black; color: white;" onclick="removeItem(\'' +
                     key + '\')">Remove</button></td>';
@@ -367,7 +410,7 @@
             }
 
             receiptContent +=
-                '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;">UGX ' +
+                '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;" class="hidden"><strong class="hidden">Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;" class="hidden">UGX ' +
                 grandTotal + '</td></tr>';
 
             $('#receipt table tbody').html(receiptContent);
@@ -527,6 +570,11 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#receiptForm').submit();
+                    sessionStorage.clear();
+                    // cart = {};
+                    // grandTotal = 0;
+                    // updateReceipt();
+
                 }
             });
         }
@@ -720,128 +768,239 @@
 
 
 <script>
-
-
-// Function to fetch customer ID from phone number and then load sale items
-function fetchCustomerAndSalesItems(phoneNumber) {
-    $.ajax({
-        url: '/get-customer-id',  // Endpoint that returns customer ID from phone number
-        method: 'GET',
-        data: { phone: phoneNumber },
-        success: function(response) {
-            if(response.customerId) {
-                fetchSalesItems(response.customerId);
-            } else {
-                console.error('No customer found with that phone number.');
-                alert('No customer found.');
+    // Function to fetch customer ID from phone number and then load sale items
+    function fetchCustomerAndSalesItems(phoneNumber) {
+        $.ajax({
+            url: '/get-customer-id', // Endpoint that returns customer ID from phone number
+            method: 'GET',
+            data: {
+                phone: phoneNumber
+            },
+            success: function(response) {
+                if (response.customerId) {
+                    fetchSalesItems(response.customerId);
+                } else {
+                    console.error('No customer found with that phone number.');
+                    alert('No customer found.');
+                }
+            },
+            error: function(error) {
+                console.error('Error fetching customer ID:', error);
+                alert('Error fetching customer information.');
             }
-        },
-        error: function(error) {
-            console.error('Error fetching customer ID:', error);
-            alert('Error fetching customer information.');
-        }
-    });
-}
-
-
-
-function fetchCustomerAndSalesItemsScan(phoneNumber) {
-    const selectElement = document.getElementById('customer_id');
-    const options = selectElement.options;
-
-    for (let i = 0; i < options.length; i++) {
-        if (options[i].dataset.phone === phoneNumber) {
-            selectElement.value = options[i].value;
-            fetchSalesItems(options[i].value);
-            break;
-        }
-    }
-}
-
-// Function to fetch and display sale items by customer ID
-function fetchSalesItems(customerId) {
-    $.ajax({
-        url: '/fetch-sales-items/' + customerId, // Endpoint that returns the sale items for the customer
-        method: 'GET',
-        success: function(data) {
-            // Assuming data contains HTML of sale items table
-            $('#sale-items-container').html(data);
-        },
-        error: function(error) {
-            console.error('Error fetching sales items:', error);
-            alert('Error fetching sales items.');
-        }
-    });
-}
-
-// Event handler for the submit button
-$('#submitScan').click(function() {
-    var phoneNumber = $('#phone').val(); // Get the phone number from input
-    fetchCustomerAndSalesItems(phoneNumber); // Fetch customer ID and sales items
-});
+        });
 
 
 
 
-
-  // JavaScript to fetch and display sales items
-  function fetchSalesItems(customerId) {
-    if (!customerId) {
-        $('#sales_items_table tbody').empty(); // Clear the table if no customer is selected
-        return;
     }
 
-    $.ajax({
-        url: `/sales-items/${customerId}`,
-        type: 'GET',
-        success: function(data) {
-            $('#sales_items_table tbody').empty();
-            data.forEach(item => {
-                const total = item.Quantity * item.Price;
-                //   const partial = item.Partial;
-                const row = `
+
+
+    function fetchCustomerAndSalesItemsScan(phoneNumber) {
+        const selectElement = document.getElementById('customer_id');
+        const options = selectElement.options;
+
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].dataset.phone === phoneNumber) {
+                selectElement.value = options[i].value;
+                fetchSalesItems(options[i].value);
+                break;
+            }
+        }
+    }
+
+    // Function to fetch and display sale items by customer ID
+    function fetchSalesItems(customerId) {
+        $.ajax({
+            url: '/fetch-sales-items/' + customerId, // Endpoint that returns the sale items for the customer
+            method: 'GET',
+            success: function(data) {
+                // Assuming data contains HTML of sale items table
+                $('#sale-items-container').html(data);
+                sessionStorage.clear();
+                // cart = {};
+                // grandTotal = 0;
+                // updateReceipt();
+
+            },
+            error: function(error) {
+                console.error('Error fetching sales items:', error);
+                alert('Error fetching sales items.');
+            }
+        });
+    }
+
+    // Event handler for the submit button
+    $('#submitScan').click(function() {
+        sessionStorage.clear();
+        var phoneNumber = $('#phone').val(); // Get the phone number from input
+        fetchCustomerAndSalesItems(phoneNumber); // Fetch customer ID and sales items
+    });
+
+
+
+
+
+    // JavaScript to fetch and display sales items
+    function fetchSalesItems(customerId) {
+        if (!customerId) {
+            $('#sales_items_table tbody').empty(); // Clear the table if no customer is selected
+            return;
+        }
+
+        $.ajax({
+            url: `/sales-items/${customerId}`,
+            type: 'GET',
+            success: function(data) {
+                $('#sales_items_table tbody').empty();
+                data.forEach(item => {
+                    const total = item.Quantity * item.Price;
+                    //   const partial = item.Partial;
+                    const row = `
                     <tr>
                         <td>${item.ProductName}</td>
-                        <td>${item.Quantity}</td>
-                        <td>${item.Price}</td>
-                        <td>${total}</td>
-                     <td>${item.Status ? 'Fully Offered' : item.Partial ? 'Partially Offered' : 'Not Offered'}</td>
+                        
+                     <td>${item.Status ? 'Done' : item.Partial ? 'Partially Done' : 'Not Done'}</td>
                        
                     </tr>
                 `;
-                $('#sales_items_table tbody').append(row);
-            });
-        },
-        error: function(error) {
-            console.error('Error fetching sales items:', error);
-            alert('Failed to fetch sales items.');
-        }
-    });
-}
-
-
-    </script>
-    
-    
-<script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-    let inputBuffer = '';
-
-    document.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            // Output the scanned QR code to the console
-            console.log('Scanned QR Code:', inputBuffer);
-            // Display the result in the #result div
-            document.getElementById('result').textContent = inputBuffer;
-            fetchCustomerAndSalesItems(inputBuffer);
-
-            // Clear the buffer for the next scan
-            inputBuffer = '';
-        } else {
-            // Append the key to the buffer
-            inputBuffer += e.key;
-        }
-    });
-});
+                    $('#sales_items_table tbody').append(row);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching sales items:', error);
+                alert('Failed to fetch sales items.');
+            }
+        });
+    }
 </script>
-    
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Buffer to store the scanned input
+        let inputBuffer = '';
+
+        // Handle keypress events for QR code scanning
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                // Output the scanned QR code to the console
+                console.log('Scanned QR Code:', inputBuffer);
+
+                // Fetch data from the server
+                fetch('/get-customer-id?phone=${encodeURIComponent(inputBuffer)}')
+                    .then(response => response.json())
+                    .then(data => {
+                        const customerId = data.id;
+                        console.log('Customer ID from DB:', customerId);
+
+                        // Set the value of the select box if customer_id matches any option
+                        const selectBox = document.getElementById('customer_id');
+                        const options = selectBox.options;
+                        let found = false;
+
+                        for (let i = 0; i < options.length; i++) {
+                            if (options[i].value === customerId.toString()) {
+                                selectBox.selectedIndex = i;
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        // Display the result
+                        if (found) {
+                            alert('Customer found: ' + customerId);
+                        } else {
+                            alert('Customer not found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching customer data:', error);
+                    });
+
+                // Clear the buffer for the next scan
+                inputBuffer = '';
+            } else {
+                // Append the key to the buffer
+                inputBuffer += e.key;
+            }
+        });
+    });
+
+
+    // check transaction status
+    function checkTransactionStatus() {
+        const customerId = document.getElementById('customer_id').value;
+        const transactionId = document.getElementById('transaction_id').value;
+        if (customerId && transactionId) {
+            const url = `/check-payment-status?customer_id=${customerId}&transaction_id=${transactionId}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Transaction status: ' + data.status);
+                    } else {
+                        alert('Transaction status: ' + data.status);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking transaction status:', error);
+                });
+        }
+    }
+
+
+
+
+    // Function to toggle visibility of price and total columns
+    function togglePriceAndTotal(show) {
+        const priceColumns = document.querySelectorAll('.price-column');
+        const totalColumns = document.querySelectorAll('.total-column');
+
+        priceColumns.forEach(column => {
+            column.style.display = show ? '' : 'none';
+        });
+
+        totalColumns.forEach(column => {
+            column.style.display = show ? '' : 'none';
+        });
+    }
+
+
+
+    $('#pendingCustomersModal').on('show.bs.modal', function() {
+        $.ajax({
+            url: '{{ route('getPendingCustomers') }}',
+            method: 'GET',
+            success: function(data) {
+                console.log('Data fetched successfully:', data);
+                let tableBody = $('#pendingCustomersTable');
+                tableBody.empty(); // Clear existing data
+
+                $.each(data, function(customerId, saleItems) {
+                    let customerName = saleItems[0].sale.customer.FirstName + ' ' +
+                        saleItems[0].sale.customer.LastName;
+                    let customerNumber = saleItems[0].sale.customer.NewVisitNumber;
+                    let updatedAt = saleItems[0].updated_at;
+                    let referredBy = saleItems[0].sale.users.name;
+                    let pendingProducts = saleItems.map(item => item.product.ProductName)
+                        .join(', ');
+
+                    let row = `<tr>
+                    <td>${customerName}</td>
+                    <td>${customerNumber}</td>
+                    <td>${updatedAt}</td>
+                    <td>${referredBy}</td>
+                    <td>${pendingProducts}</td>
+                </tr>`;
+
+                    tableBody.append(row);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching pending customers:', error);
+            }
+        });
+    });
+</script>

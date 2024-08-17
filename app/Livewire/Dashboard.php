@@ -11,6 +11,7 @@ use App\Models\Entity;
 use App\Models\Product;
 use App\Models\ExpenseItem;
 use App\Models\Sale;
+use App\Models\SaleItem;
 use App\Models\Sales;
 use App\Models\User;
 use Carbon\Carbon;
@@ -21,7 +22,7 @@ class Dashboard extends Component
     public $selectedDate;
     public $totalProducts;
     public $totalSales;
-    public $totalInvoices;
+    public $totalUnOffered;
     public $pendingProducts;
    
     public $successMessage = '';
@@ -69,7 +70,8 @@ class Dashboard extends Component
             $this->totalUsers = User::all()->count();
             $this->totalProducts = Product::all()->count();
             $this->totalSalesAmount = Sale::all()->sum('amount');
-            $this->totalInvoices = Sale::all()->count();
+            // $this->totalInvoices = Sale::all()->count();
+            $this->totalUnOffered = SaleItem::all()->where('Status', 0)->count();
             $this->totalEntities = Entity::all()->count();
             $this->pendingSales = Sale::all()->where('status', 'Pending')->count();
             // $this->pendingProducts = ProductTemp::all()''
@@ -83,7 +85,13 @@ class Dashboard extends Component
             $this->totalSalesAmount = Sale::query()->where('entity_id', auth()->user()->entity_id)->count();
             $this->pendingSales = Sale::where('entity_id', auth()->user()->entity_id)->where('status', 'Pending')->count();
             $this->totalEntities = Entity::query()->where('id', auth()->user()->entity_id)->count();
-            $this->totalInvoices = Sale::query()->where('entity_id', auth()->user()->entity_id)->count();
+            $this->totalUnOffered = SaleItem::query()
+                // ->where('entity_id', auth()->user()->entity_id)
+                ->whereHas('sale', function ($query) {
+                    $query->where('entity_id', auth()->user()->entity_id);
+                })
+                ->where('Status', 0)
+                ->count();
             $this->totalSales = Sale::query()->where('entity_id', auth()->user()->entity_id)->count();
         }
     
@@ -100,7 +108,7 @@ class Dashboard extends Component
             'date' => $date,
             'pendingSales' => $this->pendingSales,
             'totalSales' => $this->totalSales,
-            'totalInvoices' => $this->totalInvoices,
+            'totalUnOffered' => $this->totalUnOffered,
             'totalProducts' => $this->totalProducts,
             'totalUsers' => $this->totalUsers,
             'totalSalesAmount' => $this->totalSalesAmount,

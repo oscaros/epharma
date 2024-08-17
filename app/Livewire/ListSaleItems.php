@@ -19,7 +19,7 @@ class ListSaleItems extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
-    public $customer_id;  // Add property to store customer_id
+    public $customer_id;
 
     public function mount($customer_id = null)
     {
@@ -31,101 +31,79 @@ class ListSaleItems extends Component implements HasForms, HasTable
     public function updateCustomerId($customerId)
     {
         $this->customer_id = $customerId;
-        $this->render();  // Optionally force a render if needed
+        $this->render();  // Force a render to update the table
     }
 
-  
-    
+    protected function getTableQuery(): Builder
+    {
+        $query = SaleItem::query();
+
+        // Apply common filters first
+        // Filter by customer_id if provided
+        // Filter by customer_id if provided
+        if ($this->customer_id) {
+            $query->whereHas('sale', function (Builder $query) {
+                $query->where('customer_id', $this->customer_id);
+            });
+        }
+
+        // Apply additional filters based on the user's role
+        if (auth()->user()->role_id != 1) {
+            $query
+                ->whereHas('sale', function (Builder $query) {
+                    $query->where('entity_id', auth()->user()->entity_id);
+                })
+                ->whereHas('product.departments', function (Builder $query) {
+                    $query->where('department_id', auth()->user()->department_id);
+                });
+        }
+
+        return $query;
+    }
 
     public function table(Table $table): Table
     {
-        $query = SaleItem::query()
-            ->whereHas('sale', function (Builder $query) {
-                if ($this->customer_id) {
-                    $query->where('customer_id', $this->customer_id);
-                }
-            });
-
-        if (auth()->user()->role_id == 1) {
-            return $table
-                ->query($query)
-                ->columns([
-                    Tables\Columns\TextColumn::make('product.ProductName')
-                        ->label('Medicine Name')
-                        ->sortable(),
-                    Tables\Columns\TextColumn::make('Quantity')
-                        ->numeric()
-                        ->sortable(),
-                    Tables\Columns\TextColumn::make('Price')
-                        ->label('Price(UGX)')
-                        ->numeric()
-                        ->sortable(),
-                    CheckboxColumn::make('Status')
-                        ->label('Fully Offered?')
-                        ->sortable()
-                        ->alignCenter()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                    CheckboxColumn::make('Partial')
-                        ->label('Partially Offered?')
-                        ->sortable()
-                        ->alignCenter()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('created_at')
-                        ->dateTime()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    Tables\Columns\TextColumn::make('updated_at')
-                        ->dateTime()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                ])
-                ->filters([
-                    // Add filters if needed
-                ])
-                ->actions([
-                    // Add actions if needed
-                ])
-                ->bulkActions([
-                    // Add bulk actions if needed
-                ]);
-        } else {
-            return $table
-                ->query($query)
-                ->columns([
-                    Tables\Columns\TextColumn::make('products.ProductName')
-                        ->label('Medicine Name')
-                        ->sortable(),
-                    Tables\Columns\TextColumn::make('Quantity')
-                        ->numeric()
-                        ->sortable(),
-                    Tables\Columns\TextColumn::make('Price')
-                        ->label('Price(UGX)')
-                        ->numeric()
-                        ->sortable(),
-                    CheckboxColumn::make('Status')
-                        ->label('Offered?')
-                        ->sortable()
-                        ->alignCenter()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('created_at')
-                        ->dateTime()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                    Tables\Columns\TextColumn::make('updated_at')
-                        ->dateTime()
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-                ])
-                ->filters([
-                    // Add filters if needed
-                ])
-                ->actions([
-                    // Add actions if needed
-                ])
-                ->bulkActions([
-                    // Add bulk actions if needed
-                ]);
-        }
+        return $table
+            ->query($this->getTableQuery())
+            ->columns([
+                Tables\Columns\TextColumn::make('product.ProductName')
+                    ->label('Medicine Name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('Quantity')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('Price')
+                    ->label('Price(UGX)')
+                    ->numeric()
+                    ->sortable(),
+                CheckboxColumn::make('Status')
+                    ->label('Fully Offered?')
+                    ->sortable()
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                CheckboxColumn::make('Partial')
+                    ->label('Partially Offered?')
+                    ->sortable()
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                // Add filters if needed
+            ])
+            ->actions([
+                // Add actions if needed
+            ])
+            ->bulkActions([
+                // Add bulk actions if needed
+            ]);
     }
 
     public function render(): View

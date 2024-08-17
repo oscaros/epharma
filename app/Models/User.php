@@ -30,7 +30,9 @@ class User extends Authenticatable
         'phone_number',
         'role_id',
         'department_id',
-        'entity_id'
+        'entity_id',
+        'is_admin' 
+
         
     ];
 

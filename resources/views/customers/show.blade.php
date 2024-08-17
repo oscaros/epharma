@@ -6,10 +6,12 @@
     <div class="container mx-auto p-8 bg-white shadow-lg rounded-lg">
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-800">{{ $customer->FirstName }} {{ $customer->LastName }}</h1>
-            <p class="text-lg text-gray-600">{{ $entity->EntityName }}</p>
-            <p class="text-lg text-gray-600 hidden" id="generate">{{ $customer->ClientID }}</p>
+            <p class="text-lg text-gray-600"><strong>{{ $entity->EntityName }}</strong></p>
+           
             {{-- <button id="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 print">QR generate</button> --}}
             {{-- <div id="qrcode"></div>  --}}
+            
+             <p class="text-lg text-gray-600 " id="generate"><strong>Client ID:  </strong>{{ $customer->ClientID }}</p>
 
      
             <div class="flex flex-col items-center justify-center space-y-4">

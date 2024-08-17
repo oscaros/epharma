@@ -14,22 +14,15 @@ class SaleItemController extends Controller
      */
     public function index(Request $request)
     {
-        //
+         // $saleId = $request->query('id');
+        //TODO: pick sale id, pick sale items belonging to sale id, return and compact to view , change view
+        // $saleItems = SaleItem::find($saleId);
 
         
 
         $customerId = $request->query('customer_id');
-
-
-        // dd($customerId);
         $customer = Customer::find($customerId);
-
-        // dd($customer);
-
-
-        $sales = Sale::where('customer_id', $customerId)->get();
-
-        // dd($sales);
+        $sales = Sale::where('customer_id', $customerId)->get();    
         
         return view('sale-items.index', compact('customer', 'sales'));
 

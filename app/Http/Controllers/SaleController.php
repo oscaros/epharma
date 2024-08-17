@@ -49,20 +49,30 @@ class SaleController extends Controller
         );
     }
 
-   public function create()
+    public function create()
     {
-        //
+        // Get today's date in the format used by your database
+        $today = now()->toDateString();
+    
+        // Check user role and filter customers accordingly
         if (auth()->user()->role_id == 1) {
-            // $customers = Customer::all();
-            $customers = Customer::orderBy('updated_at', 'desc')->get();
-            $selectedCustomerId = null;  // Default value when no customer is selected
-            return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
+            $customers = Customer::whereDate('updated_at', $today)
+                                 ->orderBy('updated_at', 'desc')
+                                 ->get();
         } else {
-            $customers = Customer::query()->where('entity_id', auth()->user()->entity_id)->get();
-            $selectedCustomerId = null;  // Default value when no customer is selected
-            return view('sales.create', compact('customers', 'selectedCustomerId'), ['grandTotal' => $this->grandTotal]);
+            $customers = Customer::query()
+                                 ->where('entity_id', auth()->user()->entity_id)
+                                 ->whereDate('updated_at', $today)
+                                 ->get();
         }
+    
+        $selectedCustomerId = null;  // Default value when no customer is selected
+        
+        // Pass the filtered customers and grandTotal to the view
+        return view('sales.create', compact('customers', 'selectedCustomerId'))
+               ->with('grandTotal', $this->grandTotal);
     }
+    
     /**
      * Store a newly created resource in storage.
      */

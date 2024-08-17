@@ -29,7 +29,31 @@
                                 <input type="text" class="form-input mt-1 block w-full rounded-md" id="nin"
                                     name="nin" value="{{ $customer->NIN }}">
                             </div>
-                           
+
+                            {{-- email --}}
+                            <div class="mb-3">
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" class="form-input mt-1 block w-full" id="email" name="email"
+                                    value="{{ $customer->Email }}">
+                            </div>
+
+
+                            {{-- p_insured --}}
+                            <div>
+                                <label for="p_insured" class="block text-sm font-medium text-gray-700">Is Insured?</label>
+                                <input type="checkbox" id="p_insured" name="p_insured" value="{{ $customer->PInsured }}" class="form-checkbox mt-1 block">
+                            </div>
+
+                            {{-- p_type --}}
+                            <div class="mb-3">
+                                <label for="p_type" class="block text-sm font-medium text-gray-700">Type</label>
+                                <select name="p_type" id="p_type">
+                                    <option value="" disabled selected>Select Client Type</option>
+                                    <option value="Inpatient">Inpatient</option>
+                                    <option value="Outpatient">Outpatient</option>
+                                </select>
+
+                            </div>
 
                          
 

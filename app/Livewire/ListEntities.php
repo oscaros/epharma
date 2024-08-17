@@ -41,6 +41,8 @@ class ListEntities extends Component implements HasForms, HasTable
                         ->searchable(),
                     Tables\Columns\TextColumn::make('Address')
                         ->searchable(),
+                        Tables\Columns\TextColumn::make('Commission')
+                        ->searchable(),
                     Tables\Columns\TextColumn::make('created_at')
                         ->dateTime()
                         ->sortable()
@@ -102,6 +104,8 @@ class ListEntities extends Component implements HasForms, HasTable
 
                 ->columns([
                     Tables\Columns\TextColumn::make('name')
+                        ->searchable(),
+                        Tables\Columns\TextColumn::make('Commission')
                         ->searchable(),
                     Tables\Columns\TextColumn::make('created_at')
                         ->dateTime()
