@@ -3,15 +3,8 @@
         <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
             <div class="px-4 sm:px-6 lg:px-8 py-0 w-full max-w-9xl mx-auto">
 
-
-
                 <div class="form-group ">
-                    <br>
-
-
-
-
-                    <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id"
+                    <select wire:model="selectedCustomerId" class="form-control mt-5" id="customer_id" name="customer_id"
                         onchange="fetchSalesItems(this.value);">
                         <option value="">Select Patient</option>
                         @foreach ($customers as $customer)
@@ -19,19 +12,23 @@
                                 {{ $customer->FirstName }} {{ $customer->LastName }} {{ $customer->Phone }}</option>
                         @endforeach
                     </select>
-
-
-
-                    <label class="mr-10" style="margin: 20px;">Scan the client's card with a QR/Bar Code Scanner to
-                        auto-search their details</label>
+                    <label class="mr-10" style="margin: 20px;">Scan the patient's card with a QR/Bar Code Scanner
+                        to
+                        auto-search their details.</label>
 
                     <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                        data-bs-toggle="modal" data-bs-target="#pendingCustomersModal" style="margin: 10px 2px;">Clients Queue
+                        data-bs-toggle="modal" data-bs-target="#pendingCustomersModal" style="margin: 10px 2px;">
+                        Pending Clients
                     </button>
 
 
-
-
+                    <a href="{{ route('sale-items.index') }}" class="text-gray-500 hover:text-gray-600"
+                        style="margin: 10px">
+                        <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                            data-bs-toggle="modal" data-bs-target="#pendingCustomersModal"
+                            style="margin: 10px 2px;">Offer Service
+                        </button>
+                    </a>
 
 
 
@@ -39,10 +36,6 @@
                         <div class="mr-10">
 
                             <div id="result"></div>
-
-
-
-
 
                         </div>
 
@@ -57,24 +50,14 @@
                         <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600"
                             id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
 
-
-
-                        {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
-                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
-               --}}
                     </div>
-
-
-
 
                     <table id="sales_items_table"
                         class="table border border-gray-300 w-full mt-4 rounded flex py-2 justify-center px-2 mb-10">
                         <thead>
                             <tr>
                                 <th>Item Name</th>
-                                {{-- <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Total</th> --}}
+
                                 <th>Status</th>
 
                             </tr>
@@ -85,41 +68,36 @@
                     </table>
 
 
-                    <div class="modal fade" id="pendingCustomersModal" tabindex="-1" aria-labelledby="pendingCustomersModalLabel" aria-hidden="true">
+                    <!-- Pending Clients Section -->
+                    <!-- Modal -->
+                    <div class="modal fade" id="pendingCustomersModal" tabindex="-1"
+                        aria-labelledby="pendingCustomersModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="pendingCustomersModalLabel">Pending Customers Queue</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h5 class="modal-title" id="pendingCustomersModalLabel">Pending Clients</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Customer Name</th>
-                                                <th>Customer Number</th>
-                                                <th>Time</th>
-                                                <th>Referred By</th>
-                                                <th>Pending Products</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="pendingCustomersTable">
-                                            <!-- Data will be appended here by JavaScript -->
-                                        </tbody>
-                                    </table>
+                                    <!-- You can either include the Livewire component here or list pending clients manually -->
+                                    <!-- Option 1: Include the Livewire component -->
+                                    @livewire('list-customer-sales')
+
+                                    <!-- Option 2: List pending clients manually (if not using Livewire) -->
+                                    <div id="pendingClientsList">
+                                        <!-- The list will be populated by JavaScript -->
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
 
-
-
-
-
+                    <!-- End of Pending Clients Section -->
 
                     <div class="flex justify-center my-4 hidden">
                         <video id="preview" class="w-full h-10 max-w-md"></video>
@@ -127,15 +105,7 @@
 
                     <div id="scanForm">
                         @csrf
-
-
-
-
-
-
                     </div>
-
-
 
                     <h1 class="text-lg font-semibold mb-6">Select Item</h1>
                     <div class="flex flex-col lg:flex-row lg:justify-between">
@@ -158,7 +128,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <div id="grandTotal" name="grandTotal" class="mt-4 font-bold">Grand Total: UGX
+                            <div id="grandTotal" name="grandTotal" class="mt-4 font-bold hidden">Grand Total: UGX
                                 {{ $grandTotal }}</div>
                             <input type="hidden" id="grandTotalInput" name="grandTotal" readonly
                                 value="{{ $grandTotal }}">
@@ -167,7 +137,7 @@
                             <input type="hidden" id="productPrices" name="productPrices">
                             <input type="hidden" id="productNames" name="productNames">
                             <div class="mt-4 flex justify-between">
-                                <button type="button" onclick="previewReceipt()"
+                                <button type="button" onclick="previewReceipt()" id="previewBtn"
                                     class="btn btn-primary text-white bg-black p-2 rounded-full mt-2"
                                     style="background-color: black;">Preview</button>
                             </div>
@@ -186,10 +156,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
 
@@ -197,6 +163,12 @@
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
 <style>
     #sales_items_table {
         width: 100%;
@@ -224,22 +196,57 @@
 
 <script>
     function printReceipt() {
+        // Retrieve the necessary values
+        let grandTotalElement = $('#grandTotalInput'); // Assuming grandTotal is stored in a hidden input field
+        let grandTotal = parseFloat(grandTotalElement.val());
+
+        // Check if grandTotal is a valid number
+        if (isNaN(grandTotal)) {
+            console.error("Grand Total is not a valid number");
+            return; // Exit the function if grandTotal is invalid
+        }
+
+        // Calculate Commission and Final Total
+        let commissionPercentage = {{ Auth::user()->entity->Commission }};
+        let commissionAmount = (commissionPercentage / 100) * grandTotal;
+        let finalTotal = grandTotal + commissionAmount;
+
+        // Format values with commas
+        let formattedGrandTotal = grandTotal.toLocaleString();
+        let formattedCommissionAmount = commissionAmount.toLocaleString(undefined, {
+            minimumFractionDigits: 2
+        });
+        let formattedFinalTotal = finalTotal.toLocaleString(undefined, {
+            minimumFractionDigits: 2
+        });
+
+        // Clone the receipt HTML and remove the Action column
+        let receiptClone = $('#receipt').clone();
+        receiptClone.find('th:contains("Action")').remove(); // Remove the Action column header
+        receiptClone.find('td:nth-child(' + (receiptClone.find('th').length + 1) + ')')
+            .remove(); // Remove Action column cells
+        //find and remove element with id previewBtn
+        receiptClone.find('#previewBtn').remove();
+
+        // Build the print content
         let printContent = `
-            <div>
-                <h1>Receipt</h1>
-                <p>Customer: ${$('#customer_id option:selected').text()}</p>
-                <p>Date: ${new Date().toLocaleDateString()}</p>
-                <p>Hospital: {{ auth()->user()->entity->EntityName }}</p>
-                <p>Attended To By: {{ auth()->user()->name }}</p>
-                ${$('#receipt').html()}
-            </div>
-        `;
+        <div>
+            <h1>Receipt</h1>
+            <p>Customer: ${$('#customer_id option:selected').text()}</p>
+            <p>Date: ${new Date().toLocaleDateString()}</p>
+            <p>Hospital: {{ auth()->user()->entity->EntityName }}</p>
+            <p>Attended To By: {{ auth()->user()->name }}</p>
+            ${receiptClone.html()}
+        </div>
+    `;
 
-        // Remove unnecessary elements for printing
-        printContent = printContent.replace(/<button[^>]*>.*?<\/button>/g, '');
-        printContent = printContent.replace(/<th>Action<\/th>/g, '');
-        printContent = printContent.replace(/<td><button[^>]*>.*?<\/button><\/td>/g, '');
-
+        // Conditionally append Commission information
+        if (commissionAmount > 0) {
+            printContent +=
+                `<p><strong>Service Charge</strong> ${formattedCommissionAmount}</p>`;
+            // Append Final Total
+            printContent += `<p><strong>Final Total: UGX</strong> ${formattedFinalTotal}</p></div>`;
+        }
         let printWindow = window.open('', '', 'width=800, height=600');
         printWindow.document.write('<html><head><title>Print</title></head><body>' + printContent + '</body></html>');
         printWindow.document.close();
@@ -413,6 +420,8 @@
                 '<tr><td colspan="3" style="border: 1px solid #ccc; padding: 8px;" class="hidden"><strong class="hidden">Grand Total: UGX</strong></td><td style="border: 1px solid #ccc; padding: 8px;" class="hidden">UGX ' +
                 grandTotal + '</td></tr>';
 
+
+
             $('#receipt table tbody').html(receiptContent);
             $('#grandTotal').html('Grand Total: UGX ' + grandTotal);
             $('#grandTotalInput').val(grandTotal);
@@ -453,8 +462,6 @@
                             customerInsured == 1) ? 0 : price;
                         var total = productPrice * quantity;
 
-                        // Ensure the values are fetched correctly
-                        //  console('Fetching Product Data:', productId);
                         console.log(
                             `Customer Insured: ${customerInsured}, Product Insured: ${productInsured}, Price: ${productPrice}`
                         );
@@ -539,19 +546,50 @@
                     '</td>';
                 receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + value.quantity +
                     '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice +
-                    '</td>';
-                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal +
-                    '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productPrice
+                    .toLocaleString() + '</td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">' + productTotal
+                    .toLocaleString() + '</td>';
                 receiptContent += '</tr>';
             }
 
+            // Calculate Commission
+            let commissionPercentage = {{ Auth::user()->entity->Commission }};
+            let commissionAmount = (commissionPercentage / 100) * grandTotal;
+            let finalTotal = grandTotal + commissionAmount;
+
+            // Display Grand Total
             receiptContent += '<tr>';
             receiptContent +=
-                '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: UGX</strong></td>';
-            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal +
-                '</td>';
+                '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Grand Total: </strong></td>';
+            receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + grandTotal
+                .toLocaleString() + '</td>';
             receiptContent += '</tr>';
+
+            // Conditionally Display Commission
+            if (commissionAmount > 0) {
+                receiptContent += '<tr>';
+                receiptContent +=
+                    '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Service Charge</strong></td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' +
+                    commissionAmount.toLocaleString(undefined, {
+                        minimumFractionDigits: 2
+                    }) + '</td>';
+                receiptContent += '</tr>';
+
+
+                // Display Final Total
+                receiptContent += '<tr>';
+                receiptContent +=
+                    '<td colspan="3" style="border: 1px solid #ccc; padding: 8px;"><strong>Final Total: </strong></td>';
+                receiptContent += '<td style="border: 1px solid #ccc; padding: 8px;">UGX ' + finalTotal
+                    .toLocaleString(undefined, {
+                        minimumFractionDigits: 2
+                    }) + '</td>';
+                receiptContent += '</tr>';
+            }
+
+
 
             receiptContent += '</tbody>';
             receiptContent += '</table>';
@@ -571,13 +609,10 @@
                 if (result.isConfirmed) {
                     $('#receiptForm').submit();
                     sessionStorage.clear();
-                    // cart = {};
-                    // grandTotal = 0;
-                    // updateReceipt();
-
                 }
             });
         }
+
 
         let qrScanner;
 
@@ -633,10 +668,6 @@
             });
         }
 
-
-
-
-
         $('#submitScan').click(function() {
             var phone = $('#phone').val();
             if (phone) {
@@ -681,8 +712,6 @@
             }
         });
 
-
-
         function updateSaleItemsList(customerId) {
             // This function could use AJAX to fetch and display sale items related to the customer
             $.get('/path-to-fetch-sale-items/' + customerId, function(data) {
@@ -690,7 +719,6 @@
                 $('#sale-items-container').html(data);
             });
         }
-
 
         $(document).on('keypress', function(e) {
             if (e.which == 13 && !$(e.target).is('textarea') && !$(e.target).is('button')) {
@@ -789,13 +817,7 @@
                 alert('Error fetching customer information.');
             }
         });
-
-
-
-
     }
-
-
 
     function fetchCustomerAndSalesItemsScan(phoneNumber) {
         const selectElement = document.getElementById('customer_id');
@@ -819,9 +841,6 @@
                 // Assuming data contains HTML of sale items table
                 $('#sale-items-container').html(data);
                 sessionStorage.clear();
-                // cart = {};
-                // grandTotal = 0;
-                // updateReceipt();
 
             },
             error: function(error) {
@@ -837,10 +856,6 @@
         var phoneNumber = $('#phone').val(); // Get the phone number from input
         fetchCustomerAndSalesItems(phoneNumber); // Fetch customer ID and sales items
     });
-
-
-
-
 
     // JavaScript to fetch and display sales items
     function fetchSalesItems(customerId) {
@@ -950,9 +965,6 @@
         }
     }
 
-
-
-
     // Function to toggle visibility of price and total columns
     function togglePriceAndTotal(show) {
         const priceColumns = document.querySelectorAll('.price-column');
@@ -969,38 +981,43 @@
 
 
 
-    $('#pendingCustomersModal').on('show.bs.modal', function() {
+    // Fetch and populate the pending clients data when the modal is shown
+    $('#pendingCustomersModal').on('show.bs.modal', function(event) {
+        fetchPendingCustomers();
+    });
+
+    function fetchPendingCustomers() {
         $.ajax({
             url: '{{ route('getPendingCustomers') }}',
             method: 'GET',
             success: function(data) {
-                console.log('Data fetched successfully:', data);
-                let tableBody = $('#pendingCustomersTable');
-                tableBody.empty(); // Clear existing data
+                let pendingClientsList = $('#pendingClientsList');
+                pendingClientsList.empty(); // Clear existing data
 
                 $.each(data, function(customerId, saleItems) {
-                    let customerName = saleItems[0].sale.customer.FirstName + ' ' +
-                        saleItems[0].sale.customer.LastName;
+                    let customerName = saleItems[0].sale.customer.FirstName + ' ' + saleItems[0]
+                        .sale.customer.LastName;
                     let customerNumber = saleItems[0].sale.customer.NewVisitNumber;
                     let updatedAt = saleItems[0].updated_at;
                     let referredBy = saleItems[0].sale.users.name;
-                    let pendingProducts = saleItems.map(item => item.product.ProductName)
-                        .join(', ');
+                    let pendingProducts = saleItems.map(item => item.product.ProductName).join(
+                    ', ');
 
-                    let row = `<tr>
-                    <td>${customerName}</td>
-                    <td>${customerNumber}</td>
-                    <td>${updatedAt}</td>
-                    <td>${referredBy}</td>
-                    <td>${pendingProducts}</td>
-                </tr>`;
+                    let listItem = `
+                    <div class="mb-4">
+                        <h6>${customerName} (${customerNumber})</h6>
+                        <p>Last Updated: ${updatedAt}</p>
+                        <p>Referred By: ${referredBy}</p>
+                        <p>Pending Products: ${pendingProducts}</p>
+                    </div>
+                `;
 
-                    tableBody.append(row);
+                    pendingClientsList.append(listItem);
                 });
             },
             error: function(error) {
                 console.error('Error fetching pending customers:', error);
             }
         });
-    });
+    }
 </script>

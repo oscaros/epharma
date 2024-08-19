@@ -39,6 +39,7 @@ class ListSales extends Component implements HasForms, HasTable
 
             if ($this->customer_id) {
                 $query->where('customer_id', $this->customer_id);
+               
             }
 
 
@@ -86,13 +87,16 @@ class ListSales extends Component implements HasForms, HasTable
 
             if ($this->customer_id) {
                 $query->where('customer_id', $this->customer_id);
+
             }
 
             
             return $table
                 ->query(Sale::query()
                     ->where('user_id', auth()->user()->id)
-                    )
+                     //where entity_id same as logged in user
+                ->where('entity_id', auth()->user()->entity_id)
+        )
                     ->columns([
                         // return product name from products table based on product id in sales table
                         // Tables\Columns\TextColumn::make('id')

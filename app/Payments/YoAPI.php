@@ -1,17 +1,13 @@
 <?php
 
-
 namespace App\Payments;
+
+use Illuminate\Support\Facades\Log;
 use SimpleXMLElement;
-
-
 
 class YoAPI
 {
-
-
-
-     /**
+    /**
      * Path to the log file
      * @var string
      */
@@ -28,6 +24,7 @@ class YoAPI
     // {
     //     file_put_contents($this->log_file_path, $message.PHP_EOL, FILE_APPEND);
     // }
+
     /**
      * The Yo! Payments API Username
      * Required.
@@ -47,13 +44,13 @@ class YoAPI
     /**
      * The Non Blocking Request variable
      * Optional.
-     * Whether the connection to the Yo! Payments Gateway is maintained until your request is 
+     * Whether the connection to the Yo! Payments Gateway is maintained until your request is
      * fulfilled. "FALSE" maintains the connection till the request is complete.
      * Default: "FALSE"
      * Options: "FALSE", "TRUE".
      * @var string
      */
-    private $NonBlocking = "TRUE";
+    private $NonBlocking = 'TRUE';
 
     /**
      * The External Reference variable
@@ -81,7 +78,7 @@ class YoAPI
      * A text you wish to be present in any confirmation message which the mobile money provider
      * network sends to the subscriber upon successful completion of the transaction.
      * Some mobile money providers automatically send a confirmatory text message to the subscriber
-     * upon completion of transactions. This parameter allows you to provide some text which will 
+     * upon completion of transactions. This parameter allows you to provide some text which will
      * be appended to any such confirmatory message sent to the subscriber.
      * Default: NULL
      * @var string
@@ -92,7 +89,7 @@ class YoAPI
      * The Instant Notification URL variable
      * Optional.
      * A valid URL which is notified as soon as funds are successfully deposited into your account
-     * A payment notification will be sent to this URL. 
+     * A payment notification will be sent to this URL.
      * It must be properly URL encoded.
      * e.g. http://ipnurl?key1=This+value+has+encoded+white+spaces&key2=value
      * Any special XML Characters must be escaped or your request will fail
@@ -106,7 +103,7 @@ class YoAPI
      * The Failure Notification URL variable
      * Optional.
      * A valid URL which is notified as soon as your deposit request fails
-     * A failure notification will be sent to this URL. 
+     * A failure notification will be sent to this URL.
      * It must be properly URL encoded.
      * e.g. http://failureurl?key1=This+value+has+encoded+white+spaces&key2=value
      * Any special XML Characters must be escaped or your request will fail
@@ -121,7 +118,7 @@ class YoAPI
      * Optional.
      * It may be required to authenticate certain deposit requests.
      * Contact Yo! Payments support services for clarification on the cases where this parameter
-     * is required. 
+     * is required.
      * Default: NULL
      * @var string
      */
@@ -131,7 +128,7 @@ class YoAPI
      * The Deposit Transaction Type variable
      * Optional.
      * Set to "PUSH" if following up on the status of a push deposit funds transaction
-     * Set to "PULL" if following up on the status of a pull deposit funds transaction 
+     * Set to "PULL" if following up on the status of a pull deposit funds transaction
      * Default: "PULL"
      * Options: "PULL", "PUSH"
      * @var string
@@ -142,19 +139,19 @@ class YoAPI
      * The Yo Payments API URL
      * Required.
      * Default: "https://paymentsapi1.yo.co.ug/ybs/task.php"
-     * Options: 
-     * * "https://paymentsapi1.yo.co.ug/ybs/task.php", 
+     * Options:
+     * * "https://paymentsapi1.yo.co.ug/ybs/task.php",
      * * "https://paymentsapi2.yo.co.ug/ybs/task.php",
      * * "https://41.220.12.206/services/yopaymentsdev/task.php" For Sandbox tests
      * @var string
      */
-    private $YOURL = "https://paymentsapi1.yo.co.ug/ybs/task.php";
+    private $YOURL = 'https://paymentsapi1.yo.co.ug/ybs/task.php';
     // private $YOURL = "https://paymentsdev1.yo.co.ug/yopaytest/task.php";
     // private $YOURL = "https://sandbox.yo.co.ug/services/yopaymentsdev/task.php";
     // https://sandbox.yo.co.ug/services/yopaymentsdev/task.php
-    //https://paymentsapi1.yo.co.ug/ybs/task.php
+    // https://paymentsapi1.yo.co.ug/ybs/task.php
 
-    private $public_key_file = "Yo_Uganda_Public_Certificate.crt";
+    private $public_key_file = 'Yo_Uganda_Public_Certificate.crt';
 
     private $transaction_limit_account_identifier = NULL;
 
@@ -162,7 +159,7 @@ class YoAPI
      * The Public Key Authentication Nonce
      * Required if public key authentication is enabled.
      * Contact Yo! Payments support services for clarification on the cases where this parameter
-     * is required. 
+     * is required.
      * Max Length: 255 charcaters
      * Reg Expression: [a-zA-Z0-9,-+]
      * Default: NULL
@@ -175,7 +172,7 @@ class YoAPI
      * The Public Key Authentication Signature
      * Required if public key authentication is enabled.
      * Contact Yo! Payments support services for clarification on the cases where this parameter
-     * is required. 
+     * is required.
      * Max Length: 4096 charcaters
      * Reg Expression: [a-zA-Z0-9,-+]
      * Default: NULL
@@ -197,7 +194,7 @@ class YoAPI
      * The location of the private key used to sign the public auth key
      * Required if public key authentication is enabled.
      * Contact Yo! Payments support services for clarification on the cases where this parameter
-     * is required. 
+     * is required.
      * Max Length: 255 charcaters
      * Reg Expression: [a-zA-Z0-9,-+]
      * Default: NULL
@@ -229,7 +226,7 @@ class YoAPI
 
     /**
      * Returns the API Username
-     * @return string 
+     * @return string
      */
     public function get_username()
     {
@@ -248,7 +245,7 @@ class YoAPI
 
     /**
      * Returns the API Password
-     * @return string 
+     * @return string
      */
     public function get_password()
     {
@@ -267,7 +264,7 @@ class YoAPI
 
     /**
      * Returns the YO URL
-     * @return string 
+     * @return string
      */
     public function get_URL()
     {
@@ -286,7 +283,7 @@ class YoAPI
 
     /**
      * Returns the PUBLIC KEY PATH
-     * @return string 
+     * @return string
      */
     public function get_public_key_file_URL()
     {
@@ -305,7 +302,7 @@ class YoAPI
 
     /**
      * Returns the NonBlocking Variable
-     * @return string 
+     * @return string
      */
     public function get_nonblocking()
     {
@@ -324,7 +321,7 @@ class YoAPI
 
     /**
      * Returns the external_reference Variable
-     * @return string 
+     * @return string
      */
     public function get_external_reference()
     {
@@ -343,7 +340,7 @@ class YoAPI
 
     /**
      * Returns the internal_reference Variable
-     * @return string 
+     * @return string
      */
     public function get_internal_reference()
     {
@@ -362,7 +359,7 @@ class YoAPI
 
     /**
      * Returns the provider_reference_text Variable
-     * @return string 
+     * @return string
      */
     public function get_provider_reference_text()
     {
@@ -381,7 +378,7 @@ class YoAPI
 
     /**
      * Returns the instant_notification_url Variable
-     * @return string 
+     * @return string
      */
     public function get_instant_notification_url()
     {
@@ -400,7 +397,7 @@ class YoAPI
 
     /**
      * Returns the failure_notification_url Variable
-     * @return string 
+     * @return string
      */
     public function get_failure_notification_url()
     {
@@ -409,7 +406,7 @@ class YoAPI
 
     /**
      * Set the Authentication Signature Base64
-     * @param string $authentication_signature_base64 
+     * @param string $authentication_signature_base64
      * @return void
      */
     public function set_authentication_signature_base64($authentication_signature_base64)
@@ -419,18 +416,17 @@ class YoAPI
 
     /**
      * Returns the Authentication Signature Base64 Variable
-     * @return string 
+     * @return string
      */
     public function get_authentication_signature_base64()
     {
         return $this->authentication_signature_base64;
     }
 
-
     /**
      * Set the Transaction Limit Account Identifier
      * Refer to your account administrator for using this feature
-     * @param string $transaction_limit_account_identifier 
+     * @param string $transaction_limit_account_identifier
      * @return void
      */
     public function set_transaction_limit_account_identifier($transaction_limit_account_identifier)
@@ -440,7 +436,7 @@ class YoAPI
 
     /**
      * Returns the Trasaction Limit Account Identifier Variable
-     * @return string 
+     * @return string
      */
     public function get_transaction_limit_account_identifier()
     {
@@ -450,7 +446,7 @@ class YoAPI
     /**
      * Set the Public key authentication nonce
      * Refer to your account administrator for using this feature
-     * @param string $public_key_authentication_nonce 
+     * @param string $public_key_authentication_nonce
      * @return void
      */
     public function set_public_key_authentication_nonce($public_key_authentication_nonce)
@@ -460,7 +456,7 @@ class YoAPI
 
     /**
      * Returns the Public Key Authentication Nonce Variable
-     * @return string 
+     * @return string
      */
     public function get_public_key_authentication_nonce()
     {
@@ -470,7 +466,7 @@ class YoAPI
     /**
      * Set the Public Key Authentication Base64-Encoded Signature
      * Refer to your account administrator for using this feature
-     * @param string $public_key_authentication_signature_base64 
+     * @param string $public_key_authentication_signature_base64
      * @return void
      */
     public function set_public_key_authentication_signature_base64($public_key_authentication_signature_base64)
@@ -480,7 +476,7 @@ class YoAPI
 
     /**
      * Returns the Public Key Authentication Base64-Encoded Signature Variable
-     * @return string 
+     * @return string
      */
     public function get_public_key_authentication_signature_base64()
     {
@@ -490,7 +486,7 @@ class YoAPI
     /**
      * Set the Private Key File Variable
      * Refer to your account administrator for using this feature
-     * @param string $private_key_file_location 
+     * @param string $private_key_file_location
      * @return void
      */
     public function set_private_key_file_location($private_key_file_location)
@@ -500,7 +496,7 @@ class YoAPI
 
     /**
      * Returns the Private Key File Variable
-     * @return string 
+     * @return string
      */
     public function get_private_key_file_location()
     {
@@ -516,7 +512,7 @@ class YoAPI
      * This request is not supported by all mobile money operator networks
      * @param integer  $msisdn the mobile money phone number in the format 256772123456
      * @param double $amount the amount of money to deposit into your account (floats are supported)
-     * @param string $narrative the reason for the mobile money user to deposit funds 
+     * @param string $narrative the reason for the mobile money user to deposit funds
      * @return array
      */
     public function ac_deposit_funds($msisdn, $amount, $narrative)
@@ -529,7 +525,7 @@ class YoAPI
         $xml .= '<APIPassword>' . $this->password . '</APIPassword>';
         $xml .= '<Method>acdepositfunds</Method>';
         $xml .= '<NonBlocking>' . $this->NonBlocking . '</NonBlocking>';
-        $xml .= '<Account>' . $msisdn .'</Account>';
+        $xml .= '<Account>' . $msisdn . '</Account>';
         $xml .= '<Amount>' . $amount . '</Amount>';
         $xml .= '<Narrative>' . $narrative . '</Narrative>';
         if ($this->external_reference != NULL) {
@@ -558,7 +554,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -595,8 +591,7 @@ class YoAPI
      */
     public function ac_transaction_check_status($transaction_reference, $private_transaction_reference = NULL)
     {
-        $xml = '';
-        $xml .= '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<AutoCreate>';
         $xml .= '<Request>';
         $xml .= '<APIUsername>' . $this->username . '</APIUsername>';
@@ -612,53 +607,40 @@ class YoAPI
         $xml .= '</Request>';
         $xml .= '</AutoCreate>';
 
+        // Log the XML request for debugging
+        Log::info('YoAPI Transaction Check Request: ' . $xml);
+
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        // Log the XML response for debugging
+        Log::info('YoAPI Transaction Check Response: ' . $xml_response);
+
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
-        $result = array();
-        $result['Status'] = (string) $response->Status;
-        $result['StatusCode'] = (string) $response->StatusCode;
-        $result['StatusMessage'] = (string) $response->StatusMessage;
-        $result['TransactionStatus'] = (string) $response->TransactionStatus;
-        if (!empty($response->ErrorMessageCode)) {
-            $result['ErrorMessageCode'] = (string) $response->ErrorMessageCode;
-        }
-        if (!empty($response->ErrorMessage)) {
-            $result['ErrorMessage'] = (string) $response->ErrorMessage;
-        }
-        if (!empty($response->TransactionReference)) {
-            $result['TransactionReference'] = (string) $response->TransactionReference;
-        }
-        if (!empty($response->MNOTransactionReferenceId)) {
-            $result['MNOTransactionReferenceId'] = (string) $response->MNOTransactionReferenceId;
-        }
-        if (!empty($response->Amount)) {
-            $result['Amount'] = (string) $response->Amount;
-        }
-        if (!empty($response->AmountFormatted)) {
-            $result['AmountFormatted'] = (string) $response->AmountFormatted;
-        }
-        if (!empty($response->CurrencyCode)) {
-            $result['CurrencyCode'] = (string) $response->CurrencyCode;
-        }
-        if (!empty($response->TransactionInitiationDate)) {
-            $result['TransactionInitiationDate'] = (string) $response->TransactionInitiationDate;
-        }
-        if (!empty($response->TransactionCompletionDate)) {
-            $result['TransactionCompletionDate'] = (string) $response->TransactionCompletionDate;
-        }
-        if (!empty($response->IssuedReceiptNumber)) {
-            $result['IssuedReceiptNumber'] = (string) $response->IssuedReceiptNumber;
-        }
+        $result = [];
+        $result['Status'] = (string) $response->Status ?? null;
+        $result['StatusCode'] = (string) $response->StatusCode ?? null;
+        $result['StatusMessage'] = (string) $response->StatusMessage ?? null;
+        $result['TransactionStatus'] = (string) $response->TransactionStatus ?? null;
+        $result['TransactionReference'] = (string) $response->TransactionReference ?? null;
+        $result['MNOTransactionReferenceId'] = (string) $response->MNOTransactionReferenceId ?? null;
+        $result['Amount'] = (string) $response->Amount ?? null;
+        $result['AmountFormatted'] = (string) $response->AmountFormatted ?? null;
+        $result['CurrencyCode'] = (string) $response->CurrencyCode ?? null;
+        $result['TransactionInitiationDate'] = (string) $response->TransactionInitiationDate ?? null;
+        $result['TransactionCompletionDate'] = (string) $response->TransactionCompletionDate ?? null;
+        $result['IssuedReceiptNumber'] = (string) $response->IssuedReceiptNumber ?? null;
+
+        // Log the parsed result for debugging
+        Log::info('Parsed YoAPI Transaction Check Result: ', $result);
 
         return $result;
     }
 
     /**
      * Transfer funds from your Payment Account to another Yo! Payments Account
-     * @param string $currency_code 
+     * @param string $currency_code
      * Options
      * * "UGX-MTNMM" -> Uganda Shillings - MTN Mobile Money
      * * "UGX-MTNAT" -> Uganda Shillings - MTN Airtime
@@ -696,7 +678,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -742,7 +724,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -772,7 +754,7 @@ class YoAPI
      * Return an array of transactions which were carried out on your account for a certain period of time
      * @param string $start_date format YYYY-MM-DD HH:MM:SS
      * @param string $end_date  format YYYY-MM-DD HH:MM:SS
-     * @param string $transaction_status 
+     * @param string $transaction_status
      * Options
      * * "FAILED"
      * * "PENDING"
@@ -787,7 +769,7 @@ class YoAPI
      * * "UGX-WTLAT" -> Uganda Shillings - Warid Airtime
      * * "UGX-OULAT" -> Uganda Shillings - Orange Airtime
      * * "UGX-AIRAT" -> Uganda Shillings - Airtel Airtime
-     * @param int $result_set_limit A value of 0 returns all. Default limit = 15 
+     * @param int $result_set_limit A value of 0 returns all. Default limit = 15
      * @param string $transaction_entry_designation
      * Options
      * * "TRANSACTION"
@@ -830,7 +812,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -916,7 +898,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -953,7 +935,7 @@ class YoAPI
      * * "UGX-AIRAT" -> Uganda Shillings - Airtel Airtime
      * @param int $amount the amount of airtime to be sent to the beneficiary Yo! Payments User
      * @param int $beneficiary_account
-     * @param string $beneficiary_email 
+     * @param string $beneficiary_email
      * @param string $narrative textual narrative about the transfer
      * @return array
      */
@@ -982,7 +964,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -1012,13 +994,13 @@ class YoAPI
     /**
      * Withdraw funds from your YO! Payments Account to a mobile money user
      * This transaction transfers funds from your YO! Payments Account to a mobile money user.
-     * Please handle this request with care because if compromised, it can lead to 
+     * Please handle this request with care because if compromised, it can lead to
      * withdrawal of funds from your account.
      * This request is not supported by all mobile money operator networks
      * This request requires permission that is granted by the issuance of an API Access Letter
      * @param string $msisdn the mobile money phone number in the format 256772123456
      * @param double $amount the amount of money to withdraw from your account (floats are supported)
-     * @param string $narrative the reason for withdrawal of funds from your account 
+     * @param string $narrative the reason for withdrawal of funds from your account
      * @return array
      */
     public function ac_withdraw_funds($msisdn, $amount, $narrative)
@@ -1057,7 +1039,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -1115,7 +1097,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -1166,7 +1148,7 @@ class YoAPI
 
         $xml_response = $this->get_xml_response($xml);
 
-        $simpleXMLObject =  new SimpleXMLElement($xml_response);
+        $simpleXMLObject = new SimpleXMLElement($xml_response);
         $response = $simpleXMLObject->Response;
 
         $result = array();
@@ -1330,11 +1312,4 @@ class YoAPI
 
         return false;
     }
-
-
-   
-
-  
 }
-
-

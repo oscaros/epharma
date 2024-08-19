@@ -3,26 +3,24 @@
 namespace App\Livewire;
 
 use App\Models\Sale;
-use App\Payments\YoAPI;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
+use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Filament\Tables;
-use Http;
+use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use App\Payments\YoAPI;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
-use Livewire\Component;
 
-class ListCustomerSales extends Component implements HasForms, HasTable
+class ListPendingClients extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
 
-    
     public function mount()
     {
         $this->checkAndUpdateTransactionStatus();
@@ -31,12 +29,12 @@ class ListCustomerSales extends Component implements HasForms, HasTable
     protected function checkAndUpdateTransactionStatus()
     {
         $sales = Sale::where('status', 'Pending')->get(); // Fetch pending transactions
-    
+
         foreach ($sales as $sale) {
             try {
                 $yoAPI = new YoAPI('100589248779', 'bVXo-BDBw-KF5x-JSAS-9tm0-jORW-rYqX-7EGn');
                 $statusCheck = $yoAPI->ac_transaction_check_status($sale->reference);
-    
+
                 // Only update the status if a valid TransactionStatus is returned
                 if (isset($statusCheck['TransactionStatus']) && !empty($statusCheck['TransactionStatus'])) {
                     $sale->update(['status' => $statusCheck['TransactionStatus']]);
@@ -50,14 +48,18 @@ class ListCustomerSales extends Component implements HasForms, HasTable
             }
         }
     }
-    
-
-    
 
     public function table(Table $table): Table
     {
-        $query = Sale::query()->orderBy('updated_at', 'desc'); // Order by updated_at descending
-    
+        $query = Sale::query()
+            ->whereHas('saleItems', function (Builder $query) {
+                $query->where('Status', 0) // Only include sales with sale items that have Status 0
+                    ->whereHas('product', function (Builder $query) {
+                        $query->where('service_point_id', auth()->user()->department_id); // Filter by service_point_id
+                    });
+            })
+            ->orderBy('updated_at', 'desc'); // Order by updated_at descending
+
         if (auth()->user()->role_id == 1) {
             return $table
                 ->query($query)
@@ -74,10 +76,7 @@ class ListCustomerSales extends Component implements HasForms, HasTable
                         ->searchable(),
                     Tables\Columns\TextColumn::make('amount')
                         ->numeric()
-                        ->url(fn($record) => 
-                       
-                        route('sale-items.index', ['sale_id' => $record->id])
-                        )
+                        ->url(fn($record) => route('sale-items.index', ['sale_id' => $record->id]))
                         ->sortable(),
                     Tables\Columns\TextColumn::make('payment_method')
                         ->searchable(),
@@ -109,6 +108,7 @@ class ListCustomerSales extends Component implements HasForms, HasTable
                 ]);
         } else {
             return $table
+            
                 ->query($query->where('entity_id', auth()->user()->entity_id))
                 ->columns([
                     Tables\Columns\TextColumn::make('customers.FirstName')
@@ -155,10 +155,9 @@ class ListCustomerSales extends Component implements HasForms, HasTable
                 ]);
         }
     }
-    
 
     public function render(): View
     {
-        return view('livewire.list-customer-sales');
+        return view('livewire.list-pending-clients');
     }
 }

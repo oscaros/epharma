@@ -14,22 +14,18 @@ class SaleItemController extends Controller
      */
     public function index(Request $request)
     {
-         // $saleId = $request->query('id');
-        //TODO: pick sale id, pick sale items belonging to sale id, return and compact to view , change view
-        // $saleItems = SaleItem::find($saleId);
-
+        $saleId = $request->query('sale_id');
         
-
-        $customerId = $request->query('customer_id');
-        $customer = Customer::find($customerId);
-        $sales = Sale::where('customer_id', $customerId)->get();    
-        
-        return view('sale-items.index', compact('customer', 'sales'));
-
-
-        
-
+        if ($saleId) {
+            $sale = Sale::findOrFail($saleId);
+            $saleItems = SaleItem::where('SaleID', $saleId)->get();
+            
+            return view('sale-items.index', compact('sale', 'saleItems'));
+        }
+    
+        return redirect()->route('sales.index')->with('error', 'Sale not found.');
     }
+    
 
     /**
      * Show the form for creating a new resource.

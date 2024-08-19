@@ -20,10 +20,12 @@ class ListSaleItems extends Component implements HasForms, HasTable
     use InteractsWithTable;
 
     public $customer_id;
+    public $sale_id;
 
-    public function mount($customer_id = null)
+    public function mount($customer_id = null, $sale_id = null)
     {
         $this->customer_id = $customer_id;
+        $this->sale_id = $sale_id;
     }
 
     protected $listeners = ['setCustomerId' => 'updateCustomerId'];
@@ -34,32 +36,27 @@ class ListSaleItems extends Component implements HasForms, HasTable
         $this->render();  // Force a render to update the table
     }
 
-    protected function getTableQuery(): Builder
-    {
-        $query = SaleItem::query();
+    
 
-        // Apply common filters first
-        // Filter by customer_id if provided
-        // Filter by customer_id if provided
-        if ($this->customer_id) {
-            $query->whereHas('sale', function (Builder $query) {
-                $query->where('customer_id', $this->customer_id);
-            });
-        }
 
-        // Apply additional filters based on the user's role
-        if (auth()->user()->role_id != 1) {
-            $query
-                ->whereHas('sale', function (Builder $query) {
-                    $query->where('entity_id', auth()->user()->entity_id);
-                })
-                ->whereHas('product.departments', function (Builder $query) {
-                    $query->where('department_id', auth()->user()->department_id);
-                });
-        }
 
-        return $query;
+protected function getTableQuery(): Builder
+{
+    $query = SaleItem::query();
+
+    if ($this->sale_id) {
+        $query->where('SaleID', $this->sale_id);
     }
+
+    if ($this->customer_id) {
+        $query->whereHas('sale', function (Builder $query) {
+            $query->where('customer_id', $this->customer_id);
+        });
+    }
+
+    return $query;
+}
+
 
     public function table(Table $table): Table
     {

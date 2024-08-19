@@ -3,15 +3,8 @@
         <form id="receiptForm" method="POST" action="{{ route('yopay') }}">
             <div class="px-4 sm:px-6 lg:px-8 py-0 w-full max-w-9xl mx-auto">
 
-
-
                 <div class="form-group ">
-                    <br>
-
-
-
-
-                    <select wire:model="selectedCustomerId" class="form-control" id="customer_id" name="customer_id"
+                    <select wire:model="selectedCustomerId" class="form-control mt-5" id="customer_id" name="customer_id"
                         onchange="fetchSalesItems(this.value);">
                         <option value="">Select Patient</option>
                         @foreach ($customers as $customer)
@@ -19,28 +12,23 @@
                                 {{ $customer->FirstName }} {{ $customer->LastName }} {{ $customer->Phone }}</option>
                         @endforeach
                     </select>
-
-
-
-
-                    <label class="mr-10" style="margin: 20px;">Scan the patient's card with a QR/Bar Code Scanner to
+                    <label class="mr-10" style="margin: 20px;">Scan the patient's card with a QR/Bar Code Scanner
+                        to
                         auto-search their details.</label>
 
-                    {{-- <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                        data-bs-toggle="modal" data-bs-target="#pendingCustomersModal" style="margin: 10px 2px;">Pending
-                        Clients
-                    </button> --}}
-
-
-                    <a href="{{ route('sale-items.index') }}" class="text-gray-500 hover:text-gray-600" style="margin: 10px">
-                        <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                        data-bs-toggle="modal" data-bs-target="#pendingCustomersModal" style="margin: 10px 2px;">Offer Service
+                    <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        onclick="toggleModal('pendingCustomersModal')">
+                        Pending Clients
                     </button>
+
+
+                    <a href="{{ route('sale-items.index') }}" class="text-gray-500 hover:text-gray-600"
+                        style="margin: 10px">
+                        <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                            data-bs-toggle="modal" data-bs-target="#pendingCustomersModal"
+                            style="margin: 10px 2px;">Offer Service
+                        </button>
                     </a>
-
-
-
-
 
 
 
@@ -48,10 +36,6 @@
                         <div class="mr-10">
 
                             <div id="result"></div>
-
-
-
-
 
                         </div>
 
@@ -66,26 +50,20 @@
                         <button class="bg-blue-500 text-white px-4 py-2 mr-5 rounded-md hover:bg-blue-600"
                             id="scanButton" style="margin-right: 10px;" type="button">Scan with Camera</button>
 
-
-
-                        {{-- <input type="file" accept="image/*" capture="environment" id="fileInput" class="hidden" onchange="fetchSalesItems(this.value); ">
-                            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" id="fileScanButton" type="button">Select Patient File</button>
-               --}}
                     </div>
-
-
-
 
                     <table id="sales_items_table"
                         class="table border border-gray-300 w-full mt-4 rounded flex py-2 justify-center px-2 mb-10">
                         <thead>
+                            <!-- Heading Row -->
+                            <tr>
+                                <th colspan="2" class="text-center bg-gray-200 text-lg font-semibold py-2">Status Log
+                                </th>
+                            </tr>
+                            <!-- Column Headers -->
                             <tr>
                                 <th>Item Name</th>
-                                {{-- <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Total</th> --}}
                                 <th>Status</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -94,44 +72,52 @@
                     </table>
 
 
-                    {{-- <div class="modal fade" id="pendingCustomersModal" tabindex="-1"
-                        aria-labelledby="pendingCustomersModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="pendingCustomersModalLabel">Pending Customers Queue</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                    <!-- Modal -->
+                    <!-- Modal -->
+                    <div class="fixed z-10 inset-0 overflow-y-auto hidden" id="pendingCustomersModal"
+                        aria-labelledby="pendingCustomersModalLabel" role="dialog" aria-modal="true">
+                        <div class="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0">
+                            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true">
+                            </div>
+
+                            <!-- Modal panel -->
+                            <div
+                                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-3xl sm:w-full sm:my-8">
+                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <div class="sm:flex sm:items-start">
+                                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                                            <h3 class="text-lg leading-6 font-medium text-gray-900"
+                                                id="pendingCustomersModalLabel">
+                                                Pending Clients
+                                            </h3>
+                                            <div class="mt-2">
+                                                <!-- Scrollable container -->
+                                                <div class="max-h-96 overflow-y-auto">
+                                                    <!-- You can either include the Livewire component here or list pending clients manually -->
+                                                    @livewire('list-pending-clients')
+
+                                                    <!-- Option 2: List pending clients manually (if not using Livewire) -->
+                                                    <div id="pendingClientsList" class="mt-4 space-y-4">
+                                                        <!-- The list will be populated by JavaScript -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Customer Name</th>
-                                                <th>Customer Number</th>
-                                                <th>Time</th>
-                                                <th>Referred By</th>
-                                                <th>Pending Products</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="pendingCustomersTable">
-                                            <!-- Data will be appended here by JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
+                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                    <button type="button"
+                                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm"
+                                        onclick="toggleModal('pendingCustomersModal')">
+                                        Close
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
 
 
-
-
-
-
+                    <!-- End of Pending Clients Section -->
 
                     <div class="flex justify-center my-4 hidden">
                         <video id="preview" class="w-full h-10 max-w-md"></video>
@@ -139,19 +125,7 @@
 
                     <div id="scanForm">
                         @csrf
-
-
-
-
-
-
                     </div>
-
-
-
-
-
-
 
                     <h1 class="text-lg font-semibold mb-6">Select Item</h1>
                     <div class="flex flex-col lg:flex-row lg:justify-between">
@@ -202,10 +176,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
 
@@ -213,6 +183,9 @@
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+
+
 <style>
     #sales_items_table {
         width: 100%;
@@ -268,7 +241,7 @@
         let receiptClone = $('#receipt').clone();
         receiptClone.find('th:contains("Action")').remove(); // Remove the Action column header
         receiptClone.find('td:nth-child(' + (receiptClone.find('th').length + 1) + ')')
-    .remove(); // Remove Action column cells
+            .remove(); // Remove Action column cells
         //find and remove element with id previewBtn
         receiptClone.find('#previewBtn').remove();
 
@@ -290,10 +263,7 @@
                 `<p><strong>Service Charge</strong> ${formattedCommissionAmount}</p>`;
             // Append Final Total
             printContent += `<p><strong>Final Total: UGX</strong> ${formattedFinalTotal}</p></div>`;
-
         }
-
-
         let printWindow = window.open('', '', 'width=800, height=600');
         printWindow.document.write('<html><head><title>Print</title></head><body>' + printContent + '</body></html>');
         printWindow.document.close();
@@ -305,10 +275,6 @@
             printWindow.close();
         };
     }
-
-
-
-
 
     $(document).ready(function() {
         $('#signout').click(function() {
@@ -513,8 +479,6 @@
                             customerInsured == 1) ? 0 : price;
                         var total = productPrice * quantity;
 
-                        // Ensure the values are fetched correctly
-                        //  console('Fetching Product Data:', productId);
                         console.log(
                             `Customer Insured: ${customerInsured}, Product Insured: ${productInsured}, Price: ${productPrice}`
                         );
@@ -667,7 +631,6 @@
         }
 
 
-
         let qrScanner;
 
         function startQrScanner() {
@@ -722,10 +685,6 @@
             });
         }
 
-
-
-
-
         $('#submitScan').click(function() {
             var phone = $('#phone').val();
             if (phone) {
@@ -770,8 +729,6 @@
             }
         });
 
-
-
         function updateSaleItemsList(customerId) {
             // This function could use AJAX to fetch and display sale items related to the customer
             $.get('/path-to-fetch-sale-items/' + customerId, function(data) {
@@ -779,7 +736,6 @@
                 $('#sale-items-container').html(data);
             });
         }
-
 
         $(document).on('keypress', function(e) {
             if (e.which == 13 && !$(e.target).is('textarea') && !$(e.target).is('button')) {
@@ -878,13 +834,7 @@
                 alert('Error fetching customer information.');
             }
         });
-
-
-
-
     }
-
-
 
     function fetchCustomerAndSalesItemsScan(phoneNumber) {
         const selectElement = document.getElementById('customer_id');
@@ -908,9 +858,6 @@
                 // Assuming data contains HTML of sale items table
                 $('#sale-items-container').html(data);
                 sessionStorage.clear();
-                // cart = {};
-                // grandTotal = 0;
-                // updateReceipt();
 
             },
             error: function(error) {
@@ -926,10 +873,6 @@
         var phoneNumber = $('#phone').val(); // Get the phone number from input
         fetchCustomerAndSalesItems(phoneNumber); // Fetch customer ID and sales items
     });
-
-
-
-
 
     // JavaScript to fetch and display sales items
     function fetchSalesItems(customerId) {
@@ -1039,9 +982,6 @@
         }
     }
 
-
-
-
     // Function to toggle visibility of price and total columns
     function togglePriceAndTotal(show) {
         const priceColumns = document.querySelectorAll('.price-column');
@@ -1058,38 +998,50 @@
 
 
 
-    $('#pendingCustomersModal').on('show.bs.modal', function() {
+    // Fetch and populate the pending clients data when the modal is shown
+    $('#pendingCustomersModal').on('show.bs.modal', function(event) {
+        fetchPendingCustomers();
+    });
+
+
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.toggle('hidden');
+    }
+
+
+    function fetchPendingCustomers() {
         $.ajax({
             url: '{{ route('getPendingCustomers') }}',
             method: 'GET',
             success: function(data) {
-                console.log('Data fetched successfully:', data);
-                let tableBody = $('#pendingCustomersTable');
-                tableBody.empty(); // Clear existing data
+                let pendingClientsList = $('#pendingClientsList');
+                pendingClientsList.empty(); // Clear existing data
 
                 $.each(data, function(customerId, saleItems) {
-                    let customerName = saleItems[0].sale.customer.FirstName + ' ' +
-                        saleItems[0].sale.customer.LastName;
+                    let customerName = saleItems[0].sale.customer.FirstName + ' ' + saleItems[0]
+                        .sale.customer.LastName;
                     let customerNumber = saleItems[0].sale.customer.NewVisitNumber;
                     let updatedAt = saleItems[0].updated_at;
                     let referredBy = saleItems[0].sale.users.name;
-                    let pendingProducts = saleItems.map(item => item.product.ProductName)
-                        .join(', ');
+                    let pendingProducts = saleItems.map(item => item.product.ProductName).join(
+                        ', ');
 
-                    let row = `<tr>
-                    <td>${customerName}</td>
-                    <td>${customerNumber}</td>
-                    <td>${updatedAt}</td>
-                    <td>${referredBy}</td>
-                    <td>${pendingProducts}</td>
-                </tr>`;
+                    let listItem = `
+                    <div class="mb-4">
+                        <h6>${customerName} (${customerNumber})</h6>
+                        <p>Last Updated: ${updatedAt}</p>
+                        <p>Referred By: ${referredBy}</p>
+                        <p>Pending Products: ${pendingProducts}</p>
+                    </div>
+                `;
 
-                    tableBody.append(row);
+                    pendingClientsList.append(listItem);
                 });
             },
             error: function(error) {
                 console.error('Error fetching pending customers:', error);
             }
         });
-    });
+    }
 </script>
