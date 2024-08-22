@@ -27,135 +27,69 @@ class ListSales extends Component implements HasForms, HasTable
         $this->customer_id = $customer_id;
     }
 
-
     public function table(Table $table): Table
     {
+        $user = auth()->user();
+        $departmentId = $user->department_id;
 
-       
+        $query = Sale::query();
 
-        if (auth()->user()->role_id == 1) {
-
-            $query = Sale::query()->with('customer');
-
-            if ($this->customer_id) {
-                $query->where('customer_id', $this->customer_id);
-               
-            }
-
-
-            return $table
-                ->query(Sale::query())
-                ->columns([
-                 
-                     Tables\Columns\TextColumn::make('description')
-                        ->searchable()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                        Tables\Columns\TextColumn::make('type')
-                        ->searchable()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('amount')
-                        ->money('UGX')
-                        ->searchable()
-                        ->sortable()
-                        ->copyable()
-                        ->toggleable(isToggledHiddenByDefault: false),
-                    Tables\Columns\TextColumn::make('customers.FirstName')
-                        ->sortable()
-                        ->label('Patient Name')
-                        ->searchable(),
-                ])
-                ->filters([
-                    //
-                ])
-                ->actions([
-                    //
-                    
-
-                ])
-                ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([
-                        //
-                    ]),
-                ]);
-        } else {
-
-            $query = Sale::query()->with('customer');
-
-            if ($this->customer_id) {
-                $query->where('customer_id', $this->customer_id);
-
-            }
-
-            
-            return $table
-                ->query(Sale::query()
-                    ->where('user_id', auth()->user()->id)
-                     //where entity_id same as logged in user
-                ->where('entity_id', auth()->user()->entity_id)
-        )
-                    ->columns([
-                        // return product name from products table based on product id in sales table
-                        // Tables\Columns\TextColumn::make('id')
-                        //     ->searchable()
-                        //     ->sortable()
-                        //     ->copyable()
-                        //     ->toggleable(isToggledHiddenByDefault: false),
-                            //get product name from referenced id
-                        // Tables\Columns\TextColumn::make('product.name')
-                        //     ->searchable()
-                        //     ->sortable()
-                        //     ->copyable()
-                        //     ->toggleable(isToggledHiddenByDefault: false),
-                        // TextColumn::make('product_id')
-                        //     ->label('Product Names')
-                        //     ->sortable()
-                        //     ->default(function ($row) {
-                        //         //explode ids
-                        //         // $productIds = implode(',', $row->product_id);
-                        //         $productIds = json_decode($row->product_id);
-                        //         dd($productIds);
-                        //         $productNames = [];
-                        //         foreach ($productIds as $productId) {
-                        //             $product = Product::find($productId);
-                        //             if ($product) {
-                        //                 $productNames[] = $product->name;
-                        //             }
-                        //         }
-                        //         return implode(', ', $productNames);
-                        //     }),
-                         Tables\Columns\TextColumn::make('description')
-                            ->searchable()
-                            ->sortable()
-                            ->copyable()
-                            ->toggleable(isToggledHiddenByDefault: false),
-                            Tables\Columns\TextColumn::make('type')
-                            ->searchable()
-                            ->sortable()
-                            ->copyable()
-                            ->toggleable(isToggledHiddenByDefault: false),
-                        Tables\Columns\TextColumn::make('amount')
-                            ->money('UGX')
-                            ->searchable()
-                            ->sortable()
-                            ->copyable()
-                            ->toggleable(isToggledHiddenByDefault: false),
-                    ])
-                ->filters([
-                    //
-                ])
-                ->actions([
-                    //
-                ])
-                ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([
-                        //
-                    ]),
-                ]);
+        // Apply filters based on role
+        if ($user->role_id != 1) { // Non-admin users
+            $query->where('entity_id', $user->entity_id)
+                ->where('user_id', $user->id)
+                ->where('status', 'SUCCEEDED')
+                ->where(function ($query) use ($departmentId) {
+                    $query->whereHas('products', function (Builder $query) use ($departmentId) {
+                        $query->whereIn('id', function ($subQuery) use ($departmentId) {
+                            $subQuery->select('id')
+                                ->from('products')
+                                ->where('service_point_id', $departmentId);
+                        });
+                    });
+                });
         }
+
+        // Apply customer filtering if needed
+        if ($this->customer_id) {
+            $query->where('customer_id', $this->customer_id);
+        }
+
+        return $table
+            ->query($query)
+            ->columns([
+                Tables\Columns\TextColumn::make('customers.FirstName')
+                    ->sortable()
+                    ->label('Client Name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('type')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('amount')
+                    ->money('UGX')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                //
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    //
+                ]),
+            ]);
     }
 
     public function render(): View

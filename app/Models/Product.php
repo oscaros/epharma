@@ -74,6 +74,8 @@ class Product extends Model
         'Status',
 
         'entity_id',
+
+        'service_point_id',
        
         // User ID who approved edit
         'edit_approved_by',

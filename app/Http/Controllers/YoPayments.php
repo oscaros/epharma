@@ -8,6 +8,7 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Payments\YoAPI;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Mockery\Exception;
@@ -34,6 +35,10 @@ class YoPayments extends Controller
                 $phone = '256' . substr($phone, 1);
             }
 
+            // Calculate the service charge
+            $commissionPercentage = Auth::user()->entity->Commission ?? 0;
+            $serviceCharge = ($commissionPercentage / 100) * $grandTotal;
+
             $description = 'Payment of ' . $grandTotal . ' for reference number: ' . Str::uuid();
             $status = config('status.payment_status.pending');
 
@@ -47,12 +52,13 @@ class YoPayments extends Controller
                 'status' => $status,
                 'description' => $description,
                 'phone_number' => $customer->Phone,
-                'payment_mode' => 'yo pay',
-                'OrderNotificationType' => 'yo pay',
+                'payment_mode' => 'Yo Pay',
+                'OrderNotificationType' => 'SMS',
                 'order_tracking_id' => Str::uuid(),
                 'type' => 'Deposit',
                 'payment_method' => 'yo pay',
                 'customer_id' => $customer_id,
+                'service_charge' => $serviceCharge,  // Save the service charge
             ]);
 
             foreach ($productIds as $index => $productId) {
@@ -93,14 +99,13 @@ class YoPayments extends Controller
             } else {
                 Log::error('YoPayments: Missing TransactionReference', ['response' => $res]);
                 // throw new \Exception('Payment initiation failed. Please try again.');
-                //display flash foe failure
+                // display flash foe failure
                 return redirect()->route('sales.create')->with('error', 'Payment initiation failed. Please try again.');
             }
 
             // dd($res['Status']);
 
             // Flash a success message
-            
 
             // session()->flash('transactionReference', $transactionReference);
             session()->flash('success', 'Payment request sent successfully!');

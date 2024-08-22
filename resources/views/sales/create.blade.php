@@ -254,6 +254,8 @@
             <p>Hospital: {{ auth()->user()->entity->EntityName }}</p>
             <p>Attended To By: {{ auth()->user()->name }}</p>
             ${receiptClone.html()}
+             
+            
         </div>
     `;
 
@@ -263,6 +265,10 @@
                 `<p><strong>Service Charge</strong> ${formattedCommissionAmount}</p>`;
             // Append Final Total
             printContent += `<p><strong>Final Total: UGX</strong> ${formattedFinalTotal}</p></div>`;
+            printContent += `<div style="margin-top: 30px; text-align: center;">`
+             printContent += `<p style="font-size: 14px; color: #555;">Thank you for choosing our hospital. We value your trust and are committed to providing the best care possible.</p>`;
+             printContent += `<p style="font-size: 14px; color: #555;">For any inquiries, please contact us at info@kashtre.com .</p>`;
+             printContent += `</div>`;
         }
         let printWindow = window.open('', '', 'width=800, height=600');
         printWindow.document.write('<html><head><title>Print</title></head><body>' + printContent + '</body></html>');

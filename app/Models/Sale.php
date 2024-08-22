@@ -16,6 +16,7 @@ class Sale extends Model
         'product_id',
         // sales total amount
         'amount',
+        'service_charge',
         // user id who made the sale
         'user_id',
         'entity_id',
